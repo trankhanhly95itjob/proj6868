@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>Tài Liệu Bảo Mật</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f6f8; margin: 0; }
+        .login-box { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 350px; border: 1px solid #d0d7de; }
+        .markdown-body { background: transparent; }
+        h3 { margin-top: 0; color: #24292f; border-bottom: none; font-size: 20px; }
+        p { color: #57606a; font-size: 14px; margin-bottom: 25px; }
+        input { padding: 10px; border: 1px solid #d0d7de; border-radius: 6px; margin-bottom: 20px; width: 100%; box-sizing: border-box; font-size: 14px; background: #f6f8fa; color: #24292f; }
+        input:focus { border-color: #0969da; outline: none; box-shadow: 0 0 0 3px rgba(9,105,218,0.3); }
+        button { padding: 10px; width: 100%; background: #2da44e; color: #fff; border: 1px solid rgba(27,31,36,0.15); border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s; }
+        button:hover { background: #2c974b; }
+        #error { color: #cf222e; font-size: 13px; margin-top: 15px; display: none; }
+        
+        /* Dark mode */
+        @media (prefers-color-scheme: dark) {
+            body { background: #0d1117; }
+            .login-box { background: #161b22; border-color: #30363d; }
+            h3 { color: #c9d1d9; }
+            p { color: #8b949e; }
+            input { background: #0d1117; border-color: #30363d; color: #c9d1d9; }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-container">
+        <div class="login-box markdown-body">
+            <h3>🔒 Tài Liệu Bảo Mật</h3>
+            <p>Vui lòng nhập mật khẩu để xem</p>
+            <input type="password" id="pass" placeholder="Nhập mật khẩu..." onkeypress="handleEnter(event)" />
+            <button onclick="decrypt()">Mở khoá tài liệu</button>
+            <div id="error">Sai mật khẩu. Vui lòng thử lại!</div>
+        </div>
+    </div>
+
+    <script>
+        const ciphertext = "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";
+
+        // Tự động giải mã nếu đã nhập pass trước đó (chuyển trang mượt mà)
+        window.onload = function() {
+            const savedPass = sessionStorage.getItem('doc_password');
+            if (savedPass) {
+                document.getElementById('pass').value = savedPass;
+                decrypt(true);
+            }
+        };
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') decrypt();
+        }
+
+        function decrypt(silent = false) {
+            const pass = document.getElementById('pass').value;
+            const errorDiv = document.getElementById('error');
+            try {
+                const bytes = CryptoJS.AES.decrypt(ciphertext, pass);
+                const originalText = bytes.toString(CryptoJS.enc.Utf8);
+                
+                if (!originalText) {
+                    throw new Error("Wrong pass");
+                }
+                
+                // Lưu pass vào session để đi sang trang khác không phải nhập lại
+                sessionStorage.setItem('doc_password', pass);
+                
+                document.open();
+                document.write(originalText);
+                document.close();
+            } catch (e) {
+                if (!silent) errorDiv.style.display = 'block';
+                else sessionStorage.removeItem('doc_password');
+            }
+        }
+    </script>
+</body>
+</html>
