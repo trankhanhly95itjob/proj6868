@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPMN 2.0 Interactive Workflow | BHRV Bolttech Phase 2</title>
+    
+    <!-- bpmn-js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.11.1/dist/assets/bpmn-js.css">
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.11.1/dist/assets/diagram-js.css">
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.11.1/dist/assets/bpmn-font/css/bpmn.css">
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- bpmn-js Navigated Viewer (supports zoom & pan out of the box) -->
+    <script src="https://unpkg.com/bpmn-js@17.11.1/dist/bpmn-navigated-viewer.production.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0088cc;
+            --primary-dark: #006699;
+            --primary-light: #e6f4fa;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 14px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --radius-md: 10px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Navigation Header */
+        header {
+            height: 64px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: var(--shadow-sm);
+            z-index: 20;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .badge-phase {
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .header-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Legend */
+        .legend-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+            padding-right: 12px;
+            border-right: 1px solid var(--border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* Canvas Area */
+        #main-container {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #canvas {
+            flex: 1;
+            height: 100%;
+            background: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+            background-color: #f8fafc;
+        }
+
+        /* Floating Toolbar (Zoom & Controls) */
+        .floating-toolbar {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.15s;
+        }
+
+        .tool-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .tool-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .divider-v {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+            margin: 0 2px;
+        }
+
+        /* Interactive Detail Drawer (Slide-Over) */
+        #detail-drawer {
+            width: 440px;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 15;
+        }
+
+        #detail-drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            background: #fafbfc;
+        }
+
+        .drawer-title-group {
+            flex: 1;
+        }
+
+        .drawer-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .badge-cr { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .badge-std { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .badge-gw { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+        .drawer-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .drawer-lane {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .btn-close-drawer {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-close-drawer:hover {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin: 16px 0 8px;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        .drawer-desc {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: #334155;
+            background: #f8fafc;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Tech API Spec Card */
+        .api-card {
+            background: #1e293b;
+            border-radius: 8px;
+            color: #f8fafc;
+            overflow: hidden;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .api-card-header {
+            background: #0f172a;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .method-post { color: #38bdf8; }
+        .method-get { color: #4ade80; }
+
+        .api-card-body {
+            padding: 12px;
+            max-height: 250px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            line-height: 1.5;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+        }
+
+        /* Business Rules Pill List */
+        .rules-list {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .rules-list li {
+            font-size: 13px;
+            line-height: 1.5;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: #f8fafc;
+            border-left: 3px solid var(--primary);
+            margin-bottom: 6px;
+            color: #1e293b;
+        }
+
+        /* Instruction Overlay */
+        .hint-toast {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.85);
+            color: #ffffff;
+            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+            transition: opacity 0.5s;
+        }
+
+        /* Highlight element pulse on click */
+        .djs-element.selected .djs-visual rect,
+        .djs-element.selected .djs-visual polygon {
+            stroke: #0284c7 !important;
+            stroke-width: 3px !important;
+            filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.4));
+        }
+
+        .djs-element {
+            cursor: pointer !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <a href="./BHRV_BPMN_Swimlane_Workflow.md" class="btn-back">
+                <span>&#x2190;</span> Xem File Markdown
+            </a>
+            <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="header-title">BPMN 2.0 Swimlane Workflow — BHRV Bolttech Phase 2</span>
+                    <span class="badge-phase">Warehouse Delivery</span>
+                </div>
+                <div class="header-desc">Quy trình bán bảo hiểm rơi vỡ cho thiết bị điện máy giao từ kho (Erablue &amp; Bolttech)</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="legend-group">
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #e0f2fe; border: 1.5px solid #0284c7;"></span>
+                    <span>Điểm mới CR Phase 2</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #ffffff; border: 1.5px solid #64748b;"></span>
+                    <span>Tác vụ tiêu chuẩn</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #fef3c7; border: 1.5px solid #d97706;"></span>
+                    <span>Cổng điều kiện</span>
+                </div>
+            </div>
+            <button class="btn-back" onclick="downloadBpmn()" style="cursor: pointer; background: #f0fdf4; border-color: #86efac; color: #15803d;" title="Tải file BPMN 2.0 XML để mở trên demo.bpmn.io">
+                <span>📁</span> Tải file .bpmn
+            </button>
+            <button class="btn-back" id="btnCopyXml" onclick="copyBpmnXml()" style="cursor: pointer;" title="Copy toàn bộ mã XML vào bộ nhớ tạm">
+                <span>📋</span> Copy XML
+            </button>
+            <a href="https://demo.bpmn.io" target="_blank" class="btn-back" style="background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8;" title="Mở trang demo.bpmn.io trên tab mới">
+                <span>🌐</span> Mở demo.bpmn.io
+            </a>
+            <button class="btn-back" onclick="downloadSvg()" style="cursor: pointer;">
+                <span>📥</span> Tải SVG
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div id="main-container">
+        <!-- Floating instruction -->
+        <div class="hint-toast" id="hintToast">
+            <span>💡</span> Mẹo: Nhấp chuột vào bất kỳ Task nào để xem chi tiết API &amp; Nghiệp vụ
+        </div>
+
+        <!-- BPMN Canvas -->
+        <div id="canvas"></div>
+
+        <!-- Floating Zoom & Fit Controls -->
+        <div class="floating-toolbar">
+            <button class="tool-btn" onclick="zoomIn()" title="Phóng to (Zoom In)">+</button>
+            <button class="tool-btn" onclick="zoomOut()" title="Thu nhỏ (Zoom Out)">-</button>
+            <button class="tool-btn" onclick="fitView()" title="Vừa toàn màn hình (Fit View)">⤢</button>
+            <div class="divider-v"></div>
+            <button class="tool-btn" onclick="resetZoom()" title="Tỷ lệ 100%">1:1</button>
+        </div>
+
+        <!-- Detail Drawer -->
+        <div id="detail-drawer">
+            <div class="drawer-header">
+                <div class="drawer-title-group">
+                    <span class="drawer-badge" id="dBadge">CR PHASE 2</span>
+                    <h3 class="drawer-title" id="dTitle">Tên tác vụ</h3>
+                    <div class="drawer-lane" id="dLane">Phân làn: Hệ thống Erablue</div>
+                </div>
+                <button class="btn-close-drawer" onclick="closeDrawer()" title="Đóng">✕</button>
+            </div>
+
+            <div class="drawer-body">
+                <div class="section-title">Mô tả nghiệp vụ</div>
+                <div class="drawer-desc" id="dDesc">Mô tả chi tiết tác vụ...</div>
+
+                <div id="dApiContainer" style="display: none;">
+                    <div class="section-title">Chi tiết kỹ thuật (API Integration)</div>
+                    <div class="api-card">
+                        <div class="api-card-header">
+                            <span id="dApiMethod" class="method-post">POST</span>
+                            <span id="dApiEndpoint">/api/endpoint</span>
+                        </div>
+                        <div class="api-card-body" id="dApiPayload">Payload mẫu...</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Tiêu chí chấp nhận &amp; Lưu ý BA/Dev</div>
+                <ul class="rules-list" id="dRules">
+                    <li>Quy tắc 1</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Raw BPMN 2.0 XML -->
+    <script id="bpmn-xml-data" type="text/xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0"
+                  xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0"
+                  id="Definitions_BHRV_Phase2"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  <bpmn:collaboration id="Collaboration_BHRV">
+    <bpmn:participant id="Pool_BHRV" name="QUY TRÌNH BÁN BẢO HIỂM RƠI VỠ (BHRV) BOLTTECH — PHASE 2: GIAO HÀNG TỪ KHO" processRef="Process_BHRV" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_BHRV" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Customer" name="👤 KHÁCH HÀNG">
+        <bpmn:flowNodeRef>Start_Customer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustPay</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustReceiveMail1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustReceiveGoods</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustReceiveMail2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Success</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_POS" name="🏪 CỬA HÀNG / POS (DAY 1)">
+        <bpmn:flowNodeRef>Task_POS_CreateOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_POS_CollectMoney</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Erablue" name="⚙️ ERABLUE CORE &amp; BACKEND">
+        <bpmn:flowNodeRef>Task_ERA_CheckFee</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ERA_GenDummy</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ERA_CreateOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ERA_GetOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_DeliveryCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ERA_UpdateContract</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Warehouse" name="🚚 KHO &amp; VẬN CHUYỂN (DAY 2~7)">
+        <bpmn:flowNodeRef>Task_WH_Prepare</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_WH_ScanIMEI</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_WH_Deliver</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_WH_Confirm</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Bolttech" name="🛡️ ĐỐI TÁC BOLTTECH (GATEWAY &amp; CRMZ)">
+        <bpmn:flowNodeRef>Task_BOLT_ReturnFee</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BOLT_ProcessOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BOLT_ReturnOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BOLT_UpdateContract</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BOLT_IssueCert</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <!-- Flow Elements -->
+    <bpmn:startEvent id="Start_Customer" name="Chọn mua Tivi ≥ 55'&#10;&amp; đăng ký BHRV">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_POS_CreateOrder" name="Tạo đơn hàng xuất kho&#10;&amp; chọn gói bảo vệ TecProtec">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:serviceTask id="Task_ERA_CheckFee" name="Gọi API GetPartnerProduct&#10;tra cứu phí bảo hiểm">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_ReturnFee" name="Tra cứu biểu phí Premium&#10;&amp; phản hồi danh sách gói">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:task id="Task_POS_CollectMoney" name="Thu tiền khách hàng qua POS&#10;&amp; in hóa đơn bán hàng">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CustPay" name="Thanh toán hóa đơn hàng hóa&#10;&amp; phí dịch vụ BHRV">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:serviceTask id="Task_ERA_GenDummy" name="[CR Phase 2] Sinh Dummy Serial&#10;&amp; Dummy Activation Date">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_ERA_CreateOrder" name="[CR Phase 2] Gọi API&#10;CreateCustomerFulfillOrder (kèm Dummy IMEI)">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_ProcessOrder" name="Tạo OrderID &amp; đẩy Queue&#10;đăng ký HĐ tạm trong CRMZ">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_9b</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:sendTask id="Task_CustReceiveMail1" name="Nhận Email Chào mừng 1&#10;(Thông tin HĐ tạm)">
+      <bpmn:incoming>Flow_9a</bpmn:incoming>
+    </bpmn:sendTask>
+
+    <bpmn:serviceTask id="Task_ERA_GetOrder" name="Gọi API GetOrder&#10;lấy số Hợp đồng tạm">
+      <bpmn:incoming>Flow_9b</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_ReturnOrder" name="Trả về mã hợp đồng&#10;dịch vụ TecProtec tạm">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <!-- Day 2-7 Warehouse Delivery -->
+    <bpmn:task id="Task_WH_Prepare" name="Nhận Phiếu xuất kho giao hàng&#10;(Chờ đến lịch giao Day 2~7)">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_WH_ScanIMEI" name="Xuất kho: Quét mã Serial / IMEI&#10;thực tế của thiết bị">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_WH_Deliver" name="Vận chuyển &amp; bàn giao&#10;lắp đặt máy tại nhà">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:incoming>Flow_Redeliver</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CustReceiveGoods" name="Đồng kiểm ngoại quan máy&#10;&amp; ký biên bản bàn giao">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_WH_Confirm" name="Xác nhận trạng thái:&#10;'Giao hàng thành công'">
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_DeliveryCheck" name="Đã giao hàng&#10;thành công?">
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_Success</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Redeliver</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:serviceTask id="Task_ERA_UpdateContract" name="[CR Phase 2] Gọi API&#10;UpdateContract (truyền Real IMEI)">
+      <bpmn:incoming>Flow_Success</bpmn:incoming>
+      <bpmn:outgoing>Flow_17</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_UpdateContract" name="Cập nhật Serial thực tế&#10;&amp; Ngày kích hoạt vào CRMZ">
+      <bpmn:incoming>Flow_17</bpmn:incoming>
+      <bpmn:outgoing>Flow_18</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_IssueCert" name="Kích hoạt hợp đồng chính thức&#10;&amp; phát hành e-Certificate">
+      <bpmn:incoming>Flow_18</bpmn:incoming>
+      <bpmn:outgoing>Flow_19</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:sendTask id="Task_CustReceiveMail2" name="Nhận Email Chào mừng 2&#10;kèm e-Certificate">
+      <bpmn:incoming>Flow_19</bpmn:incoming>
+      <bpmn:outgoing>Flow_20</bpmn:outgoing>
+    </bpmn:sendTask>
+
+    <bpmn:endEvent id="End_Success" name="Bảo hiểm BHRV&#10;chính thức có hiệu lực">
+      <bpmn:incoming>Flow_20</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <!-- Sequence Flows -->
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_Customer" targetRef="Task_POS_CreateOrder" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_POS_CreateOrder" targetRef="Task_ERA_CheckFee" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_ERA_CheckFee" targetRef="Task_BOLT_ReturnFee" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_BOLT_ReturnFee" targetRef="Task_POS_CollectMoney" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_POS_CollectMoney" targetRef="Task_CustPay" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_CustPay" targetRef="Task_ERA_GenDummy" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_ERA_GenDummy" targetRef="Task_ERA_CreateOrder" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Task_ERA_CreateOrder" targetRef="Task_BOLT_ProcessOrder" />
+    <bpmn:sequenceFlow id="Flow_9a" sourceRef="Task_BOLT_ProcessOrder" targetRef="Task_CustReceiveMail1" />
+    <bpmn:sequenceFlow id="Flow_9b" sourceRef="Task_BOLT_ProcessOrder" targetRef="Task_ERA_GetOrder" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_ERA_GetOrder" targetRef="Task_BOLT_ReturnOrder" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Task_BOLT_ReturnOrder" targetRef="Task_WH_Prepare" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_WH_Prepare" targetRef="Task_WH_ScanIMEI" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Task_WH_ScanIMEI" targetRef="Task_WH_Deliver" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Task_WH_Deliver" targetRef="Task_CustReceiveGoods" />
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_CustReceiveGoods" targetRef="Task_WH_Confirm" />
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="Task_WH_Confirm" targetRef="Gateway_DeliveryCheck" />
+    <bpmn:sequenceFlow id="Flow_Success" name="Thành công" sourceRef="Gateway_DeliveryCheck" targetRef="Task_ERA_UpdateContract" />
+    <bpmn:sequenceFlow id="Flow_Redeliver" name="Hẹn lại ngày" sourceRef="Gateway_DeliveryCheck" targetRef="Task_WH_Deliver" />
+    <bpmn:sequenceFlow id="Flow_17" sourceRef="Task_ERA_UpdateContract" targetRef="Task_BOLT_UpdateContract" />
+    <bpmn:sequenceFlow id="Flow_18" sourceRef="Task_BOLT_UpdateContract" targetRef="Task_BOLT_IssueCert" />
+    <bpmn:sequenceFlow id="Flow_19" sourceRef="Task_BOLT_IssueCert" targetRef="Task_CustReceiveMail2" />
+    <bpmn:sequenceFlow id="Flow_20" sourceRef="Task_CustReceiveMail2" targetRef="End_Success" />
+  </bpmn:process>
+
+  <!-- BPMN Diagram Interchange (Visual Layout & Coordinates) -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_BHRV">
+      
+      <!-- Pool: Overall Diagram Bounds -->
+      <bpmndi:BPMNShape id="Pool_BHRV_di" bpmnElement="Pool_BHRV" isHorizontal="true">
+        <dc:Bounds x="20" y="20" width="2800" height="780" />
+      </bpmndi:BPMNShape>
+
+      <!-- Lanes -->
+      <bpmndi:BPMNShape id="Lane_Customer_di" bpmnElement="Lane_Customer" isHorizontal="true">
+        <dc:Bounds x="50" y="20" width="2770" height="150" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_POS_di" bpmnElement="Lane_POS" isHorizontal="true">
+        <dc:Bounds x="50" y="170" width="2770" height="140" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Erablue_di" bpmnElement="Lane_Erablue" isHorizontal="true">
+        <dc:Bounds x="50" y="310" width="2770" height="180" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Warehouse_di" bpmnElement="Lane_Warehouse" isHorizontal="true">
+        <dc:Bounds x="50" y="490" width="2770" height="150" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Bolttech_di" bpmnElement="Lane_Bolttech" isHorizontal="true">
+        <dc:Bounds x="50" y="640" width="2770" height="160" />
+      </bpmndi:BPMNShape>
+
+      <!-- Node Shapes -->
+      <!-- 1. Start Event (Customer) -->
+      <bpmndi:BPMNShape id="Start_Customer_di" bpmnElement="Start_Customer" bioc:stroke="#10b981" bioc:fill="#ecfdf5" color:border-color="#10b981">
+        <dc:Bounds x="90" y="65" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="65" y="108" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- 2. POS Create Order -->
+      <bpmndi:BPMNShape id="Task_POS_CreateOrder_di" bpmnElement="Task_POS_CreateOrder" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="180" y="200" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 3. ERA Check Fee -->
+      <bpmndi:BPMNShape id="Task_ERA_CheckFee_di" bpmnElement="Task_ERA_CheckFee" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="370" y="365" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 4. BOLT Return Fee -->
+      <bpmndi:BPMNShape id="Task_BOLT_ReturnFee_di" bpmnElement="Task_BOLT_ReturnFee" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="550" y="685" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 5. POS Collect Money -->
+      <bpmndi:BPMNShape id="Task_POS_CollectMoney_di" bpmnElement="Task_POS_CollectMoney" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="730" y="200" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 6. Cust Pay -->
+      <bpmndi:BPMNShape id="Task_CustPay_di" bpmnElement="Task_CustPay" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="910" y="55" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 7. ERA Gen Dummy (CR Highlight) -->
+      <bpmndi:BPMNShape id="Task_ERA_GenDummy_di" bpmnElement="Task_ERA_GenDummy" bioc:stroke="#0284c7" bioc:fill="#e0f2fe" color:border-color="#0284c7">
+        <dc:Bounds x="910" y="365" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 8. ERA Create Order (CR Highlight) -->
+      <bpmndi:BPMNShape id="Task_ERA_CreateOrder_di" bpmnElement="Task_ERA_CreateOrder" bioc:stroke="#0284c7" bioc:fill="#e0f2fe" color:border-color="#0284c7">
+        <dc:Bounds x="1100" y="365" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 9. BOLT Process Order -->
+      <bpmndi:BPMNShape id="Task_BOLT_ProcessOrder_di" bpmnElement="Task_BOLT_ProcessOrder" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1100" y="685" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 10. Cust Mail 1 -->
+      <bpmndi:BPMNShape id="Task_CustReceiveMail1_di" bpmnElement="Task_CustReceiveMail1" bioc:stroke="#475569" bioc:fill="#f8fafc">
+        <dc:Bounds x="1100" y="55" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 11. ERA Get Order -->
+      <bpmndi:BPMNShape id="Task_ERA_GetOrder_di" bpmnElement="Task_ERA_GetOrder" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1290" y="365" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 12. BOLT Return Order -->
+      <bpmndi:BPMNShape id="Task_BOLT_ReturnOrder_di" bpmnElement="Task_BOLT_ReturnOrder" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1290" y="685" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 13. WH Prepare (Transition Day 2~7) -->
+      <bpmndi:BPMNShape id="Task_WH_Prepare_di" bpmnElement="Task_WH_Prepare" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1470" y="530" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 14. WH Scan IMEI -->
+      <bpmndi:BPMNShape id="Task_WH_ScanIMEI_di" bpmnElement="Task_WH_ScanIMEI" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1650" y="530" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 15. WH Deliver -->
+      <bpmndi:BPMNShape id="Task_WH_Deliver_di" bpmnElement="Task_WH_Deliver" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1830" y="530" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 16. Cust Receive Goods -->
+      <bpmndi:BPMNShape id="Task_CustReceiveGoods_di" bpmnElement="Task_CustReceiveGoods" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1830" y="55" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 17. WH Confirm -->
+      <bpmndi:BPMNShape id="Task_WH_Confirm_di" bpmnElement="Task_WH_Confirm" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="2010" y="530" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 18. Gateway Delivery Check -->
+      <bpmndi:BPMNShape id="Gateway_DeliveryCheck_di" bpmnElement="Gateway_DeliveryCheck" isMarkerVisible="true" bioc:stroke="#d97706" bioc:fill="#fef3c7">
+        <dc:Bounds x="2055" y="375" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1980" y="385" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- 19. ERA Update Contract (CR Highlight) -->
+      <bpmndi:BPMNShape id="Task_ERA_UpdateContract_di" bpmnElement="Task_ERA_UpdateContract" bioc:stroke="#0284c7" bioc:fill="#e0f2fe" color:border-color="#0284c7">
+        <dc:Bounds x="2160" y="365" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 20. BOLT Update Contract -->
+      <bpmndi:BPMNShape id="Task_BOLT_UpdateContract_di" bpmnElement="Task_BOLT_UpdateContract" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="2160" y="685" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 21. BOLT Issue Cert -->
+      <bpmndi:BPMNShape id="Task_BOLT_IssueCert_di" bpmnElement="Task_BOLT_IssueCert" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="2350" y="685" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 22. Cust Mail 2 -->
+      <bpmndi:BPMNShape id="Task_CustReceiveMail2_di" bpmnElement="Task_CustReceiveMail2" bioc:stroke="#475569" bioc:fill="#f8fafc">
+        <dc:Bounds x="2350" y="55" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 23. End Event (Success) -->
+      <bpmndi:BPMNShape id="End_Success_di" bpmnElement="End_Success" bioc:stroke="#10b981" bioc:fill="#ecfdf5" color:border-color="#10b981">
+        <dc:Bounds x="2540" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2515" y="115" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Sequence Flow Edges -->
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="126" y="83" />
+        <di:waypoint x="153" y="83" />
+        <di:waypoint x="153" y="235" />
+        <di:waypoint x="180" y="235" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="320" y="235" />
+        <di:waypoint x="345" y="235" />
+        <di:waypoint x="345" y="400" />
+        <di:waypoint x="370" y="400" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="510" y="400" />
+        <di:waypoint x="530" y="400" />
+        <di:waypoint x="530" y="720" />
+        <di:waypoint x="550" y="720" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="690" y="720" />
+        <di:waypoint x="710" y="720" />
+        <di:waypoint x="710" y="235" />
+        <di:waypoint x="730" y="235" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="870" y="235" />
+        <di:waypoint x="890" y="235" />
+        <di:waypoint x="890" y="90" />
+        <di:waypoint x="910" y="90" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="980" y="125" />
+        <di:waypoint x="980" y="365" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1060" y="400" />
+        <di:waypoint x="1100" y="400" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1175" y="435" />
+        <di:waypoint x="1175" y="685" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_9a_di" bpmnElement="Flow_9a">
+        <di:waypoint x="1175" y="685" />
+        <di:waypoint x="1175" y="125" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_9b_di" bpmnElement="Flow_9b">
+        <di:waypoint x="1250" y="720" />
+        <di:waypoint x="1270" y="720" />
+        <di:waypoint x="1270" y="400" />
+        <di:waypoint x="1290" y="400" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="1360" y="435" />
+        <di:waypoint x="1360" y="685" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="1430" y="720" />
+        <di:waypoint x="1450" y="720" />
+        <di:waypoint x="1450" y="565" />
+        <di:waypoint x="1470" y="565" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="1610" y="565" />
+        <di:waypoint x="1650" y="565" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="1790" y="565" />
+        <di:waypoint x="1830" y="565" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="1900" y="530" />
+        <di:waypoint x="1900" y="125" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="1970" y="90" />
+        <di:waypoint x="1990" y="90" />
+        <di:waypoint x="1990" y="565" />
+        <di:waypoint x="2010" y="565" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
+        <di:waypoint x="2080" y="530" />
+        <di:waypoint x="2080" y="425" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Success_di" bpmnElement="Flow_Success">
+        <di:waypoint x="2105" y="400" />
+        <di:waypoint x="2160" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2098" y="375" width="58" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Redeliver_di" bpmnElement="Flow_Redeliver">
+        <di:waypoint x="2080" y="425" />
+        <di:waypoint x="2080" y="475" />
+        <di:waypoint x="1900" y="475" />
+        <di:waypoint x="1900" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1960" y="455" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_17_di" bpmnElement="Flow_17">
+        <di:waypoint x="2235" y="435" />
+        <di:waypoint x="2235" y="685" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_18_di" bpmnElement="Flow_18">
+        <di:waypoint x="2310" y="720" />
+        <di:waypoint x="2350" y="720" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_19_di" bpmnElement="Flow_19">
+        <di:waypoint x="2420" y="685" />
+        <di:waypoint x="2420" y="125" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_20_di" bpmnElement="Flow_20">
+        <di:waypoint x="2490" y="90" />
+        <di:waypoint x="2540" y="90" />
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+    </script>
+
+    <!-- Technical Database for Task Details -->
+    <script>
+        const taskDatabase = {
+            'Task_ERA_GenDummy': {
+                title: 'Tự động sinh Dummy Serial & Dummy Activation Date',
+                badge: 'CR PHASE 2 — ĐIỂM THAY ĐỔI MỚI',
+                badgeClass: 'badge-cr',
+                lane: 'Hệ thống Erablue (Core Backend)',
+                desc: 'Do bán hàng thiết bị lớn (Tivi ≥ 55") giao từ kho nên tại Ngày 1 chưa có sản phẩm vật lý. Hệ thống Erablue tự động sinh số Serial tạm (Dummy IMEI) và Ngày kích hoạt tạm (Dummy Activation Date) để kịp thời gọi API tạo đơn Bolttech nhằm chốt doanh số và cân bằng sổ sách kế toán (AR).',
+                api: {
+                    method: 'INTERNAL LOGIC',
+                    endpoint: 'Erablue.Core.InsuranceService.GenerateDummyInfo()',
+                    payload: `// Quy ước sinh mã tạm (Dummy IMEI)
+string dummySerial = $"DUMMY_{orderId}_{DateTime.UtcNow:yyyyMMddHHmmss}";
+DateTime dummyActivationDate = DateTime.UtcNow.AddDays(30); // Giữ chỗ 30 ngày`
+                },
+                rules: [
+                    'Mã Dummy Serial phải duy nhất (unique) để tránh trùng lặp đơn trong hệ thống Bolttech.',
+                    'Dummy Activation Date được mặc định cộng dồn 30 ngày (sẽ được ghi đè bằng ngày giao hàng thực tế tại Day 2~7).',
+                    'Dữ liệu tạm được gắn cờ IsDummyImei = true trong cơ sở dữ liệu Erablue.'
+                ]
+            },
+            'Task_ERA_CreateOrder': {
+                title: 'Gọi API CreateCustomerFulfillOrder (kèm Dummy IMEI)',
+                badge: 'CR PHASE 2 — TÍCH HỢP BOLTTECH',
+                badgeClass: 'badge-cr',
+                lane: 'Hệ thống Erablue → Bolttech Gateway',
+                desc: 'Truyền thông tin đơn hàng bảo hiểm, gói cước và thông tin định danh tạm sang Bolttech Gateway để khởi tạo hợp đồng dịch vụ TecProtec.',
+                api: {
+                    method: 'POST',
+                    endpoint: 'https://api.bolttech.co.id/v1/customer/fulfill-order',
+                    payload: `{
+  "partnerRefNo": "ERA_ORD_81759_001",
+  "productCode": "TEC_TV_55_CRACK_1Y",
+  "customer": {
+    "name": "Nguyen Van A",
+    "phone": "0987654321",
+    "email": "customer@gmail.com"
+  },
+  "device": {
+    "model": "Samsung QLED 65 Inch",
+    "serialNo": "DUMMY_ERA_ORD_81759_001", // Dummy IMEI
+    "purchaseValue": 18500000
+  },
+  "activationDate": "2026-09-30T00:00:00Z" // Dummy Date
+}`
+                },
+                rules: [
+                    'Header bắt buộc: Authorization Bearer Token, X-Partner-ID, Content-Type: application/json.',
+                    'Phải nhận về OrderID từ Bolttech để đối soát trạng thái.',
+                    'Nếu API timeout, kích hoạt cơ chế retry tự động theo exponential backoff.'
+                ]
+            },
+            'Task_ERA_UpdateContract': {
+                title: 'Gọi API UpdateContract (Cập nhật IMEI & Ngày giao thực tế)',
+                badge: 'CR PHASE 2 — KÍCH HOẠT CHÍNH THỨC',
+                badgeClass: 'badge-cr',
+                lane: 'Hệ thống Erablue → Bolttech Gateway',
+                desc: 'Sau khi kho xuất hàng và tài xế xác nhận giao hàng thành công tại nhà khách, Erablue tự động gọi API UpdateContract để ghi đè số Serial/IMEI thực tế và ngày bắt đầu hiệu lực bảo hiểm.',
+                api: {
+                    method: 'POST / PUT',
+                    endpoint: 'https://api.bolttech.co.id/v1/contract/update',
+                    payload: `{
+  "orderId": "BOLT_ORD_998877",
+  "realSerialNo": "VN65Q70BAKXXV_88992211", // Số Serial quét từ Kho
+  "effectiveDate": "2026-09-04T14:30:00Z", // Trùng ngày giao hàng
+  "deliveryStatus": "DELIVERED_SUCCESS"
+}`
+                },
+                rules: [
+                    'Chỉ được gọi khi trạng thái đơn hàng Erablue là DELIVERED_SUCCESS.',
+                    'Số Serial thực tế phải vượt qua bước kiểm tra định dạng (Regex pattern).',
+                    'Sau khi Update thành công, Bolttech tự động sinh e-Certificate và gửi mail chào mừng lần 2 cho Khách hàng.'
+                ]
+            },
+            'Task_ERA_CheckFee': {
+                title: 'Gọi API GetPartnerProduct tra cứu phí bảo hiểm',
+                badge: 'QUY TRÌNH TIÊU CHUẨN',
+                badgeClass: 'badge-std',
+                lane: 'Hệ thống Erablue → Bolttech Gateway',
+                desc: 'Hệ thống POS gửi mã sản phẩm chính và giá trị bán máy sang Bolttech để lấy mức phí bảo hiểm (Premium) tương ứng hiển thị cho thu ngân.',
+                api: {
+                    method: 'GET',
+                    endpoint: 'https://api.bolttech.co.id/v1/partner/products?category=TV&price=18500000',
+                    payload: `// Response mẫu:
+{
+  "code": 200,
+  "packages": [
+    {
+      "packageId": "PKG_1Y_FALL",
+      "packageName": "Bảo hiểm rơi vỡ màn hình 1 năm",
+      "premiumAmount": 950000
+    }
+  ]
+}`
+                },
+                rules: [
+                    'Mức phí bảo hiểm (Premium) được tính theo phần trăm giá trị hóa đơn máy hoặc theo bảng biểu phí cố định.',
+                    'Thời gian phản hồi API yêu cầu < 800ms để không làm chậm thao tác bán lẻ tại quầy.'
+                ]
+            },
+            'Gateway_DeliveryCheck': {
+                title: 'Cổng kiểm tra điều kiện Giao hàng',
+                badge: 'EXCLUSIVE GATEWAY (XOR)',
+                badgeClass: 'badge-gw',
+                lane: 'Hệ thống Erablue (Logic điều hướng)',
+                desc: 'Kiểm tra trạng thái xác nhận từ đội ngũ vận chuyển. Nếu khách nhận hàng thành công, kích hoạt luồng UpdateContract. Nếu khách vắng nhà hoặc hẹn lịch lại, đơn hàng tiếp tục được bảo lưu và điều phối giao lại.',
+                api: {
+                    method: 'CONDITION EVALUATION',
+                    endpoint: 'Order.DeliveryStatus == DeliveryStatus.Completed',
+                    payload: `if (deliveryStatus == "DELIVERED_SUCCESS") {
+    TriggerUpdateContractJob(orderId);
+} else {
+    HoldInsuranceContract(orderId);
+    RescheduleDelivery();
+}`
+                },
+                rules: [
+                    'Tuyệt đối KHÔNG gọi UpdateContract khi khách hàng chưa ký nhận máy thực tế.',
+                    'Nếu khách từ chối nhận hàng vĩnh viễn (Hủy đơn), hệ thống kích hoạt luồng Void/Cancel hợp đồng bảo hiểm sang Bolttech.'
+                ]
+            },
+            'Task_WH_ScanIMEI': {
+                title: 'Quét mã vạch Serial / IMEI thực tế tại Kho',
+                badge: 'QUY TRÌNH KHO VẬN',
+                badgeClass: 'badge-std',
+                lane: 'Kho & Vận chuyển (Day 2~7)',
+                desc: 'Nhân viên kho lấy sản phẩm vật lý từ kệ kho trung tâm, sử dụng máy quét PDA quét mã vạch Serial/IMEI in trên vỏ thùng máy trước khi chất lên xe tải giao hàng.',
+                api: null,
+                rules: [
+                    'Bắt buộc quét Barcode / QR code trực tiếp từ sản phẩm, không nhập tay để tránh sai sót.',
+                    'Hệ thống ERP Kho tự động kiểm tra số IMEI này chưa từng được xuất cho đơn hàng nào khác.'
+                ]
+            }
+        };
+
+        // Initialize bpmn-js viewer
+        let bpmnViewer = null;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const xmlContent = document.getElementById('bpmn-xml-data').textContent.trim();
+            
+            bpmnViewer = new BpmnJS({
+                container: '#canvas'
+            });
+
+            try {
+                const { warnings } = await bpmnViewer.importXML(xmlContent);
+                if (warnings.length) {
+                    console.warn('BPMN Import Warnings:', warnings);
+                }
+
+                // Fit diagram to view initially
+                const canvas = bpmnViewer.get('canvas');
+                canvas.zoom('fit-viewport');
+
+                // Hide hint toast after 5s
+                setTimeout(() => {
+                    const toast = document.getElementById('hintToast');
+                    if (toast) toast.style.opacity = '0';
+                }, 5000);
+
+                // Add Element Click Listeners
+                const eventBus = bpmnViewer.get('eventBus');
+                eventBus.on('element.click', function(e) {
+                    const element = e.element;
+                    if (!element || element.type === 'bpmn:SequenceFlow' || element.type === 'bpmn:Process') {
+                        return;
+                    }
+                    showElementDetails(element);
+                });
+
+            } catch (err) {
+                console.error('Error rendering BPMN:', err);
+                document.getElementById('canvas').innerHTML = `
+                    <div style="padding: 40px; text-align: center; color: #ef4444;">
+                        <h3>Không thể hiển thị sơ đồ BPMN</h3>
+                        <p>${err.message}</p>
+                    </div>`;
+            }
+        });
+
+        // Zoom controls
+        function zoomIn() {
+            if (!bpmnViewer) return;
+            const canvas = bpmnViewer.get('canvas');
+            canvas.zoom(canvas.zoom() * 1.25);
+        }
+
+        function zoomOut() {
+            if (!bpmnViewer) return;
+            const canvas = bpmnViewer.get('canvas');
+            canvas.zoom(canvas.zoom() * 0.8);
+        }
+
+        function fitView() {
+            if (!bpmnViewer) return;
+            const canvas = bpmnViewer.get('canvas');
+            canvas.zoom('fit-viewport');
+        }
+
+        function resetZoom() {
+            if (!bpmnViewer) return;
+            const canvas = bpmnViewer.get('canvas');
+            canvas.zoom(1.0);
+        }
+
+        // Show Element Details Drawer
+        function showElementDetails(element) {
+            const drawer = document.getElementById('detail-drawer');
+            const data = taskDatabase[element.id];
+
+            const name = element.businessObject.name || element.id;
+
+            if (data) {
+                document.getElementById('dTitle').innerText = data.title || name;
+                document.getElementById('dBadge').innerText = data.badge;
+                document.getElementById('dBadge').className = 'drawer-badge ' + data.badgeClass;
+                document.getElementById('dLane').innerText = 'Phân làn: ' + data.lane;
+                document.getElementById('dDesc').innerText = data.desc;
+
+                if (data.api) {
+                    document.getElementById('dApiContainer').style.display = 'block';
+                    document.getElementById('dApiMethod').innerText = data.api.method;
+                    document.getElementById('dApiEndpoint').innerText = data.api.endpoint;
+                    document.getElementById('dApiPayload').innerText = data.api.payload;
+                } else {
+                    document.getElementById('dApiContainer').style.display = 'none';
+                }
+
+                const rulesUl = document.getElementById('dRules');
+                rulesUl.innerHTML = '';
+                data.rules.forEach(r => {
+                    const li = document.createElement('li');
+                    li.innerText = r;
+                    rulesUl.appendChild(li);
+                });
+            } else {
+                // Default fallback for any element
+                document.getElementById('dTitle').innerText = name.replace(/\n/g, ' ');
+                document.getElementById('dBadge').innerText = 'BPMN ELEMENT';
+                document.getElementById('dBadge').className = 'drawer-badge badge-std';
+                document.getElementById('dLane').innerText = 'ID: ' + element.id;
+                document.getElementById('dDesc').innerText = 'Tác vụ hoặc sự kiện trong quy trình bán bảo hiểm rơi vỡ Bolttech Phase 2.';
+                document.getElementById('dApiContainer').style.display = 'none';
+                
+                const rulesUl = document.getElementById('dRules');
+                rulesUl.innerHTML = '<li>Thực thi theo đúng thứ tự luồng nghiệp vụ trên sơ đồ phân làn.</li>';
+            }
+
+            drawer.classList.add('open');
+        }
+
+        function closeDrawer() {
+            document.getElementById('detail-drawer').classList.remove('open');
+        }
+
+        // Download SVG
+        async function downloadSvg() {
+            if (!bpmnViewer) return;
+            try {
+                const { svg } = await bpmnViewer.saveSVG({ format: true });
+                const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'BHRV_Bolttech_Phase2_BPMN_Workflow.svg';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert('Lỗi tải SVG: ' + err.message);
+            }
+        }
+
+        // Download .bpmn file for demo.bpmn.io / Camunda
+        function downloadBpmn() {
+            const xml = document.getElementById('bpmn-xml-data').textContent.trim();
+            const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'BHRV_Bolttech_Phase2_Workflow.bpmn';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Copy BPMN XML to clipboard
+        function copyBpmnXml() {
+            const xml = document.getElementById('bpmn-xml-data').textContent.trim();
+            navigator.clipboard.writeText(xml).then(() => {
+                const btn = document.getElementById('btnCopyXml');
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<span>✅</span> Đã copy!';
+                btn.style.background = '#dcfce7';
+                btn.style.color = '#15803d';
+                setTimeout(() => {
+                    btn.innerHTML = orig;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2500);
+            }).catch(err => {
+                alert('Không thể copy: ' + err.message);
+            });
+        }
+    </script>
+</body>
+</html>
