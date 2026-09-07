@@ -1,0 +1,496 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0"
+                  xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0"
+                  id="Definitions_BHRV_Phase2"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  <bpmn:collaboration id="Collaboration_BHRV">
+    <bpmn:participant id="Pool_BHRV" name="QUY TRÌNH BÁN BẢO HIỂM RƠI VỠ (BHRV) BOLTTECH — PHASE 2: GIAO HÀNG TỪ KHO" processRef="Process_BHRV" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_BHRV" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Customer" name="👤 KHÁCH HÀNG">
+        <bpmn:flowNodeRef>Start_Customer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustPay</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustReceiveMail1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustReceiveGoods</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustReceiveMail2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Success</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_POS" name="🏪 CỬA HÀNG / POS (DAY 1)">
+        <bpmn:flowNodeRef>Task_POS_CreateOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_POS_CollectMoney</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Erablue" name="⚙️ ERABLUE CORE &amp; BACKEND">
+        <bpmn:flowNodeRef>Task_ERA_CheckFee</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ERA_GenDummy</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ERA_CreateOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ERA_GetOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_DeliveryCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ERA_UpdateContract</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Warehouse" name="🚚 KHO &amp; VẬN CHUYỂN (DAY 2~7)">
+        <bpmn:flowNodeRef>Task_WH_Prepare</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_WH_ScanIMEI</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_WH_Deliver</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_WH_Confirm</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Bolttech" name="🛡️ ĐỐI TÁC BOLTTECH (GATEWAY &amp; CRMZ)">
+        <bpmn:flowNodeRef>Task_BOLT_ReturnFee</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BOLT_ProcessOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BOLT_ReturnOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BOLT_UpdateContract</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BOLT_IssueCert</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <!-- Flow Elements -->
+    <bpmn:startEvent id="Start_Customer" name="Chọn mua Tivi ≥ 55'&#10;&amp; đăng ký BHRV">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_POS_CreateOrder" name="Tạo đơn hàng xuất kho&#10;&amp; chọn gói bảo vệ TecProtec">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:serviceTask id="Task_ERA_CheckFee" name="Gọi API GetPartnerProduct&#10;tra cứu phí bảo hiểm">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_ReturnFee" name="Tra cứu biểu phí Premium&#10;&amp; phản hồi danh sách gói">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:task id="Task_POS_CollectMoney" name="Thu tiền khách hàng qua POS&#10;&amp; in hóa đơn bán hàng">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CustPay" name="Thanh toán hóa đơn hàng hóa&#10;&amp; phí dịch vụ BHRV">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:serviceTask id="Task_ERA_GenDummy" name="[CR Phase 2] Sinh Dummy Serial&#10;&amp; Dummy Activation Date">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_ERA_CreateOrder" name="[CR Phase 2] Gọi API&#10;CreateCustomerFulfillOrder (kèm Dummy IMEI)">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_ProcessOrder" name="Tạo OrderID &amp; đẩy Queue&#10;đăng ký HĐ tạm trong CRMZ">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_9b</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:sendTask id="Task_CustReceiveMail1" name="Nhận Email Chào mừng 1&#10;(Thông tin HĐ tạm)">
+      <bpmn:incoming>Flow_9a</bpmn:incoming>
+    </bpmn:sendTask>
+
+    <bpmn:serviceTask id="Task_ERA_GetOrder" name="Gọi API GetOrder&#10;lấy số Hợp đồng tạm">
+      <bpmn:incoming>Flow_9b</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_ReturnOrder" name="Trả về mã hợp đồng&#10;dịch vụ TecProtec tạm">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <!-- Day 2-7 Warehouse Delivery -->
+    <bpmn:task id="Task_WH_Prepare" name="Nhận Phiếu xuất kho giao hàng&#10;(Chờ đến lịch giao Day 2~7)">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_WH_ScanIMEI" name="Xuất kho: Quét mã Serial / IMEI&#10;thực tế của thiết bị">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_WH_Deliver" name="Vận chuyển &amp; bàn giao&#10;lắp đặt máy tại nhà">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:incoming>Flow_Redeliver</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CustReceiveGoods" name="Đồng kiểm ngoại quan máy&#10;&amp; ký biên bản bàn giao">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_WH_Confirm" name="Xác nhận trạng thái:&#10;'Giao hàng thành công'">
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_DeliveryCheck" name="Đã giao hàng&#10;thành công?">
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_Success</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Redeliver</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:serviceTask id="Task_ERA_UpdateContract" name="[CR Phase 2] Gọi API&#10;UpdateContract (truyền Real IMEI)">
+      <bpmn:incoming>Flow_Success</bpmn:incoming>
+      <bpmn:outgoing>Flow_17</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_UpdateContract" name="Cập nhật Serial thực tế&#10;&amp; Ngày kích hoạt vào CRMZ">
+      <bpmn:incoming>Flow_17</bpmn:incoming>
+      <bpmn:outgoing>Flow_18</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_BOLT_IssueCert" name="Kích hoạt hợp đồng chính thức&#10;&amp; phát hành e-Certificate">
+      <bpmn:incoming>Flow_18</bpmn:incoming>
+      <bpmn:outgoing>Flow_19</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:sendTask id="Task_CustReceiveMail2" name="Nhận Email Chào mừng 2&#10;kèm e-Certificate">
+      <bpmn:incoming>Flow_19</bpmn:incoming>
+      <bpmn:outgoing>Flow_20</bpmn:outgoing>
+    </bpmn:sendTask>
+
+    <bpmn:endEvent id="End_Success" name="Bảo hiểm BHRV&#10;chính thức có hiệu lực">
+      <bpmn:incoming>Flow_20</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <!-- Sequence Flows -->
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_Customer" targetRef="Task_POS_CreateOrder" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_POS_CreateOrder" targetRef="Task_ERA_CheckFee" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_ERA_CheckFee" targetRef="Task_BOLT_ReturnFee" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_BOLT_ReturnFee" targetRef="Task_POS_CollectMoney" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_POS_CollectMoney" targetRef="Task_CustPay" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_CustPay" targetRef="Task_ERA_GenDummy" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_ERA_GenDummy" targetRef="Task_ERA_CreateOrder" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Task_ERA_CreateOrder" targetRef="Task_BOLT_ProcessOrder" />
+    <bpmn:sequenceFlow id="Flow_9a" sourceRef="Task_BOLT_ProcessOrder" targetRef="Task_CustReceiveMail1" />
+    <bpmn:sequenceFlow id="Flow_9b" sourceRef="Task_BOLT_ProcessOrder" targetRef="Task_ERA_GetOrder" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_ERA_GetOrder" targetRef="Task_BOLT_ReturnOrder" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Task_BOLT_ReturnOrder" targetRef="Task_WH_Prepare" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_WH_Prepare" targetRef="Task_WH_ScanIMEI" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Task_WH_ScanIMEI" targetRef="Task_WH_Deliver" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Task_WH_Deliver" targetRef="Task_CustReceiveGoods" />
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_CustReceiveGoods" targetRef="Task_WH_Confirm" />
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="Task_WH_Confirm" targetRef="Gateway_DeliveryCheck" />
+    <bpmn:sequenceFlow id="Flow_Success" name="Thành công" sourceRef="Gateway_DeliveryCheck" targetRef="Task_ERA_UpdateContract" />
+    <bpmn:sequenceFlow id="Flow_Redeliver" name="Hẹn lại ngày" sourceRef="Gateway_DeliveryCheck" targetRef="Task_WH_Deliver" />
+    <bpmn:sequenceFlow id="Flow_17" sourceRef="Task_ERA_UpdateContract" targetRef="Task_BOLT_UpdateContract" />
+    <bpmn:sequenceFlow id="Flow_18" sourceRef="Task_BOLT_UpdateContract" targetRef="Task_BOLT_IssueCert" />
+    <bpmn:sequenceFlow id="Flow_19" sourceRef="Task_BOLT_IssueCert" targetRef="Task_CustReceiveMail2" />
+    <bpmn:sequenceFlow id="Flow_20" sourceRef="Task_CustReceiveMail2" targetRef="End_Success" />
+  </bpmn:process>
+
+  <!-- BPMN Diagram Interchange (Visual Layout & Coordinates) -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_BHRV">
+      
+      <!-- Pool: Overall Diagram Bounds -->
+      <bpmndi:BPMNShape id="Pool_BHRV_di" bpmnElement="Pool_BHRV" isHorizontal="true">
+        <dc:Bounds x="20" y="20" width="2800" height="780" />
+      </bpmndi:BPMNShape>
+
+      <!-- Lanes -->
+      <bpmndi:BPMNShape id="Lane_Customer_di" bpmnElement="Lane_Customer" isHorizontal="true">
+        <dc:Bounds x="50" y="20" width="2770" height="150" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_POS_di" bpmnElement="Lane_POS" isHorizontal="true">
+        <dc:Bounds x="50" y="170" width="2770" height="140" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Erablue_di" bpmnElement="Lane_Erablue" isHorizontal="true">
+        <dc:Bounds x="50" y="310" width="2770" height="180" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Warehouse_di" bpmnElement="Lane_Warehouse" isHorizontal="true">
+        <dc:Bounds x="50" y="490" width="2770" height="150" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Bolttech_di" bpmnElement="Lane_Bolttech" isHorizontal="true">
+        <dc:Bounds x="50" y="640" width="2770" height="160" />
+      </bpmndi:BPMNShape>
+
+      <!-- Node Shapes -->
+      <!-- 1. Start Event (Customer) -->
+      <bpmndi:BPMNShape id="Start_Customer_di" bpmnElement="Start_Customer" bioc:stroke="#10b981" bioc:fill="#ecfdf5" color:border-color="#10b981">
+        <dc:Bounds x="90" y="65" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="65" y="108" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- 2. POS Create Order -->
+      <bpmndi:BPMNShape id="Task_POS_CreateOrder_di" bpmnElement="Task_POS_CreateOrder" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="180" y="200" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 3. ERA Check Fee -->
+      <bpmndi:BPMNShape id="Task_ERA_CheckFee_di" bpmnElement="Task_ERA_CheckFee" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="370" y="365" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 4. BOLT Return Fee -->
+      <bpmndi:BPMNShape id="Task_BOLT_ReturnFee_di" bpmnElement="Task_BOLT_ReturnFee" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="550" y="685" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 5. POS Collect Money -->
+      <bpmndi:BPMNShape id="Task_POS_CollectMoney_di" bpmnElement="Task_POS_CollectMoney" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="730" y="200" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 6. Cust Pay -->
+      <bpmndi:BPMNShape id="Task_CustPay_di" bpmnElement="Task_CustPay" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="910" y="55" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 7. ERA Gen Dummy (CR Highlight) -->
+      <bpmndi:BPMNShape id="Task_ERA_GenDummy_di" bpmnElement="Task_ERA_GenDummy" bioc:stroke="#0284c7" bioc:fill="#e0f2fe" color:border-color="#0284c7">
+        <dc:Bounds x="910" y="365" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 8. ERA Create Order (CR Highlight) -->
+      <bpmndi:BPMNShape id="Task_ERA_CreateOrder_di" bpmnElement="Task_ERA_CreateOrder" bioc:stroke="#0284c7" bioc:fill="#e0f2fe" color:border-color="#0284c7">
+        <dc:Bounds x="1100" y="365" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 9. BOLT Process Order -->
+      <bpmndi:BPMNShape id="Task_BOLT_ProcessOrder_di" bpmnElement="Task_BOLT_ProcessOrder" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1100" y="685" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 10. Cust Mail 1 -->
+      <bpmndi:BPMNShape id="Task_CustReceiveMail1_di" bpmnElement="Task_CustReceiveMail1" bioc:stroke="#475569" bioc:fill="#f8fafc">
+        <dc:Bounds x="1100" y="55" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 11. ERA Get Order -->
+      <bpmndi:BPMNShape id="Task_ERA_GetOrder_di" bpmnElement="Task_ERA_GetOrder" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1290" y="365" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 12. BOLT Return Order -->
+      <bpmndi:BPMNShape id="Task_BOLT_ReturnOrder_di" bpmnElement="Task_BOLT_ReturnOrder" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1290" y="685" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 13. WH Prepare (Transition Day 2~7) -->
+      <bpmndi:BPMNShape id="Task_WH_Prepare_di" bpmnElement="Task_WH_Prepare" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1470" y="530" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 14. WH Scan IMEI -->
+      <bpmndi:BPMNShape id="Task_WH_ScanIMEI_di" bpmnElement="Task_WH_ScanIMEI" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1650" y="530" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 15. WH Deliver -->
+      <bpmndi:BPMNShape id="Task_WH_Deliver_di" bpmnElement="Task_WH_Deliver" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1830" y="530" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 16. Cust Receive Goods -->
+      <bpmndi:BPMNShape id="Task_CustReceiveGoods_di" bpmnElement="Task_CustReceiveGoods" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="1830" y="55" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 17. WH Confirm -->
+      <bpmndi:BPMNShape id="Task_WH_Confirm_di" bpmnElement="Task_WH_Confirm" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="2010" y="530" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 18. Gateway Delivery Check -->
+      <bpmndi:BPMNShape id="Gateway_DeliveryCheck_di" bpmnElement="Gateway_DeliveryCheck" isMarkerVisible="true" bioc:stroke="#d97706" bioc:fill="#fef3c7">
+        <dc:Bounds x="2055" y="375" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1980" y="385" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- 19. ERA Update Contract (CR Highlight) -->
+      <bpmndi:BPMNShape id="Task_ERA_UpdateContract_di" bpmnElement="Task_ERA_UpdateContract" bioc:stroke="#0284c7" bioc:fill="#e0f2fe" color:border-color="#0284c7">
+        <dc:Bounds x="2160" y="365" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 20. BOLT Update Contract -->
+      <bpmndi:BPMNShape id="Task_BOLT_UpdateContract_di" bpmnElement="Task_BOLT_UpdateContract" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="2160" y="685" width="150" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 21. BOLT Issue Cert -->
+      <bpmndi:BPMNShape id="Task_BOLT_IssueCert_di" bpmnElement="Task_BOLT_IssueCert" bioc:stroke="#64748b" bioc:fill="#ffffff">
+        <dc:Bounds x="2350" y="685" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 22. Cust Mail 2 -->
+      <bpmndi:BPMNShape id="Task_CustReceiveMail2_di" bpmnElement="Task_CustReceiveMail2" bioc:stroke="#475569" bioc:fill="#f8fafc">
+        <dc:Bounds x="2350" y="55" width="140" height="70" />
+      </bpmndi:BPMNShape>
+
+      <!-- 23. End Event (Success) -->
+      <bpmndi:BPMNShape id="End_Success_di" bpmnElement="End_Success" bioc:stroke="#10b981" bioc:fill="#ecfdf5" color:border-color="#10b981">
+        <dc:Bounds x="2540" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2515" y="115" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Sequence Flow Edges -->
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="126" y="83" />
+        <di:waypoint x="153" y="83" />
+        <di:waypoint x="153" y="235" />
+        <di:waypoint x="180" y="235" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="320" y="235" />
+        <di:waypoint x="345" y="235" />
+        <di:waypoint x="345" y="400" />
+        <di:waypoint x="370" y="400" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="510" y="400" />
+        <di:waypoint x="530" y="400" />
+        <di:waypoint x="530" y="720" />
+        <di:waypoint x="550" y="720" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="690" y="720" />
+        <di:waypoint x="710" y="720" />
+        <di:waypoint x="710" y="235" />
+        <di:waypoint x="730" y="235" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="870" y="235" />
+        <di:waypoint x="890" y="235" />
+        <di:waypoint x="890" y="90" />
+        <di:waypoint x="910" y="90" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="980" y="125" />
+        <di:waypoint x="980" y="365" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1060" y="400" />
+        <di:waypoint x="1100" y="400" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1175" y="435" />
+        <di:waypoint x="1175" y="685" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_9a_di" bpmnElement="Flow_9a">
+        <di:waypoint x="1175" y="685" />
+        <di:waypoint x="1175" y="125" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_9b_di" bpmnElement="Flow_9b">
+        <di:waypoint x="1250" y="720" />
+        <di:waypoint x="1270" y="720" />
+        <di:waypoint x="1270" y="400" />
+        <di:waypoint x="1290" y="400" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="1360" y="435" />
+        <di:waypoint x="1360" y="685" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="1430" y="720" />
+        <di:waypoint x="1450" y="720" />
+        <di:waypoint x="1450" y="565" />
+        <di:waypoint x="1470" y="565" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="1610" y="565" />
+        <di:waypoint x="1650" y="565" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="1790" y="565" />
+        <di:waypoint x="1830" y="565" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="1900" y="530" />
+        <di:waypoint x="1900" y="125" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="1970" y="90" />
+        <di:waypoint x="1990" y="90" />
+        <di:waypoint x="1990" y="565" />
+        <di:waypoint x="2010" y="565" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
+        <di:waypoint x="2080" y="530" />
+        <di:waypoint x="2080" y="425" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Success_di" bpmnElement="Flow_Success">
+        <di:waypoint x="2105" y="400" />
+        <di:waypoint x="2160" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2098" y="375" width="58" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Redeliver_di" bpmnElement="Flow_Redeliver">
+        <di:waypoint x="2080" y="425" />
+        <di:waypoint x="2080" y="475" />
+        <di:waypoint x="1900" y="475" />
+        <di:waypoint x="1900" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1960" y="455" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_17_di" bpmnElement="Flow_17">
+        <di:waypoint x="2235" y="435" />
+        <di:waypoint x="2235" y="685" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_18_di" bpmnElement="Flow_18">
+        <di:waypoint x="2310" y="720" />
+        <di:waypoint x="2350" y="720" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_19_di" bpmnElement="Flow_19">
+        <di:waypoint x="2420" y="685" />
+        <di:waypoint x="2420" y="125" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_20_di" bpmnElement="Flow_20">
+        <di:waypoint x="2490" y="90" />
+        <di:waypoint x="2540" y="90" />
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
