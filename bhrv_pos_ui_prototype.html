@@ -1,0 +1,3623 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EraBlue POS - BHRV Bolttech Prototype (Phase 1 & Phase 2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0084FF;
+      --primary-dark: #0068cc;
+      --primary-light: #e6f3ff;
+      --primary-hover: #0073e6;
+      --accent-red: #e53935;
+      --accent-orange: #f59e0b;
+      --accent-green: #10b981;
+      --bg-app: #f4f6f8;
+      --surface: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --text-light: #9ca3af;
+      --border-color: #e5e7eb;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 9999px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-card: 0 4px 14px rgba(0, 102, 204, 0.08);
+      --shadow-float: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button, input, select, textarea {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #334155;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Top Control Bar */
+    .top-workbench {
+      width: 100%;
+      max-width: 1100px;
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: #fff;
+      box-shadow: var(--shadow-float);
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, #0084ff, #0052cc);
+      color: white;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .brand-title p {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .flow-switcher {
+      display: flex;
+      background: #0f172a;
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+    }
+
+    .flow-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flow-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 132, 255, 0.4);
+    }
+
+    .step-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .step-pill {
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .step-pill:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .step-pill.active {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Main Container with Mobile Frame & Explanation Panel */
+    .workspace-layout {
+      width: 100%;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .workspace-layout {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+    }
+
+    /* POS Mobile Device Frame */
+    .pos-device-frame {
+      width: 390px;
+      height: 844px;
+      background: #000;
+      border-radius: 46px;
+      padding: 12px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .screen-wrapper {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-app);
+      border-radius: 36px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 44px;
+      padding: 12px 24px 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--primary);
+      z-index: 20;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    /* Topbar POS App */
+    .pos-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 6px 16px 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+      z-index: 10;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .pos-header .icon-btn {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      cursor: pointer;
+      color: white;
+      border: none;
+      font-size: 16px;
+      transition: background 0.15s;
+    }
+
+    .pos-header .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .header-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .header-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      line-height: 1.3;
+      white-space: pre-line;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      word-break: break-word;
+    }
+
+    .header-subtitle {
+      font-size: 11px;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .store-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .network-speed {
+      font-size: 10px;
+      line-height: 1;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+
+    /* Language Switcher Styling */
+    .lang-switcher-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #0f172a;
+      padding: 3px 6px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+    }
+
+    .lang-btn {
+      padding: 5px 10px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-weight: 700;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lang-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .lang-btn.active {
+      background: #0084ff;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 132, 255, 0.4);
+    }
+
+    .pos-lang-chip {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .pos-lang-chip:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* Screen Scroll Area */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      position: relative;
+    }
+
+    .screen-content::-webkit-scrollbar {
+      width: 4px;
+    }
+    .screen-content::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    /* Common Components */
+    .search-pill-box {
+      background: #fff;
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 14px;
+      height: 42px;
+    }
+
+    .search-pill-box input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 13px;
+      color: var(--text-main);
+      font-family: inherit;
+    }
+
+    .search-pill-box input::placeholder {
+      color: var(--text-light);
+    }
+
+    .search-pill-box .clear-btn {
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 14px;
+      background: none;
+      border: none;
+    }
+
+    .search-pill-box .search-icon {
+      color: var(--primary);
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0070d2;
+      margin: 12px 0 8px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pos-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      position: relative;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .service-item {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 10px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid #f1f5f9;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .service-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .service-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 6px;
+      font-size: 24px;
+    }
+
+    .service-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #334155;
+      line-height: 1.2;
+    }
+
+    .sector-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .sector-item {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 14px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+
+    .sector-item.highlight {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+
+    .sector-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 132, 255, 0.15);
+    }
+
+    /* Partner Selection Card */
+    .partner-banner-card {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+
+    .partner-banner-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 6px 18px rgba(0, 132, 255, 0.18);
+    }
+
+    .partner-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bolttech-logo-img {
+      height: 28px;
+      max-width: 105px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .bolttech-logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0d1e3a;
+      letter-spacing: -0.5px;
+    }
+    .bolttech-logo-text span {
+      color: #ff3366;
+    }
+
+    .partner-info h4 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+    .partner-info p {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .benefits-pill-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      min-width: 76px;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .benefits-pill-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-blue-pill {
+      background: var(--primary);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      padding: 8px 22px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 132, 255, 0.3);
+      transition: all 0.2s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-blue-pill:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 132, 255, 0.4);
+    }
+    .btn-blue-pill:active {
+      transform: translateY(1px);
+    }
+
+    .btn-disabled-pill {
+      background: #f1f5f9;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      padding: 7px 18px;
+      border: 1px solid #cbd5e1;
+      cursor: not-allowed;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      user-select: none;
+    }
+
+    .email-quick-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .email-chip {
+      background: #f8fafc;
+      color: #0284c7;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+
+    .email-chip:hover {
+      background: #e0f2fe;
+      border-color: #0084ff;
+      color: #0084ff;
+      transform: translateY(-1px);
+    }
+
+    /* Custom App Dropdown for Step 5.1 */
+    .custom-dropdown-wrap {
+      position: relative;
+      margin-bottom: 10px;
+      user-select: none;
+    }
+
+    .custom-dropdown-trigger {
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border: 1.5px solid #bfdbfe;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 132, 255, 0.06);
+      transition: all 0.2s ease;
+    }
+
+    .custom-dropdown-trigger:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 132, 255, 0.14);
+    }
+
+    .custom-dropdown-trigger.open {
+      border-color: var(--primary);
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 6px 16px rgba(0, 132, 255, 0.15);
+    }
+
+    .custom-dropdown-trigger.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .custom-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1.5px solid var(--primary);
+      border-top: 1px solid #e0f2fe;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 10px 24px rgba(0, 80, 200, 0.16);
+      z-index: 50;
+      overflow: hidden;
+      animation: dropdownFade 0.18s ease;
+    }
+
+    .custom-dropdown-menu.show {
+      display: block;
+    }
+
+    @keyframes dropdownFade {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.15s ease;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background: #eff6ff;
+      color: var(--primary);
+      padding-left: 17px;
+    }
+
+    .dropdown-item.active {
+      background: #e0f2fe;
+      color: #0068cc;
+      font-weight: 700;
+    }
+
+    .so-banner-header {
+      background: linear-gradient(135deg, #0084ff 0%, #0068cc 100%);
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 10px 10px 0 0;
+      margin: -14px -14px 12px -14px;
+      letter-spacing: 0.3px;
+    }
+
+    /* POS Modal Sheet for Insurance Package Selection */
+    .pos-modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      border-radius: 40px;
+      overflow: hidden;
+      animation: fadeInModal 0.2s ease;
+    }
+    .pos-modal-backdrop.active {
+      display: flex;
+    }
+    .pos-modal-sheet {
+      background: #ffffff;
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      padding: 18px 16px 24px 16px;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
+      animation: slideUpSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUpSheet {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    @keyframes fadeInModal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal-sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 14px;
+    }
+    .modal-sheet-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .modal-close-btn {
+      background: #f1f5f9;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 13px;
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .pkg-option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pkg-option-item:hover {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+    .pkg-option-item.selected {
+      border-color: var(--primary);
+      background: #e6f3ff;
+    }
+    .pkg-radio-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pkg-option-item.selected .pkg-radio-circle {
+      border-color: var(--primary);
+    }
+    .pkg-option-item.selected .pkg-radio-circle::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    .pkg-option-text {
+      flex: 1;
+    }
+    .pkg-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .pkg-desc {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* Accordion & Data Rows */
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .accordion-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .accordion-toggle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #e6f3ff;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 5px 0;
+      font-size: 12px;
+    }
+
+    .data-label {
+      color: var(--text-muted);
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .data-value {
+      color: var(--text-main);
+      font-weight: 600;
+      text-align: right;
+      flex: 1.2;
+    }
+
+    .data-value.highlight-red {
+      color: var(--accent-red);
+      font-weight: 700;
+    }
+
+    /* Pills Selector */
+    .duration-selector {
+      display: flex;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .duration-pill {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      background: #e5e7eb;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .duration-pill.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 132, 255, 0.35);
+    }
+
+    /* SO Card Elements (Step 5.1 & 5.2) - EraBlue Blue Theme */
+    .so-banner-header {
+      background: linear-gradient(135deg, #0084ff 0%, #0068cc 100%) !important;
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 13px;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-green-pill {
+      background: var(--primary) !important;
+      color: #fff !important;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 9px 28px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 3px 10px rgba(0, 132, 255, 0.35) !important;
+      transition: all 0.2s;
+    }
+
+    .btn-green-pill:hover {
+      background: var(--primary-hover) !important;
+      transform: translateY(-1px);
+    }
+
+    /* Fixed Bottom Action Bar */
+    .bottom-action-bar {
+      padding: 14px 16px 20px 16px;
+      background: #fff;
+      border-top: 1px solid #e2e8f0;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+      z-index: 10;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #475569;
+    }
+
+    .summary-line.total {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 12px;
+    }
+
+    .summary-line.total .price-due {
+      color: var(--accent-red);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      background: var(--primary);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 14px rgba(0, 132, 255, 0.4);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .primary-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .primary-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Segmented Control / Tabs for Phase 2 */
+    .segmented-control {
+      display: flex;
+      background: #e2e8f0;
+      padding: 3px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .segment-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .segment-btn.active {
+      background: #fff;
+      color: var(--primary);
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Info Alert Banner */
+    .info-banner {
+      background: #f0f9ff;
+      border-left: 4px solid #0284c7;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #0369a1;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .info-banner .icon {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .warning-banner {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #92400e;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    /* Tag Badge */
+    .tag-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .tag-badge.blue {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .tag-badge.orange {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .tag-badge.green {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    /* Input Field Group */
+    .input-field-group {
+      margin-top: 10px;
+    }
+    .input-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .input-label span {
+      color: var(--accent-red);
+    }
+    .text-input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 12px;
+      font-family: inherit;
+      color: #1e293b;
+      outline: none;
+    }
+    .text-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0, 132, 255, 0.15);
+    }
+
+    /* Success Card */
+    .success-icon-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #dcfce7;
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 10px auto 14px auto;
+    }
+
+    /* Side Explanation Panel */
+    .explanation-panel {
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 24px;
+      color: #e2e8f0;
+      box-shadow: var(--shadow-float);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    .panel-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .ba-note-box {
+      background: rgba(15, 23, 42, 0.7);
+      border-left: 4px solid var(--primary);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .ba-note-box h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ba-note-box p, .ba-note-box ul {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    .ba-note-box ul {
+      padding-left: 18px;
+      margin-top: 6px;
+    }
+
+    .ba-note-box li {
+      margin-bottom: 4px;
+    }
+
+    .token-chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .token-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: #334155;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #7dd3fc;
+      border: 1px solid #475569;
+    }
+
+    /* Live In-Place Editor Styling */
+    .edit-toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .edit-mode-btn {
+      padding: 8px 16px;
+      border: 1.5px solid #f59e0b;
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      font-weight: 700;
+      font-size: 13px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .edit-mode-btn:hover {
+      background: rgba(245, 158, 11, 0.25);
+    }
+
+    .edit-mode-btn.active {
+      background: #f59e0b;
+      color: #0f172a;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-editor-action {
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      font-weight: 600;
+      font-size: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-editor-action:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+
+    .edit-indicator-bar {
+      width: 100%;
+      background: linear-gradient(90deg, #d97706, #f59e0b);
+      color: #0f172a;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .live-edit-active .edit-indicator-bar {
+      display: flex;
+    }
+
+    /* Highlight elements in edit mode */
+    .live-edit-active .pos-device-frame [contenteditable="true"] {
+      outline: 1.5px dashed rgba(245, 158, 11, 0.7);
+      outline-offset: 2px;
+      border-radius: 4px;
+      cursor: text;
+      transition: background 0.15s, outline-color 0.15s;
+    }
+
+    .live-edit-active .pos-device-frame [contenteditable="true"]:hover {
+      background: rgba(245, 158, 11, 0.15);
+      outline-color: #f59e0b;
+    }
+
+    .live-edit-active .pos-device-frame [contenteditable="true"]:focus {
+      outline: 2px solid #0084ff;
+      background: rgba(0, 132, 255, 0.12);
+    }
+
+    .save-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      border: 1px solid #10b981;
+      color: #34d399;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .save-toast.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* Screen Transition */
+    .screen-view {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+    .screen-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Controls & Flow Switcher -->
+  <div class="top-workbench">
+    <div class="brand-title">
+      <div class="brand-badge">ERABLUE POS</div>
+      <div>
+        <h1>Bán Bảo Hiểm Rơi Vỡ Bolttech (TechProtect)</h1>
+        <p>Giao diện App POS Siêu thị EraBlue Indonesia • Senior IT BA & PO Mockup</p>
+      </div>
+    </div>
+
+    <!-- Flow Selector & Live Editor Controls -->
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <div class="flow-switcher">
+        <button class="flow-btn active" id="btn-flow-all" onclick="navigateTo('step-1')">
+          <span>🔄</span> POS Flow
+        </button>
+        <button class="flow-btn" id="btn-flow-p1" onclick="navigateTo('step-4-1')">
+          <span>🏷️</span> Nhãn 1: Fulfilled SO
+        </button>
+        <button class="flow-btn" id="btn-flow-p2" onclick="navigateTo('step-5-1')">
+          <span>📦</span> Nhãn 2: Unfulfilled SO
+        </button>
+      </div>
+
+      <!-- Live In-Place Edit Controls -->
+      <div class="edit-toolbar-group">
+        <button class="edit-mode-btn" id="btn-toggle-edit" onclick="toggleLiveEdit()">
+          <span>✏️</span> Sửa Trực Tiếp: <strong id="edit-status-label">TẮT</strong>
+        </button>
+        <button class="btn-editor-action" onclick="downloadEditedHTML()" title="Tải về file index.html mới đã lưu toàn bộ nội dung bạn vừa sửa">
+          <span>💾</span> Tải về file HTML
+        </button>
+        <button class="btn-editor-action" onclick="resetDefault()" title="Xóa các chỉnh sửa và quay về giao diện gốc ban đầu">
+          <span>↺</span> Khôi phục gốc
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Screen Pills Header & 3-Language Switcher (Moved here right above pills list) -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+      <div style="font-size:12px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.5px;" id="lbl-pos-pills-title">
+        📱 Danh sách màn hình luồng POS:
+      </div>
+      <!-- 3-Language Switcher (Tiếng Việt / English / Bahasa Indonesia) -->
+      <div class="lang-switcher-wrap">
+        <span style="font-size:11px; font-weight:700; color:#94a3b8; margin-right:4px;">🌐 Ngôn ngữ:</span>
+        <button class="lang-btn active" id="lang-btn-vi" onclick="setLanguage('vi')">🇻🇳 VI</button>
+        <button class="lang-btn" id="lang-btn-en" onclick="setLanguage('en')">🇬🇧 EN</button>
+        <button class="lang-btn" id="lang-btn-id" onclick="setLanguage('id')">🇮🇩 ID</button>
+      </div>
+    </div>
+
+    <!-- Quick Screen Pills -->
+    <div class="step-pills" id="step-pills-container">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+  <!-- Notification Banner when Live Edit is Active -->
+  <div class="edit-indicator-bar" id="edit-indicator-bar" style="max-width:1100px;">
+    <span>✏️ <strong>CHẾ ĐỘ SỬA TRỰC TIẾP ĐANG BẬT:</strong> Bạn có thể nhấp chuột vào bất kỳ đoạn chữ nào trên màn hình POS để sửa trực tiếp. Nội dung được <strong>tự động lưu vào bộ nhớ trình duyệt</strong> (F5 không mất)!</span>
+    <span style="font-size:11px; opacity:0.9;">Sửa xong bấm nút "💾 Tải về file HTML" để lưu đè vào ổ cứng.</span>
+  </div>
+
+  <!-- Auto-save Toast Notification -->
+  <div class="save-toast" id="save-toast">
+    <span>🟢</span> <span id="save-toast-msg">Đã tự động lưu thay đổi! (F5 không mất)</span>
+  </div>
+
+  <!-- Main Workspace Layout -->
+  <div class="workspace-layout">
+
+    <!-- POS Mobile Frame -->
+    <div class="pos-device-frame">
+      <!-- Popup Modal Chọn Gói Bảo Hiểm (Insurance Package Selector) -->
+      <div class="pos-modal-backdrop" id="pkg-modal-backdrop" onclick="closePkgModal(event)">
+        <div class="pos-modal-sheet" onclick="event.stopPropagation()">
+          <div class="modal-sheet-header">
+            <span class="modal-sheet-title" id="modal-pkg-title">Chọn Gói Bảo Hiểm</span>
+            <button class="modal-close-btn" onclick="closePkgModal()">✕</button>
+          </div>
+          <div class="modal-sheet-body">
+            <div class="pkg-option-item selected" id="opt-pkg-1" onclick="selectPkgOption('opt-pkg-1', 'TECPROTEC_BOLTECH ERABLUE')">
+              <div class="pkg-radio-circle"></div>
+              <div class="pkg-option-text">
+                <div class="pkg-name">TECPROTEC_BOLTECH ERABLUE</div>
+              </div>
+            </div>
+            <div class="pkg-option-item" id="opt-pkg-2" onclick="selectPkgOption('opt-pkg-2', 'TECPROTEC_BOLTECH ERABLUE 2')">
+              <div class="pkg-radio-circle"></div>
+              <div class="pkg-option-text">
+                <div class="pkg-name">TECPROTEC_BOLTECH ERABLUE 2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrapper">
+        
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span id="pos-clock">16:44</span>
+          <div class="status-icons">
+            <span>5G</span>
+            <span>📶</span>
+            <span id="pos-battery">65% 🔋</span>
+          </div>
+        </div>
+
+        <!-- POS App Topbar Header (Cleaned, removed lang chip) -->
+        <div class="pos-header" id="pos-header-bar">
+          <button class="icon-btn" id="pos-back-btn" onclick="handlePosBack()">‹</button>
+          <div class="header-content">
+            <div class="header-title" id="pos-header-title">DANH MỤC DỊCH VỤ VÀ TIỆN ÍCH</div>
+            <div class="header-subtitle">
+              <span class="store-badge" id="pos-store-badge">🏪 Store 15931 - User id.ly2</span>
+              <span class="network-speed" id="pos-speed">● 37.2 Mb/s</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen Content Scroll Area -->
+        <div class="screen-content" id="pos-screen-container">
+
+          <!-- ========================================== -->
+          <!-- SCREEN 1: CATALOG (Step 1) -->
+          <!-- ========================================== -->
+          <div class="screen-view active" id="view-step-1">
+            <div class="search-pill-box">
+              <input type="text" id="input-search-step-1" placeholder="Nhập tên tiện ích, Ví dụ: Nạp tiền điện thoại..." style="flex:1;">
+              <span class="barcode-icon" title="Scan Barcode">▌│█║▌║▌</span>
+            </div>
+
+            <div class="section-label" id="lbl-sec-payment-type">Loại giao dịch thanh toán:</div>
+            <div class="service-grid">
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#e0f2fe;">📱</div>
+                <div class="service-label">Pulsa Prepaid</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#fef3c7;">🔄</div>
+                <div class="service-label">Pulsa Postpaid</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#dcfce7;">⚡</div>
+                <div class="service-label">PLN Prepaid</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#fef08a;">💡</div>
+                <div class="service-label">PLN Postpaid</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#e0e7ff;">🌐</div>
+                <div class="service-label">Paket Data</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#cffafe;">💧</div>
+                <div class="service-label">PDAM</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#ffedd5;">🔌</div>
+                <div class="service-label">PLN Non Taglis</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#fee2e2;">🏠</div>
+                <div class="service-label">Angsuran Kredit</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#fae8ff;">📡</div>
+                <div class="service-label">Internet And TV Cable</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#ffe4e6;">🎁</div>
+                <div class="service-label">Voucher Game</div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon-wrap" style="background:#e0f2fe;">☂️</div>
+                <div class="service-label">BPJS</div>
+              </div>
+            </div>
+
+            <div class="section-label" id="lbl-sec-service-sector">Nhóm ngành dịch vụ:</div>
+            <div class="sector-row">
+              <div class="sector-item highlight" onclick="navigateTo('step-2')">
+                <div class="service-icon-wrap" style="background:#fef08a; font-size:26px;">🛡️</div>
+                <div class="service-label" id="lbl-service-insurance" style="font-weight:700; color:var(--primary);">Bảo hiểm</div>
+              </div>
+              <div class="sector-item">
+                <div class="service-icon-wrap" style="background:#dcfce7; font-size:26px;">🧾</div>
+                <div class="service-label" id="lbl-service-collection">Thu hộ</div>
+              </div>
+              <div class="sector-item">
+                <div class="service-icon-wrap" style="background:#fce7f3; font-size:26px;">💰</div>
+                <div class="service-label" id="lbl-service-topup">Nạp tiền</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SCREEN 2: SERVICE GROUP LIST (Step 2) -->
+          <!-- ========================================== -->
+          <div class="screen-view" id="view-step-2">
+            <div class="search-pill-box">
+              <input type="text" id="input-search-step-2" placeholder="Tìm kiếm gói dịch vụ bảo hiểm..." style="flex:1;">
+            </div>
+
+            <div style="display:flex; padding: 10px 4px;">
+              <div class="service-item" style="border:none; box-shadow:none; background:transparent; width:88px; cursor:pointer;" onclick="navigateTo('step-3')">
+                <div style="width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); display:flex; align-items:center; justify-content:center; font-size:26px; border:2px solid #fdba74; margin-bottom:8px; box-shadow: 0 3px 10px rgba(249, 115, 22, 0.2);">
+                  🛡️
+                </div>
+                <div class="service-label" id="lbl-svc-breakage-ins" style="font-weight:700; color:#1e293b; font-size:12px; line-height:1.3;">Bảo hiểm<br>rơi vỡ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SCREEN 3: PARTNER SELECTION (Step 3) -->
+          <!-- ========================================== -->
+          <div class="screen-view" id="view-step-3">
+            <!-- Thẻ 1: Fulfilled SO (Đã có Serial/IMEI tại ST) -->
+            <div class="partner-banner-card" onclick="navigateTo('step-4-1')">
+              <div class="partner-left">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUW6roR2lXSob1shj3mguYwkLlAI-JNUzz6e0xsF1WgCCjTy31BaNRXZA&s=10" alt="bolttech" class="bolttech-logo-img">
+                <div class="partner-info">
+                  <h4 style="font-size:12px; font-weight:800; color:#0f172a; line-height:1.3;">ERABLUE - TECTPROTEC by Bolttech - Fulfilled SO</h4>
+                </div>
+              </div>
+              <button class="benefits-pill-btn" onclick="event.stopPropagation(); alert('Quyền lợi BHRV Bolttech (Fulfilled SO):\n- Bồi thường rơi vỡ, vô nước 100%\n- Sửa chữa / đổi máy chính hãng\n- Hỗ trợ trực tiếp qua WhatsApp Bolttech');">
+                <span style="font-size:16px;">ⓘ</span>
+                <span style="line-height:1.2;" class="i18n-ins-benefits">Quyền lợi<br>bảo hiểm</span>
+              </button>
+            </div>
+
+            <!-- Thẻ 2: Unfulfilled SO (Đơn giao sau / Chưa xuất hàng) -->
+            <div class="partner-banner-card" style="margin-top:12px;" onclick="navigateTo('step-5-1')">
+              <div class="partner-left">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUW6roR2lXSob1shj3mguYwkLlAI-JNUzz6e0xsF1WgCCjTy31BaNRXZA&s=10" alt="bolttech" class="bolttech-logo-img">
+                <div class="partner-info">
+                  <h4 style="font-size:12px; font-weight:800; color:#0f172a; line-height:1.3;">ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO</h4>
+                </div>
+              </div>
+              <button class="benefits-pill-btn" onclick="event.stopPropagation(); alert('Quyền lợi BHRV Bolttech (Unfulfilled SO):\n- Cấp tạm số hợp đồng bảo hiểm ngay khi thanh toán\n- Kích hoạt chính thức tự động khi Kho xuất TV\n- Nhận chứng nhận điện tử (E-Cert) qua Email');">
+                <span style="font-size:16px;">ⓘ</span>
+                <span style="line-height:1.2;" class="i18n-ins-benefits">Quyền lợi<br>bảo hiểm</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SCREEN 4.1: PHASE 1 - IMEI CONFIGURATION (Step 4.1) -->
+          <!-- ========================================== -->
+          <div class="screen-view" id="view-step-4-1">
+            <!-- Search IMEI -->
+            <div class="search-pill-box">
+              <input type="text" id="p1-imei-input" value="3TE43K26015D0172MJS0352" placeholder="Quét mã vạch hoặc nhập số IMEI...">
+              <button class="clear-btn" onclick="document.getElementById('p1-imei-input').value=''">✕</button>
+              <span class="search-icon">🔍</span>
+            </div>
+
+            <!-- Product Info Accordion -->
+            <div class="pos-card">
+              <div class="accordion-header" onclick="toggleAccordion('p1-prod-detail')">
+                <div class="accordion-title">
+                  <span>3TE43K26015D0172MJS0352</span>
+                </div>
+                <div class="accordion-toggle" id="p1-prod-detail-icon">⬆</div>
+              </div>
+              <div id="p1-prod-detail">
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-prod">Sản phẩm</span>
+                  <span class="data-value">TV Toshiba 43C350RP</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-price">Giá tiêu chuẩn (sau giảm giá)</span>
+                  <span class="data-value">4,549,000rp</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-cust">Họ và tên</span>
+                  <span class="data-value">Muhammad Zidan Santoso</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-phone">Số điện thoại</span>
+                  <span class="data-value">0895366770136</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-export-time">Thời gian xuất</span>
+                  <span class="data-value">07/09/2026 15:47:25</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Insurance Information -->
+            <div class="section-label" id="lbl-p1-pkg-section" style="color:#0f172a; font-weight:800; margin-top:14px;">Thông tin gói bảo hiểm</div>
+            <div class="pos-card" style="padding:10px 14px; margin-bottom:10px; cursor:pointer;" onclick="openPkgModal('p1')" title="Nhấp để chọn gói bảo hiểm">
+              <div style="font-size:13px; font-weight:700; color:var(--primary); display:flex; justify-content:space-between; align-items:center;">
+                <span id="p1-selected-pkg-name">TECPROTEC_BOLTECH ERABLUE</span>
+                <span style="font-size:11px; color:#0084ff;">▼</span>
+              </div>
+            </div>
+
+            <div class="duration-selector">
+              <div class="duration-pill active" id="pill-p1-12m" onclick="selectDurationP1(12, 499000)">12 tháng</div>
+              <div class="duration-pill" id="pill-p1-24m" onclick="selectDurationP1(24, 899000)">24 tháng</div>
+            </div>
+
+            <!-- Payment Information Accordion -->
+            <div class="pos-card">
+              <div class="accordion-header" onclick="toggleAccordion('p1-pay-detail')">
+                <div class="accordion-title">
+                  <span id="lbl-p1-pay-title">Chi tiết thanh toán bảo hiểm</span>
+                </div>
+                <div class="accordion-toggle" id="p1-pay-detail-icon">⬆</div>
+              </div>
+              <div id="p1-pay-detail">
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-insured-prod">Sản phẩm được bảo hiểm</span>
+                  <span class="data-value">TV Toshiba 43C350RP</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Serial/IMEI</span>
+                  <span class="data-value">3TE43K26015D0172MJS0352</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-insured-amount">Số tiền bảo hiểm</span>
+                  <span class="data-value">4,549,000rp</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-effective-period">Thời hạn hiệu lực</span>
+                  <span class="data-value" id="p1-period">07/09/2026 - 07/09/2027</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p1-pkg-fee">Phí gói bảo hiểm</span>
+                  <span class="data-value" id="p1-pkg-price">499,000rp</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer Contact Info (required for E-Cert) -->
+            <div class="pos-card">
+              <div class="input-field-group" style="margin-top:0;">
+                <label class="input-label" id="lbl-p1-cust-name-input">Họ tên khách hàng <span>* (Bắt buộc)</span></label>
+                <input type="text" class="text-input" id="p1-cust-name-input" value="Muhammad Zidan Santoso">
+              </div>
+              <div class="input-field-group">
+                <label class="input-label" id="lbl-p1-cust-phone-input">Số điện thoại khách hàng <span>* (Bắt buộc)</span></label>
+                <input type="tel" class="text-input" id="p1-cust-phone-input" value="0895366770136">
+              </div>
+              <div class="input-field-group">
+                <label class="input-label" id="lbl-p1-cust-email-input">Email khách hàng <span>* (Bắt buộc)</span></label>
+                <input type="email" class="text-input" id="p1-cust-email-input" placeholder="Nhập email khách hàng...">
+                <div class="email-quick-group">
+                  <span style="font-size:11px; color:#64748b; font-weight:600;" id="lbl-p1-quick-email">Điền nhanh:</span>
+                  <button type="button" class="email-chip" onclick="appendEmailDomain('@gmail.com', 'p1-cust-email-input')">+@gmail.com</button>
+                  <button type="button" class="email-chip" onclick="appendEmailDomain('@yahoo.com', 'p1-cust-email-input')">+@yahoo.com</button>
+                  <button type="button" class="email-chip" onclick="appendEmailDomain('@erablue.id', 'p1-cust-email-input')">+@erablue.id</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SCREEN 5.1: SEARCH ORDER BY SO (Step 5.1) -->
+          <!-- ========================================== -->
+          <div class="screen-view" id="view-step-5-1">
+            <!-- Date Filter -->
+            <div class="pos-card" style="padding:10px 14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13px; font-weight:600; color:#334155;">07/09/2026 - 07/09/2026</span>
+              <span style="font-size:16px; color:#0084ff;">📅</span>
+            </div>
+
+            <!-- Search Criteria Custom App Dropdown -->
+            <div class="custom-dropdown-wrap" id="p2-search-dropdown-wrap">
+              <div class="custom-dropdown-trigger" onclick="toggleSearchDropdown()" id="p2-search-dropdown-trigger" title="Nhấp để đổi tiêu chí tìm kiếm">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:15px;" id="p2-search-selected-icon">📄</span>
+                  <span style="font-size:13px; font-weight:700; color:var(--primary);" id="p2-search-selected-label">Mã yêu cầu xuất</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="dropdown-arrow" id="p2-dropdown-arrow" style="font-size:11px; color:#0084ff; transition:transform 0.2s;">▼</span>
+                </div>
+              </div>
+              <div class="custom-dropdown-menu" id="p2-search-dropdown-menu">
+                <div class="dropdown-item active" id="opt-search-so" onclick="selectSearchCriterion('so')">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span>📄</span>
+                    <span class="dropdown-item-text" id="txt-opt-so">Mã yêu cầu xuất</span>
+                  </div>
+                  <span class="check-icon" id="chk-opt-so" style="color:var(--primary); font-weight:bold;">✔</span>
+                </div>
+                <div class="dropdown-item" id="opt-search-phone" onclick="selectSearchCriterion('phone')">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span>📞</span>
+                    <span class="dropdown-item-text" id="txt-opt-phone">Số điện thoại khách hàng</span>
+                  </div>
+                  <span class="check-icon" id="chk-opt-phone" style="display:none; color:var(--primary); font-weight:bold;">✔</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Search Input -->
+            <div class="search-pill-box">
+              <input type="text" id="p2-so-input" value="13274SO26090087339" style="font-size:13px; font-weight:600;">
+              <button class="clear-btn" onclick="document.getElementById('p2-so-input').value=''">✕</button>
+              <span class="search-icon">🔍</span>
+            </div>
+
+            <!-- Order Result Card -->
+            <div class="pos-card" style="border-radius:14px; padding:16px;">
+              <div style="border-bottom: 1.5px solid #0084ff; padding-bottom: 6px; margin-bottom: 10px;">
+                <h3 style="font-size:13px; font-weight:700; color:var(--primary);" id="lbl-so-code-title">Mã đơn hàng: 13274SO26090087339</h3>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-cust-name-title">Khách hàng:</span>
+                <span class="data-value">Muhammad Zidan Santoso</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-phone-title">Số điện thoại:</span>
+                <span class="data-value">0895366770136</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-create-date-title">Ngày tạo:</span>
+                <span class="data-value">07/09/2026 15:45:10</span>
+              </div>
+              <div class="data-row" style="align-items:flex-start;">
+                <span class="data-label" id="lbl-so-type-title" style="flex:0.9;">Loại yêu cầu xuất:</span>
+                <span class="data-value" style="flex:1.4; text-align:right;">408 - ERABLUE- Installment sales Delivery at home</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-so-status-title">Trạng thái:</span>
+                <span class="data-value" id="val-so-status" style="color:#d97706; font-weight:700;">Chưa xuất hàng</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-total-pay-title">Phải thanh toán:</span>
+                <span class="data-value highlight-red" style="font-size:14px;">4,971,400rp</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-debt-title">Còn nợ:</span>
+                <span class="data-value highlight-red" style="font-size:14px;">4,971,400rp</span>
+              </div>
+
+              <div style="text-align:center; margin-top:14px;">
+                <button class="btn-blue-pill" id="btn-view-detail" onclick="navigateTo('step-5-2')">
+                  Xem chi tiết
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SCREEN 5.2: ITEMS IN SO (Step 5.2) -->
+          <!-- ========================================== -->
+          <div class="screen-view" id="view-step-5-2">
+            <!-- Item 1: TV Toshiba 43C350RP -->
+            <div class="pos-card" style="border-radius:14px; margin-bottom:14px;">
+              <div class="so-banner-header" id="banner-so-code-1">Mã SO: 13274SO26090087339</div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-item-status-1">Trạng thái:</span>
+                <span class="data-value" id="val-item-status-1" style="color:#d97706; font-weight:700;">Chưa xuất hàng</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label">Serial/IMEI:</span>
+                <span class="data-value" style="font-weight:700;">N/A</span>
+              </div>
+              <div class="data-row" style="align-items:flex-start;">
+                <span class="data-label" id="lbl-prod-item-1" style="flex:0.75;">Sản phẩm:</span>
+                <span class="data-value" style="flex:1.6; text-align:right; font-weight:700;">1575587000742 - TV Toshiba 43C350RP</span>
+              </div>
+              <div style="text-align:center; margin-top:12px;">
+                <button class="btn-blue-pill btn-select-device" onclick="navigateTo('step-p2-config')">
+                  Chọn
+                </button>
+              </div>
+            </div>
+
+            <!-- Item 2: Bracket Jumbo JA88-40T -->
+            <div class="pos-card" style="border-radius:14px; margin-bottom:14px;">
+              <div class="so-banner-header" id="banner-so-code-2">Mã SO: 13274SO26090087339</div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-item-status-2">Trạng thái:</span>
+                <span class="data-value" id="val-item-status-2" style="color:#d97706; font-weight:700;">Chưa xuất hàng</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label">Serial/IMEI:</span>
+                <span class="data-value" style="font-weight:700;" id="val-no-imei-1">N/A</span>
+              </div>
+              <div class="data-row" style="align-items:flex-start;">
+                <span class="data-label" id="lbl-prod-item-2" style="flex:0.75;">Sản phẩm:</span>
+                <span class="data-value" style="flex:1.6; text-align:right; font-weight:700;">1575593000004 - Bracket Jumbo JA88-40T</span>
+              </div>
+              <div style="text-align:center; margin-top:12px;">
+                <button class="btn-disabled-pill" disabled title="Sản phẩm phụ kiện không hỗ trợ mua bảo hiểm">
+                  🔒 <span class="btn-disabled-label">Không áp dụng</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Item 3: Antena PX DA-6000 -->
+            <div class="pos-card" style="border-radius:14px; margin-bottom:14px;">
+              <div class="so-banner-header" id="banner-so-code-3">Mã SO: 13274SO26090087339</div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-item-status-3">Trạng thái:</span>
+                <span class="data-value" id="val-item-status-3" style="color:#d97706; font-weight:700;">Chưa xuất hàng</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label">Serial/IMEI:</span>
+                <span class="data-value" style="font-weight:700;" id="val-no-imei-2">N/A</span>
+              </div>
+              <div class="data-row" style="align-items:flex-start;">
+                <span class="data-label" id="lbl-prod-item-3" style="flex:0.75;">Sản phẩm:</span>
+                <span class="data-value" style="flex:1.6; text-align:right; font-weight:700;">1575593000010 - Antena PX DA-6000</span>
+              </div>
+              <div style="text-align:center; margin-top:12px;">
+                <button class="btn-disabled-pill" disabled title="Sản phẩm phụ kiện không hỗ trợ mua bảo hiểm">
+                  🔒 <span class="btn-disabled-label">Không áp dụng</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SCREEN 5.3: PHASE 2 - BHRV CONFIGURATION (Unfulfilled SO - Cart By Dummy) -->
+          <!-- ========================================== -->
+          <div class="screen-view" id="view-step-p2-config">
+            <!-- Device Info with Dummy Badge -->
+            <div class="pos-card">
+              <div class="accordion-header" onclick="toggleAccordion('p2-device-detail')">
+                <div class="accordion-title">
+                  <span>SO: 13274SO26090087339</span>
+                  <span class="tag-badge orange" style="font-size:9px;" id="badge-p2-delivery">Giao từ kho</span>
+                </div>
+                <div class="accordion-toggle" id="p2-device-detail-icon">⬆</div>
+              </div>
+              <div id="p2-device-detail">
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-prod">Sản phẩm</span>
+                  <span class="data-value">TV Toshiba 43C350RP</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-price">Giá thiết bị (RRP)</span>
+                  <span class="data-value">4,549,000rp</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-serial-imei-device">Số Serial/IMEI</span>
+                  <span class="data-value" style="font-family:'JetBrains Mono'; color:#64748b; font-weight:700;">N/A</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-status">Trạng thái:</span>
+                  <span class="data-value" id="val-p2-status" style="color:#d97706; font-weight:700;">Chưa xuất hàng</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-cust">Khách hàng</span>
+                  <span class="data-value">Muhammad Zidan Santoso</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-phone">Số điện thoại</span>
+                  <span class="data-value">0895366770136</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Insurance Selector -->
+            <div class="section-label" id="lbl-p2-pkg-section" style="color:#0f172a; font-weight:800; margin-top:14px;">Thông tin gói bảo hiểm</div>
+            <div class="pos-card" style="padding:10px 14px; cursor:pointer;" onclick="openPkgModal('p2')" title="Nhấp để chọn gói bảo hiểm">
+              <div style="font-size:13px; font-weight:700; color:var(--primary); display:flex; justify-content:space-between; align-items:center;">
+                <span id="p2-selected-pkg-name">TECPROTEC_BOLTECH ERABLUE</span>
+                <span style="font-size:11px; color:#0084ff;">▼</span>
+              </div>
+            </div>
+
+            <div class="duration-selector">
+              <div class="duration-pill active" id="pill-p2-12m" onclick="selectDurationP2(12, 499000)">12 tháng</div>
+              <div class="duration-pill" id="pill-p2-24m" onclick="selectDurationP2(24, 899000)">24 tháng</div>
+            </div>
+
+            <!-- Payment Details Accordion -->
+            <div class="pos-card">
+              <div class="accordion-header" onclick="toggleAccordion('p2-pay-detail')">
+                <div class="accordion-title">
+                  <span id="lbl-p2-pay-title">Chi tiết thanh toán bảo hiểm</span>
+                </div>
+                <div class="accordion-toggle" id="p2-pay-detail-icon">⬆</div>
+              </div>
+              <div id="p2-pay-detail">
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-insured-prod">Sản phẩm được bảo hiểm</span>
+                  <span class="data-value">TV Toshiba 43C350RP</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-serial-imei-pay">Số Serial/IMEI</span>
+                  <span class="data-value" style="color:#0284c7; font-family:'JetBrains Mono';">999999999999 (Dummy)</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-contract-status">Trạng thái hợp đồng</span>
+                  <span class="data-value" id="val-p2-contract-status" style="color:#d97706;">Pending (Chờ giao)</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-effective-date">Ngày hiệu lực</span>
+                  <span class="data-value" id="val-p2-effective-date">Kích hoạt khi giao hàng</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label" id="lbl-p2-pkg-fee">Phí gói bảo hiểm</span>
+                  <span class="data-value" id="p2-pkg-price">499,000rp</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer Contact Info (required for E-Cert) -->
+            <div class="pos-card">
+              <div class="input-field-group" style="margin-top:0;">
+                <label class="input-label" id="lbl-p2-cust-name-input">Họ tên khách hàng <span>* (Bắt buộc)</span></label>
+                <input type="text" class="text-input" id="p2-cust-name-input" value="Muhammad Zidan Santoso">
+              </div>
+              <div class="input-field-group">
+                <label class="input-label" id="lbl-p2-cust-phone-input">Số điện thoại khách hàng <span>* (Bắt buộc)</span></label>
+                <input type="tel" class="text-input" id="p2-cust-phone-input" value="0895366770136">
+              </div>
+              <div class="input-field-group">
+                <label class="input-label" id="lbl-p2-cust-email-input">Email khách hàng <span>* (Bắt buộc)</span></label>
+                <input type="email" class="text-input" id="p2-email-input" value="zidan.santoso@gmail.com">
+                <div class="email-quick-group">
+                  <span style="font-size:11px; color:#64748b; font-weight:600;" id="lbl-p2-quick-email">Điền nhanh:</span>
+                  <button type="button" class="email-chip" onclick="appendEmailDomain('@gmail.com', 'p2-email-input')">+@gmail.com</button>
+                  <button type="button" class="email-chip" onclick="appendEmailDomain('@yahoo.com', 'p2-email-input')">+@yahoo.com</button>
+                  <button type="button" class="email-chip" onclick="appendEmailDomain('@erablue.id', 'p2-email-input')">+@erablue.id</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SCREEN 6: COLLECT MONEY (Step 6) -->
+          <!-- ========================================== -->
+          <div class="screen-view" id="view-step-6">
+            <div class="pos-card">
+              <div class="data-row">
+                <span class="data-label" id="lbl-s6-store">Cửa hàng xuất</span>
+                <span class="data-value" style="text-align:right; max-width:60%;">13274 - EBM_JBR_BKS_PGE_JL. Raya Jatiwaringin</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s6-cust">Khách hàng</span>
+                <span class="data-value" id="s6-cust-name">Muhammad Zidan Santoso</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s6-phone">Số điện thoại</span>
+                <span class="data-value" id="s6-cust-phone">0895366770136</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s6-sales">Nhân viên bán</span>
+                <span class="data-value">id.ly2 - Tran Thi Khanh Ly</span>
+              </div>
+            </div>
+
+            <div class="pos-card" style="padding:0; overflow:hidden;">
+              <div class="data-row" style="padding:12px 14px; margin:0; border-bottom:1px solid #e2e8f0;">
+                <span class="data-label" id="lbl-s6-total">Tổng tiền</span>
+                <span class="data-value" id="s6-total-amount" style="font-weight:800;">499,000rp</span>
+              </div>
+              <div class="data-row" style="padding:12px 14px; margin:0; border-bottom:1px solid #e2e8f0;">
+                <span class="data-label" id="lbl-s6-collected">Đã thu</span>
+                <span class="data-value" id="s6-collected-amount">0rp</span>
+              </div>
+              <div class="data-row" style="padding:12px 14px; margin:0;">
+                <span class="data-label" id="lbl-s6-remain">Còn phải thu</span>
+                <span class="data-value" id="s6-remain-amount" style="color:#d97706; font-weight:800;">499,000rp</span>
+              </div>
+            </div>
+
+            <!-- Payment by Virtual Account -->
+            <div class="pos-card">
+              <div class="accordion-header" onclick="toggleAccordion('s6-va-detail')">
+                <div class="accordion-title"><span id="lbl-s6-va-title">Thanh toán qua Tài khoản ảo (Virtual Account)</span></div>
+                <div class="accordion-toggle" id="s6-va-detail-icon">⬆</div>
+              </div>
+              <div id="s6-va-detail">
+                <div class="input-field-group" style="margin-top:0;">
+                  <label class="input-label" id="lbl-s6-va-bank">Chọn ngân hàng</label>
+                  <select class="text-input" id="s6-va-bank-select">
+                    <option>PT Bank Central Asia Tbk (BCA)</option>
+                    <option>PT Bank Mandiri (Persero) Tbk</option>
+                    <option>PT Bank Negara Indonesia (BNI)</option>
+                    <option>PT Bank Rakyat Indonesia (BRI)</option>
+                  </select>
+                </div>
+                <div class="input-field-group" style="display:flex; gap:8px; align-items:flex-end;">
+                  <div style="flex:1;">
+                    <label class="input-label" id="lbl-s6-va-amount">Số tiền</label>
+                    <input type="number" class="text-input" id="s6-va-amount-input" placeholder="0">
+                  </div>
+                  <button type="button" class="primary-btn" style="width:auto; padding:9px 18px;" id="btn-s6-va-apply" onclick="applyPayment('va')"><span id="lbl-s6-va-apply">Áp dụng</span></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer's Gift Voucher -->
+            <div class="pos-card">
+              <div class="accordion-header" onclick="toggleAccordion('s6-voucher-detail')">
+                <div class="accordion-title"><span id="lbl-s6-voucher-title">Voucher quà tặng khách hàng (Customer's Gift Voucher)</span></div>
+                <div class="accordion-toggle" id="s6-voucher-detail-icon">⬇</div>
+              </div>
+              <div id="s6-voucher-detail" style="display:none;">
+                <div class="input-field-group" style="display:flex; gap:8px; align-items:flex-end; margin-top:0;">
+                  <div style="flex:1;">
+                    <label class="input-label" id="lbl-s6-voucher-code">Mã voucher</label>
+                    <input type="text" class="text-input" id="s6-voucher-code-input" placeholder="Nhập mã voucher...">
+                  </div>
+                  <button type="button" class="primary-btn" style="width:auto; padding:9px 18px; background:#64748b;" id="btn-s6-voucher-apply" onclick="applyPayment('voucher')"><span id="lbl-s6-voucher-apply">Áp dụng</span></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment by Card -->
+            <div class="pos-card">
+              <div class="accordion-header" onclick="toggleAccordion('s6-card-detail')">
+                <div class="accordion-title"><span id="lbl-s6-card-title">Thanh toán qua Thẻ (Payment by Card)</span></div>
+                <div class="accordion-toggle" id="s6-card-detail-icon">⬇</div>
+              </div>
+              <div id="s6-card-detail" style="display:none;">
+                <div class="input-field-group" style="display:flex; gap:8px; align-items:flex-end; margin-top:0;">
+                  <div style="flex:1;">
+                    <label class="input-label" id="lbl-s6-card-amount">Số tiền quẹt thẻ</label>
+                    <input type="number" class="text-input" id="s6-card-amount-input" placeholder="0">
+                  </div>
+                  <button type="button" class="primary-btn" style="width:auto; padding:9px 18px; background:#64748b;" id="btn-s6-card-apply" onclick="applyPayment('card')"><span id="lbl-s6-card-apply">Áp dụng</span></button>
+                </div>
+              </div>
+            </div>
+
+            <button class="primary-btn" style="margin-top:16px;" id="btn-s6-confirm" onclick="confirmCollectMoney()"><span id="lbl-s6-confirm">Xác nhận thu tiền</span></button>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SCREEN 7: TRANSACTION LIST (Step 7) -->
+          <!-- ========================================== -->
+          <div class="screen-view" id="view-step-7">
+            <div style="display:flex; gap:20px; align-items:center; padding:6px 2px 12px; flex-wrap:wrap;">
+              <label style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--primary); cursor:pointer;">
+                <input type="checkbox" id="chk-s7-created" checked onchange="toggleTxnFilter()">
+                <span id="lbl-s7-tab-created">Đơn đã tạo</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#334155; cursor:pointer;">
+                <input type="checkbox" id="chk-s7-cancelled" onchange="toggleTxnFilter()">
+                <span id="lbl-s7-tab-cancelled">Đơn đã hủy</span>
+              </label>
+            </div>
+
+            <div class="search-pill-box">
+              <input type="text" id="s7-search-input" placeholder="Nhập mã SO/ mã SV/ người tạo">
+              <button class="clear-btn" onclick="document.getElementById('s7-search-input').value=''">✕</button>
+              <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="pos-card" style="border-radius:14px; padding:16px; margin-top:12px;" id="s7-order-card">
+              <div style="border-bottom: 1.5px solid #0084ff; padding-bottom: 6px; margin-bottom: 10px;">
+                <h3 style="font-size:13px; font-weight:700; color:var(--primary);" id="s7-sv-title">13274SV2609002629 - Boltech</h3>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s7-export-req">Mã yêu cầu xuất:</span>
+                <span class="data-value">13274SO26090087987</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s7-txn-type">Loại giao dịch:</span>
+                <span class="data-value">ERABLUE - TECTPROTEC by Bolttech</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s7-prod-name">Tên sản phẩm:</span>
+                <span class="data-value">PR3-TV-ADLD12</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s7-status">Trạng thái:</span>
+                <span class="data-value" id="s7-status-value" style="color:#16a34a; font-weight:700;">Đã thu tiền</span>
+              </div>
+              <div class="data-row" style="align-items:flex-start;">
+                <span class="data-label" id="lbl-s7-note" style="flex:0.7;">Ghi chú:</span>
+                <span class="data-value" id="s7-note-value" style="flex:1.6; text-align:right; font-style:italic; color:#64748b;">Đã thu đủ tiền đơn hàng</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s7-cust">Khách hàng:</span>
+                <span class="data-value" id="s7-cust-name">It test</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" id="lbl-s7-collecting">Số tiền đã thu:</span>
+                <span class="data-value" id="s7-collected-amount" style="color:#16a34a; font-weight:800;">499,000rp</span>
+              </div>
+            </div>
+
+            <div class="pos-card" style="text-align:center; padding:20px; color:#94a3b8; font-size:12px; display:none;" id="s7-empty-state">
+              <span id="lbl-s7-empty">Không tìm thấy giao dịch nào phù hợp với bộ lọc.</span>
+            </div>
+
+            <button class="primary-btn" style="margin-top:16px; background:#64748b;" id="btn-s7-new-order" onclick="navigateTo('step-1')">🔄 <span id="lbl-s7-new-order">Bán đơn mới</span></button>
+          </div>        </div>
+
+
+        <!-- Sticky Bottom Summary & Action Bar -->
+        <div class="bottom-action-bar" id="pos-bottom-bar">
+          <div class="summary-line">
+            <span id="lbl-bar-total-amount">Tổng tiền đơn hàng:</span>
+            <span id="pos-summary-total">499,000rp</span>
+          </div>
+          <div class="summary-line total">
+            <span id="lbl-bar-amount-due">Số tiền khách cần trả:</span>
+            <span class="price-due" id="pos-summary-due">499,000rp</span>
+          </div>
+          <button class="primary-btn" id="pos-main-action-btn" onclick="handleMainAction()">
+            XÁC NHẬN & THANH TOÁN
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Side Explanation Panel for BA / PO / Dev -->
+    <div class="explanation-panel">
+      <div class="panel-header">
+        <div>
+          <h2>Đặc Tả Nghiệp Vụ & Quy Tắc Thiết Kế (BA Spec)</h2>
+          <p style="font-size:12px; color:#94a3b8;">Dành cho Dev & QA đối chiếu thực thi</p>
+        </div>
+        <span class="tag-badge blue" id="active-flow-badge">BOLTTECH BHRV DEMO</span>
+      </div>
+
+      <!-- Live Context Notes -->
+      <div class="ba-note-box" id="ba-context-note">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Token Mapping Box -->
+      <div class="ba-note-box">
+        <h3>🎨 UI Design Tokens Áp Dụng (EraBlue Blue Standard)</h3>
+        <p>Hệ thống Design Tokens chuẩn hóa cho giao diện Mobile POS EraBlue, tối ưu tương phản cao và công thái học cảm ứng:</p>
+        <div class="token-chip-group">
+          <span class="token-chip">Primary: #0084FF (EraBlue)</span>
+          <span class="token-chip">Primary Dark: #0068CC</span>
+          <span class="token-chip">Primary Light: #E6F3FF</span>
+          <span class="token-chip">Warning/Pending: #D97706</span>
+          <span class="token-chip">Success: #16A34A</span>
+          <span class="token-chip">Disabled: #F1F5F9 / #94A3B8</span>
+          <span class="token-chip">Font: Plus Jakarta Sans / Inter</span>
+          <span class="token-chip">Code Font: JetBrains Mono</span>
+          <span class="token-chip">Card Radius: 14px</span>
+          <span class="token-chip">Input Radius: 10px - 12px</span>
+          <span class="token-chip">Pill Radius: 9999px</span>
+          <span class="token-chip">Alignment: Key-Value Right 100%</span>
+        </div>
+      </div>
+
+      <!-- API Mapping Box -->
+      <div class="ba-note-box">
+        <h3>🔌 Bản Đồ Tích Hợp API Bolttech Theo Màn Hình</h3>
+        <ul style="padding-left:18px; margin-top:8px; font-size:12.5px; line-height:1.6; color:#cbd5e1;">
+          <li style="margin-bottom:8px;">
+            <strong style="color:#38bdf8;">Step 4.1 & Step 5.3 (Cấu hình gói BHRV):</strong><br>
+            • <code>GET /api/v1/GetPartnerProduct</code>: Gọi lấy danh sách gói, thời hạn (12T/24T) và giá phí bảo hiểm (<code>totalPlanRRPWithTax</code>) theo mã model thiết bị chính.
+          </li>
+          <li style="margin-bottom:8px;">
+            <strong style="color:#38bdf8;">Step 6 ➔ Step 7 (Xác nhận & Thu tiền POS):</strong><br>
+            • <code>POST /api/v1/CreateCustomerFulfillOrder</code>: Khởi tạo đơn hàng bảo hiểm sang Bolttech.
+            <div style="font-size:11.5px; color:#94a3b8; margin:2px 0 0 8px;">
+              - <em>Luồng Phase 1 (IMEI có sẵn):</em> Truyền Serial/IMEI thật + Ngày kích hoạt thực tế.<br>
+              - <em>Luồng Phase 2 (Hàng giao sau):</em> Truyền Dummy IMEI <code>999999999999</code> & Dummy Activation Date <code>0001-01-01T00:00:00Z</code>. Bolttech gửi Welcome Email #1 (thông tin tạm).
+            </div>
+            • <code>GET /api/v1/GetOrder</code>: Gọi kiểm tra trạng thái đơn (trả về trạng thái <code>fulfillment-pending</code> do thiết bị chưa giao) và nhận <strong>Số hợp đồng bảo hiểm chính thức (<code>service_contract_number</code>)</strong> lưu vào Database EraBlue. Số hợp đồng này là duy nhất và xuyên suốt chu trình.
+          </li>
+          <li>
+            <strong style="color:#38bdf8;">Hậu kỳ (Kho giao hàng thành công tại nhà):</strong><br>
+            • <code>PUT /api/v1/UpdateContract</code>: Backend EraBlue dùng chính <code>service_contract_number</code> đã lưu từ Ngày 1 để cập nhật Serial/IMEI thật và ngày giao hàng thực tế $\rightarrow$ Hợp đồng chuyển trạng thái hoàn tất (<code>ACTIVE</code> / <code>fulfillment-completed</code>), khách hàng nhận Welcome Email #2 kèm E-Certificate chính thức.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    // State
+    let currentLang = 'vi';
+    let currentScreen = 'step-1';
+    let currentAmount = 499000;
+    let currentPkgTarget = 'p1';
+    let selectedPackageName = 'TECPROTEC_BOLTECH ERABLUE';
+
+    // 8-Step Unified Flow (All-In-One Demo)
+    const allScreens = [
+      { id: 'step-1', label: 'Step 1: Catalog POS', title: 'DANH MỤC DỊCH VỤ VÀ TIỆN ÍCH', store: 'Store 15931 - User id.ly2', speed: '112.2 Mb/s', clock: '16:44', battery: '65%' },
+      { id: 'step-2', label: 'Step 2: Service Group', title: 'DANH SÁCH NHÓM DỊCH VỤ', store: 'Store 15931 - User id.ly2', speed: '109.0 Mb/s', clock: '16:45', battery: '65%' },
+      { id: 'step-3', label: 'Step 3: Breakage Ins.', title: 'BẢO HIỂM RƠI VỠ', store: 'Store 15931 - User id.ly2', speed: '109.0 Mb/s', clock: '16:45', battery: '65%' },
+      { id: 'step-4-1', label: 'Step 4.1: Fulfilled SO', title: 'ERABLUE - TECTPROTEC by Bolttech - Fulfilled SO', store: 'Store 15931 - User id.ly2', speed: '37.2 Mb/s', clock: '16:46', battery: '64%' },
+      { id: 'step-5-1', label: 'Step 5.1: Unfulfilled SO', title: 'ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO', store: 'Store 15931 - User id.ly2', speed: '46.7 KB/s', clock: '16:53', battery: '63%' },
+      { id: 'step-5-2', label: 'Step 5.2: DS Thiết bị SO', title: 'ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO', store: 'Store 15931 - User id.ly2', speed: '46.7 KB/s', clock: '16:53', battery: '63%' },
+      { id: 'step-p2-config', label: 'Step 5.3: Cart By Dummy', title: 'Unfulfilled SO - Cart By Dummy', store: 'Store 15931 - User id.ly2', speed: '37.2 Mb/s', clock: '16:55', battery: '63%' },
+      { id: 'step-6', label: 'Step 6: Thu tiền', title: 'ORDER 13274SO26090087987', store: 'Store 13274 - User id.ly2', speed: '121.7 Mb/s', clock: '09:57', battery: '35%' },
+      { id: 'step-7', label: 'Step 7: DS Giao dịch', title: 'QUẢN LÝ GIAO DỊCH', store: 'Store 13274 - User id.ly2', speed: '87.4 Mb/s', clock: '10:00', battery: '34%' }
+    ];
+
+    // 3-Language i18n Localization Dictionary (Retail, POS & Insurance Professional Standard)
+    const i18n = {
+      vi: {
+        pillsTitle: '📱 Danh sách màn hình luồng POS:',
+        screenTitles: {
+          'step-1': 'DANH MỤC DỊCH VỤ VÀ TIỆN ÍCH',
+          'step-2': 'DANH SÁCH NHÓM DỊCH VỤ',
+          'step-3': 'BẢO HIỂM RƠI VỠ',
+          'step-4-1': 'ERABLUE - TECTPROTEC by Bolttech - Fulfilled SO',
+          'step-5-1': 'ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO',
+          'step-5-2': 'ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO',
+          'step-p2-config': 'Unfulfilled SO - Cart By Dummy',
+          'step-6': 'ĐƠN HÀNG 13274SO26090087987',
+          'step-7': 'QUẢN LÝ GIAO DỊCH'
+        },
+        screenPills: {
+          'step-1': 'Step 1: Catalog POS',
+          'step-2': 'Step 2: Service Group',
+          'step-3': 'Step 3: Breakage Ins.',
+          'step-4-1': 'Step 4.1: Fulfilled SO',
+          'step-5-1': 'Step 5.1: Unfulfilled SO',
+          'step-5-2': 'Step 5.2: DS Thiết bị SO',
+          'step-p2-config': 'Step 5.3: Cart By Dummy',
+          'step-6': 'Step 6: Thu tiền',
+          'step-7': 'Step 7: DS Giao dịch'
+        },
+        step1: {
+          searchPlaceholder: 'Nhập tên tiện ích, Ví dụ: Nạp tiền điện thoại...',
+          paymentType: 'Loại giao dịch thanh toán:',
+          serviceSector: 'Nhóm ngành dịch vụ:',
+          insurance: 'Bảo hiểm',
+          collection: 'Thu hộ',
+          topup: 'Nạp tiền'
+        },
+        step2: {
+          searchPlaceholder: 'Tìm kiếm gói dịch vụ bảo hiểm...',
+          breakageIns: 'Bảo hiểm<br>rơi vỡ'
+        },
+        step3: {
+          insBenefits: 'Quyền lợi<br>bảo hiểm'
+        },
+        step4_1: {
+          imeiPlaceholder: 'Quét mã vạch hoặc nhập số IMEI...',
+          prod: 'Sản phẩm',
+          price: 'Giá tiêu chuẩn (sau giảm giá)',
+          cust: 'Họ và tên',
+          phone: 'Số điện thoại',
+          exportTime: 'Thời gian xuất',
+          pkgSection: 'Thông tin gói bảo hiểm',
+          dur12: '12 tháng',
+          dur24: '24 tháng',
+          payTitle: 'Chi tiết thanh toán bảo hiểm',
+          insuredProd: 'Sản phẩm được bảo hiểm',
+          insuredAmount: 'Số tiền bảo hiểm',
+          effectivePeriod: 'Thời hạn hiệu lực',
+          pkgFee: 'Phí gói bảo hiểm',
+          custNameInput: 'Họ tên khách hàng <span>* (Bắt buộc)</span>',
+          custPhoneInput: 'Số điện thoại khách hàng <span>* (Bắt buộc)</span>',
+          custEmailInput: 'Email khách hàng <span>* (Bắt buộc)</span>',
+          custEmailPlaceholder: 'Nhập email khách hàng...',
+          quickEmailLabel: 'Điền nhanh:'
+        },
+        modal: {
+          title: 'Chọn Gói Bảo Hiểm'
+        },
+        step5_1: {
+          criteriaSo: 'Mã yêu cầu xuất',
+          criteriaPhone: 'Số điện thoại khách hàng',
+          searchSo: 'Nhập mã yêu cầu xuất...',
+          searchPhone: 'Nhập số điện thoại khách hàng...',
+          orderCode: 'Mã đơn hàng: 13274SO26090087339',
+          cust: 'Khách hàng:',
+          phone: 'Số điện thoại:',
+          createDate: 'Ngày tạo:',
+          soType: 'Loại yêu cầu xuất:',
+          statusLabel: 'Trạng thái:',
+          statusVal: 'Chưa xuất hàng',
+          totalPay: 'Phải thanh toán:',
+          debt: 'Còn nợ:',
+          viewDetail: 'Xem chi tiết'
+        },
+        step5_2: {
+          bannerSo: 'Mã SO: 13274SO26090087339',
+          statusLabel: 'Trạng thái:',
+          statusVal: 'Chưa xuất hàng',
+          prod: 'Sản phẩm:',
+          noImei: 'N/A',
+          btnSelect: 'Chọn',
+          notApplicableBadge: '🚫 Không được áp dụng',
+          btnNotApplicable: 'Không áp dụng'
+        },
+        step5_3: {
+          deliveryBadge: 'Giao từ kho',
+          prod: 'Sản phẩm',
+          price: 'Giá thiết bị (RRP)',
+          serialImei: 'Số Serial/IMEI',
+          statusLabel: 'Trạng thái:',
+          statusVal: 'Chưa xuất hàng',
+          cust: 'Khách hàng',
+          phone: 'Số điện thoại',
+          quickEmailLabel: 'Điền nhanh:',
+          pkgSection: 'Thông tin gói bảo hiểm',
+          dur12: '12 tháng',
+          dur24: '24 tháng',
+          payTitle: 'Chi tiết thanh toán bảo hiểm',
+          insuredProd: 'Sản phẩm được bảo hiểm',
+          contractStatusLabel: 'Trạng thái hợp đồng',
+          contractStatusVal: 'Pending (Chờ giao)',
+          effectiveDateLabel: 'Ngày hiệu lực',
+          effectiveDateVal: 'Kích hoạt khi giao hàng',
+          pkgFeeLabel: 'Phí gói bảo hiểm',
+          custNameInput: 'Họ tên khách hàng <span>* (Bắt buộc)</span>',
+          custPhoneInput: 'Số điện thoại khách hàng <span>* (Bắt buộc)</span>',
+          custEmailInput: 'Email khách hàng <span>* (Bắt buộc)</span>',
+        },
+        step6: {
+          summaryStore: 'Cửa hàng xuất',
+          summaryCust: 'Khách hàng',
+          summaryPhone: 'Số điện thoại',
+          summarySales: 'Nhân viên bán',
+          totalLabel: 'Tổng tiền',
+          collectedLabel: 'Đã thu',
+          remainLabel: 'Còn phải thu',
+          vaTitle: 'Thanh toán qua Tài khoản ảo (Virtual Account)',
+          vaBankLabel: 'Chọn ngân hàng',
+          vaAmountLabel: 'Số tiền',
+          voucherTitle: "Voucher quà tặng khách hàng (Customer's Gift Voucher)",
+          voucherCodeLabel: 'Mã voucher',
+          voucherCodePlaceholder: 'Nhập mã voucher...',
+          cardTitle: 'Thanh toán qua Thẻ (Payment by Card)',
+          cardAmountLabel: 'Số tiền quẹt thẻ',
+          applyBtn: 'Áp dụng',
+          confirmBtn: 'Xác nhận thu tiền'
+        },
+        step7: {
+          tabCreated: 'Đơn đã tạo',
+          tabCancelled: 'Đơn đã hủy',
+          searchPlaceholder: 'Nhập mã SO/ mã SV/ người tạo',
+          exportRequestLabel: 'Mã yêu cầu xuất:',
+          transactionTypeLabel: 'Loại giao dịch:',
+          productNameLabel: 'Tên sản phẩm:',
+          statusLabel: 'Trạng thái:',
+          statusValue: 'Đã thu tiền',
+          noteLabel: 'Ghi chú:',
+          noteValue: 'Đã thu đủ tiền đơn hàng',
+          custLabel: 'Khách hàng:',
+          collectingLabel: 'Số tiền đã thu:',
+          emptyState: 'Không tìm thấy giao dịch nào phù hợp với bộ lọc.',
+          btnNew: '🔄 Bán đơn mới'
+        },
+        bottomBar: {
+          totalAmount: 'Tổng tiền đơn hàng:',
+          amountDue: 'Số tiền khách cần trả:',
+          mainActionBtn: 'TẠO ĐƠN VÀ THANH TOÁN'
+        }
+      },
+      en: {
+        pillsTitle: '📱 POS Flow Screens:',
+        screenTitles: {
+          'step-1': 'PRODUCT AND SERVICE CATALOG',
+          'step-2': 'SERVICE GROUP LIST',
+          'step-3': 'BREAKAGE INSURANCE',
+          'step-4-1': 'ERABLUE - TECTPROTEC by Bolttech - Fulfilled SO',
+          'step-5-1': 'ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO',
+          'step-5-2': 'ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO',
+          'step-p2-config': 'Unfulfilled SO - Cart By Dummy',
+          'step-6': 'ORDER 13274SO26090087987',
+          'step-7': 'TRANSACTION MANAGEMENT'
+        },
+        screenPills: {
+          'step-1': 'Step 1: Catalog POS',
+          'step-2': 'Step 2: Service Group',
+          'step-3': 'Step 3: Breakage Ins.',
+          'step-4-1': 'Step 4.1: Fulfilled SO',
+          'step-5-1': 'Step 5.1: Unfulfilled SO',
+          'step-5-2': 'Step 5.2: SO Device List',
+          'step-p2-config': 'Step 5.3: Cart By Dummy',
+          'step-6': 'Step 6: Collect Money',
+          'step-7': 'Step 7: Transaction List'
+        },
+        step1: {
+          searchPlaceholder: 'Enter function name, Example: Top-up mobile...',
+          paymentType: 'Payment transaction type:',
+          serviceSector: 'Service sector:',
+          insurance: 'Insurance',
+          collection: 'Collection',
+          topup: 'TopUp'
+        },
+        step2: {
+          searchPlaceholder: 'Search insurance package...',
+          breakageIns: 'Breakage<br>Insurance'
+        },
+        step3: {
+          insBenefits: 'Insurance<br>benefits'
+        },
+        step4_1: {
+          imeiPlaceholder: 'Scan barcode or enter IMEI...',
+          prod: 'Product',
+          price: 'Standard price (after discount)',
+          cust: 'Customer name',
+          phone: 'Phone number',
+          exportTime: 'Export time',
+          pkgSection: 'Insurance information',
+          dur12: '12 month',
+          dur24: '24 month',
+          payTitle: 'Insurance payment details',
+          insuredProd: 'Insured product',
+          insuredAmount: 'Insurance amount',
+          effectivePeriod: 'Effective period',
+          pkgFee: 'Price of the insurance package',
+          custNameInput: 'Customer\'s full name <span>* (Required)</span>',
+          custPhoneInput: 'Customer\'s phone number <span>* (Required)</span>',
+          custEmailInput: 'Customer\'s email address <span>* (Required)</span>',
+          custEmailPlaceholder: 'Enter the customer\'s email address...',
+          quickEmailLabel: 'Quick domain:'
+        },
+        modal: {
+          title: 'Select Insurance Package'
+        },
+        step5_1: {
+          criteriaSo: 'Sale order type ID',
+          criteriaPhone: 'Customer phone',
+          searchSo: 'Enter Sale Order ID...',
+          searchPhone: 'Enter customer phone number...',
+          orderCode: 'Order ID: 13274SO26090087339',
+          cust: 'Customer:',
+          phone: 'Phone number:',
+          createDate: 'Created date:',
+          soType: 'Export type:',
+          statusLabel: 'Status:',
+          statusVal: 'Not output yet',
+          totalPay: 'Total payment:',
+          debt: 'Remaining debt:',
+          viewDetail: 'View details'
+        },
+        step5_2: {
+          bannerSo: 'SO Code: 13274SO26090087339',
+          statusLabel: 'Status:',
+          statusVal: 'Not output yet',
+          prod: 'Product:',
+          noImei: 'N/A',
+          btnSelect: 'Select',
+          notApplicableBadge: '🚫 Not Applicable',
+          btnNotApplicable: 'Not Applicable'
+        },
+        step5_3: {
+          deliveryBadge: 'Delivery from warehouse',
+          prod: 'Product',
+          price: 'Device price (RRP)',
+          serialImei: 'Serial/IMEI',
+          statusLabel: 'Status:',
+          statusVal: 'Not output yet',
+          cust: 'Customer',
+          phone: 'Phone number',
+          quickEmailLabel: 'Quick domain:',
+          pkgSection: 'Insurance package',
+          dur12: '12 month',
+          dur24: '24 month',
+          payTitle: 'Insurance payment details',
+          insuredProd: 'Insured product',
+          contractStatusLabel: 'Contract status',
+          contractStatusVal: 'Pending (Awaiting delivery)',
+          effectiveDateLabel: 'Effective date',
+          effectiveDateVal: 'Active upon delivery',
+          pkgFeeLabel: 'Insurance package fee',
+          custNameInput: 'Customer\'s full name <span>* (Required)</span>',
+          custPhoneInput: 'Customer\'s phone number <span>* (Required)</span>',
+          custEmailInput: 'Customer\'s email address <span>* (Required)</span>',
+        },
+        step6: {
+          summaryStore: 'Output store',
+          summaryCust: 'Customer',
+          summaryPhone: 'Phone',
+          summarySales: 'Salesman',
+          totalLabel: 'Total Amount',
+          collectedLabel: 'Collected',
+          remainLabel: 'Receivables',
+          vaTitle: 'Payment by Virtual Account',
+          vaBankLabel: 'Select Bank',
+          vaAmountLabel: 'Amount',
+          voucherTitle: "Customer's Gift Voucher",
+          voucherCodeLabel: 'Voucher code',
+          voucherCodePlaceholder: 'Enter voucher code...',
+          cardTitle: 'Payment by Card',
+          cardAmountLabel: 'Card charge amount',
+          applyBtn: 'Apply',
+          confirmBtn: 'Confirm Collection'
+        },
+        step7: {
+          tabCreated: 'Orders you created',
+          tabCancelled: 'Orders cancelled',
+          searchPlaceholder: 'Enter code SO/ code SV/ creator',
+          exportRequestLabel: 'Export request:',
+          transactionTypeLabel: 'Transaction type:',
+          productNameLabel: 'Product name:',
+          statusLabel: 'Status:',
+          statusValue: 'Collected',
+          noteLabel: 'Note:',
+          noteValue: 'Order fully collected',
+          custLabel: 'Customer:',
+          collectingLabel: 'Collecting money:',
+          emptyState: 'No transaction matches this filter.',
+          btnNew: '🔄 New Order'
+        },
+        bottomBar: {
+          totalAmount: 'Total order amount:',
+          amountDue: 'Amount due from customer:',
+          mainActionBtn: 'CREATE ORDER & PAY'
+        }
+      },
+      id: {
+        pillsTitle: '📱 Daftar Layar Alur POS:',
+        screenTitles: {
+          'step-1': 'KATALOG PRODUK DAN LAYANAN',
+          'step-2': 'DAFTAR KELOMPOK LAYANAN',
+          'step-3': 'ASURANSI KERUSAKAN',
+          'step-4-1': 'ERABLUE - TECTPROTEC by Bolttech - Fulfilled SO',
+          'step-5-1': 'ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO',
+          'step-5-2': 'ERABLUE - TECTPROTEC by Bolttech - Unfulfilled SO',
+          'step-p2-config': 'Unfulfilled SO - Cart By Dummy',
+          'step-6': 'PESANAN 13274SO26090087987',
+          'step-7': 'MANAJEMEN TRANSAKSI'
+        },
+        screenPills: {
+          'step-1': 'Step 1: Katalog POS',
+          'step-2': 'Step 2: Grup Layanan',
+          'step-3': 'Step 3: Asuransi',
+          'step-4-1': 'Step 4.1: Fulfilled SO',
+          'step-5-1': 'Step 5.1: Unfulfilled SO',
+          'step-5-2': 'Step 5.2: Daftar Perangkat',
+          'step-p2-config': 'Step 5.3: Cart By Dummy',
+          'step-6': 'Step 6: Pengumpulan Uang',
+          'step-7': 'Step 7: Daftar Transaksi'
+        },
+        step1: {
+          searchPlaceholder: 'Masukkan nama fitur, Contoh: Isi ulang pulsa...',
+          paymentType: 'Jenis transaksi pembayaran:',
+          serviceSector: 'Sektor layanan:',
+          insurance: 'Asuransi',
+          collection: 'Penagihan',
+          topup: 'Isi Ulang'
+        },
+        step2: {
+          searchPlaceholder: 'Cari paket asuransi...',
+          breakageIns: 'Asuransi<br>Kerusakan'
+        },
+        step3: {
+          insBenefits: 'Manfaat<br>asuransi'
+        },
+        step4_1: {
+          imeiPlaceholder: 'Pindai barcode atau masukkan IMEI...',
+          prod: 'Produk',
+          price: 'Harga standar (setelah diskon)',
+          cust: 'Nama pelanggan',
+          phone: 'Nomor telepon',
+          exportTime: 'Waktu pengeluaran',
+          pkgSection: 'Informasi paket asuransi',
+          dur12: '12 bulan',
+          dur24: '24 bulan',
+          payTitle: 'Rincian pembayaran asuransi',
+          insuredProd: 'Produk diasuransikan',
+          insuredAmount: 'Nilai pertanggungan',
+          effectivePeriod: 'Masa berlaku',
+          pkgFee: 'Biaya paket asuransi',
+          custNameInput: 'Nama lengkap pelanggan <span>* (Wajib)</span>',
+          custPhoneInput: 'Nomor telepon pelanggan <span>* (Wajib)</span>',
+          custEmailInput: 'Alamat email pelanggan <span>* (Wajib)</span>',
+          custEmailPlaceholder: 'Masukkan alamat email pelanggan...',
+          quickEmailLabel: 'Isi cepat:'
+        },
+        modal: {
+          title: 'Pilih Paket Asuransi'
+        },
+        step5_1: {
+          criteriaSo: 'ID Jenis Pesanan Penjualan',
+          criteriaPhone: 'Nomor Telepon Pelanggan',
+          searchSo: 'Masukkan ID Pesanan Penjualan...',
+          searchPhone: 'Masukkan nomor telepon pelanggan...',
+          orderCode: 'ID Pesanan: 13274SO26090087339',
+          cust: 'Pelanggan:',
+          phone: 'Nomor telepon:',
+          createDate: 'Tanggal dibuat:',
+          soType: 'Jenis pengeluaran:',
+          statusLabel: 'Status:',
+          statusVal: 'Belum dikirim',
+          totalPay: 'Total tagihan:',
+          debt: 'Sisa hutang:',
+          viewDetail: 'Lihat detail'
+        },
+        step5_2: {
+          bannerSo: 'Kode SO: 13274SO26090087339',
+          statusLabel: 'Status:',
+          statusVal: 'Belum dikirim',
+          prod: 'Produk:',
+          noImei: 'N/A',
+          btnSelect: 'Pilih',
+          notApplicableBadge: '🚫 Tidak Berlaku',
+          btnNotApplicable: 'Tidak Berlaku'
+        },
+        step5_3: {
+          deliveryBadge: 'Kirim dari gudang',
+          prod: 'Produk',
+          price: 'Harga perangkat (RRP)',
+          serialImei: 'Nomor Serial/IMEI',
+          statusLabel: 'Status:',
+          statusVal: 'Belum dikirim',
+          cust: 'Pelanggan',
+          phone: 'Nomor telepon',
+          quickEmailLabel: 'Domain cepat:',
+          pkgSection: 'Paket Asuransi',
+          dur12: '12 bulan',
+          dur24: '24 bulan',
+          payTitle: 'Rincian pembayaran asuransi',
+          insuredProd: 'Produk diasuransikan',
+          contractStatusLabel: 'Status kontrak',
+          contractStatusVal: 'Pending (Menunggu kirim)',
+          effectiveDateLabel: 'Tanggal berlaku',
+          effectiveDateVal: 'Aktif saat pengiriman',
+          pkgFeeLabel: 'Biaya paket asuransi',
+          custNameInput: 'Nama lengkap pelanggan <span>* (Wajib)</span>',
+          custPhoneInput: 'Nomor telepon pelanggan <span>* (Wajib)</span>',
+          custEmailInput: 'Alamat email pelanggan <span>* (Wajib)</span>',
+        },
+        step6: {
+          summaryStore: 'Toko pengeluaran',
+          summaryCust: 'Pelanggan',
+          summaryPhone: 'Telepon',
+          summarySales: 'Sales',
+          totalLabel: 'Total Jumlah',
+          collectedLabel: 'Terkumpul',
+          remainLabel: 'Piutang',
+          vaTitle: 'Pembayaran melalui Virtual Account',
+          vaBankLabel: 'Pilih Bank',
+          vaAmountLabel: 'Jumlah',
+          voucherTitle: "Voucher Hadiah Pelanggan",
+          voucherCodeLabel: 'Kode voucher',
+          voucherCodePlaceholder: 'Masukkan kode voucher...',
+          cardTitle: 'Pembayaran dengan Kartu',
+          cardAmountLabel: 'Jumlah gesek kartu',
+          applyBtn: 'Terapkan',
+          confirmBtn: 'Konfirmasi Penerimaan'
+        },
+        step7: {
+          tabCreated: 'Pesanan yang Anda buat',
+          tabCancelled: 'Pesanan dibatalkan',
+          searchPlaceholder: 'Masukkan kode SO/ kode SV/ pembuat',
+          exportRequestLabel: 'Permintaan pengeluaran:',
+          transactionTypeLabel: 'Jenis transaksi:',
+          productNameLabel: 'Nama produk:',
+          statusLabel: 'Status:',
+          statusValue: 'Sudah ditagih',
+          noteLabel: 'Catatan:',
+          noteValue: 'Pesanan sudah lunas',
+          custLabel: 'Pelanggan:',
+          collectingLabel: 'Uang yang ditagih:',
+          emptyState: 'Tidak ada transaksi yang cocok dengan filter ini.',
+          btnNew: '🔄 Transaksi Baru'
+        },
+        bottomBar: {
+          totalAmount: 'Total nilai pesanan:',
+          amountDue: 'Jumlah yang harus dibayar:',
+          mainActionBtn: 'BUAT PESANAN & BAYAR'
+        }
+      }
+    };
+
+    const notesContent = {
+      'step-1': {
+        title: 'Step 1: Danh Mục Dịch Vụ & Tiện Ích (Catalog POS)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Điểm khởi đầu cho nhân viên thu ngân (NVST) tiếp cận danh mục 11 nhóm dịch vụ số tại quầy EraBlue.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • Nhóm Bảo hiểm (<em>Insurance</em>) được phân cấp nổi bật trong khu vực Nhóm ngành dịch vụ (Service Sector).<br>
+          • Bấm chọn "Insurance" để mở danh sách dịch vụ bảo hiểm liên kết đối tác.
+        `
+      },
+      'step-2': {
+        title: 'Step 2: Phân Loại Gói Bảo Hiểm (Service Group List)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Phân loại chương trình bảo hiểm thiết bị theo nhu cầu khách hàng.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • <em>Breakage Insurance</em> (Bảo hiểm rơi vỡ / TecProtec): Áp dụng độc quyền với đối tác Bolttech cho ngành hàng điện tử / điện máy.<br>
+          • Hỗ trợ tìm kiếm nhanh theo từ khóa gói dịch vụ.
+        `
+      },
+      'step-3': {
+        title: 'Step 3: Phân Luồng Chương Trình Bolttech (Partner Selection)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Phân luồng bán hàng dựa trên trạng thái vật lý của thiết bị chính.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • <strong>Thẻ 1 (Fulfilled SO):</strong> Dành cho máy có sẵn tại quầy/siêu thị, có thể quét Serial/IMEI thực tế ngay (Luồng Phase 1).<br>
+          • <strong>Thẻ 2 (Unfulfilled SO):</strong> Dành cho thiết bị lớn (TV ≥ 55", Tủ lạnh) xuất giao từ Kho sau (Luồng Phase 2 / Change Request).
+        `
+      },
+      'step-4-1': {
+        title: 'Step 4.1: Bán BHRV Cho Hàng Có Sẵn (Fulfilled SO - Phase 1)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Bán và kích hoạt bảo hiểm kèm thiết bị xuất ngay tại cửa hàng.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • <strong>Quét/Nhập IMEI thật:</strong> Hệ thống tự động tra cứu model (Toshiba 43C350RP) và giá niêm yết (RRP).<br>
+          • <strong>Chọn gói:</strong> Hỗ trợ chu kỳ 12 tháng / 24 tháng, tự động đồng bộ giá vào thanh Bottom CTA.<br>
+          • <strong>Thông tin liên hệ:</strong> Bắt buộc nhập Họ tên, SĐT và Email khách hàng để nhận Hợp đồng điện tử (E-Cert).
+        `
+      },
+      'step-5-1': {
+        title: 'Step 5.1: Tra Cứu Đơn Hàng Giao Sau (Unfulfilled SO Search)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Định danh đơn hàng gốc (SO) chưa xuất kho để bán kèm bảo hiểm.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • <strong>Tiêu chí tìm kiếm:</strong> Hỗ trợ tìm linh hoạt theo <em>Mã yêu cầu xuất (Mã SO)</em> hoặc <em>Số điện thoại khách hàng</em>.<br>
+          • <strong>Kiểm tra trạng thái SO:</strong> Đơn hàng phải ở trạng thái <code>Chưa xuất hàng</code> (Delivery at home / Kho giao sau).
+        `
+      },
+      'step-5-2': {
+        title: 'Step 5.2: Danh Sách Thiết Bị Trong Đơn (SO Item Selection)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Chọn đúng thiết bị đủ điều kiện tham gia bảo hiểm rơi vỡ.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • <strong>Thiết bị chính (Tivi, Gia dụng lớn):</strong> Trạng thái <em>Chưa xuất hàng</em>, <code>Serial/IMEI: N/A</code> $\rightarrow$ Có nút <strong>Chọn</strong> để cấu hình gói.<br>
+          • <strong>Hàng phụ kiện (Giá treo Bracket, Antena):</strong> Không thuộc phạm vi bảo hiểm $\rightarrow$ Vô hiệu hóa từ đầu với nút <code>🔒 Không áp dụng</code>, không cho bấm.
+        `
+      },
+      'step-5-3': {
+        title: 'Step 5.3: Cấu Hình Gói Hàng Giao Sau (Cart By Dummy - Phase 2)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Khởi tạo hợp đồng bảo hiểm chính thức với dữ liệu kích hoạt tạm (Dummy) cho thiết bị xuất kho giao sau.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • <strong>Dummy IMEI & Date:</strong> Tự động gán Dummy Serial <code>999999999999</code> & Ngày kích hoạt tạm thời; Trạng thái hợp đồng ghi nhận <code>fulfillment-pending (Chờ giao)</code>.<br>
+          • <strong>Thông tin khách hàng:</strong> Bắt buộc nhập Họ tên, SĐT, Email (có chip gắn nhanh domain).<br>
+          • <strong>Kích hoạt chính thức:</strong> Hợp đồng sẽ được kích hoạt chuyển sang ACTIVE khi Kho hoàn tất giao hàng tại nhà.
+        `
+      },
+      'step-6': {
+        title: 'Step 6: Thu Tiền Đơn Hàng Tại Quầy POS (Collect Money)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Thu đúng và đủ số tiền phí bảo hiểm từ khách hàng trước khi xuất hợp đồng.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • <strong>Bảng cân đối tài chính:</strong> Hiển thị Tổng tiền, Đã thu, và Còn phải thu (Receivables).<br>
+          • <strong>Phương thức thanh toán:</strong> Hỗ trợ 3 hình thức (Virtual Account ngân hàng, Voucher quà tặng, Quẹt thẻ POS).<br>
+          • Thu đủ 100% số tiền mới kích hoạt nút <em>Xác nhận thu tiền</em> để hoàn tất giao dịch.
+        `
+      },
+      'step-7': {
+        title: 'Step 7: Quản Lý Giao Dịch Đã Thu (Transaction Management)',
+        desc: `
+          <strong>Mục tiêu nghiệp vụ:</strong> Màn hình quản lý kết quả giao dịch và tra cứu lịch sử bán bảo hiểm của NVST.<br>
+          <strong>Quy tắc chính (Business Rules):</strong><br>
+          • <strong>Cập nhật trạng thái:</strong> Đơn hàng vừa hoàn tất thu tiền ở Step 6 hiển thị trạng thái <code>Đã thu tiền</code> (xanh lá) cùng mã yêu cầu xuất SO.<br>
+          • <strong>Bộ lọc:</strong> Hỗ trợ lọc đa chiều theo <em>Đơn đã tạo</em> hoặc <em>Đơn đã hủy</em>.<br>
+          • Cung cấp nút <em>🔄 Bán đơn mới</em> để quay lại Step 1 cho giao dịch tiếp theo.
+        `
+      }
+    };
+
+    function formatRp(price) {
+      return price.toLocaleString('en-US') + 'rp';
+    }
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = text;
+    }
+
+    function setHtml(id, html) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
+    }
+
+    function updatePills() {
+      const container = document.getElementById('step-pills-container');
+      if (!container) return;
+      container.innerHTML = '';
+      const langData = i18n[currentLang] || i18n.vi;
+      allScreens.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = `step-pill ${currentScreen === item.id ? 'active' : ''}`;
+        btn.innerText = (langData.screenPills && langData.screenPills[item.id]) || item.label;
+        btn.onclick = () => navigateTo(item.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function setLanguage(lang) {
+      if (!i18n[lang]) return;
+      currentLang = lang;
+      
+      // Update workbench buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`lang-btn-${lang}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const data = i18n[lang];
+
+      // Update Quick Pills section title
+      const pillsTitleEl = document.getElementById('lbl-pos-pills-title');
+      if (pillsTitleEl) pillsTitleEl.innerText = data.pillsTitle;
+
+      // Update Step 1 (Catalog)
+      const inputSearch1 = document.getElementById('input-search-step-1');
+      if (inputSearch1) inputSearch1.placeholder = data.step1.searchPlaceholder;
+      const lblPayType = document.getElementById('lbl-sec-payment-type');
+      if (lblPayType) lblPayType.innerText = data.step1.paymentType;
+      const lblSvcSec = document.getElementById('lbl-sec-service-sector');
+      if (lblSvcSec) lblSvcSec.innerText = data.step1.serviceSector;
+      const lblIns = document.getElementById('lbl-service-insurance');
+      if (lblIns) lblIns.innerText = data.step1.insurance;
+      const lblColl = document.getElementById('lbl-service-collection');
+      if (lblColl) lblColl.innerText = data.step1.collection;
+      const lblTop = document.getElementById('lbl-service-topup');
+      if (lblTop) lblTop.innerText = data.step1.topup;
+
+      // Update Step 2 (Service Group)
+      const inputSearch2 = document.getElementById('input-search-step-2');
+      if (inputSearch2) inputSearch2.placeholder = data.step2.searchPlaceholder;
+      const lblBreakage = document.getElementById('lbl-svc-breakage-ins');
+      if (lblBreakage) lblBreakage.innerHTML = data.step2.breakageIns;
+
+      // Update Step 3 (Partner Selection)
+      document.querySelectorAll('.i18n-ins-benefits').forEach(el => {
+        el.innerHTML = data.step3.insBenefits;
+      });
+
+      // Update Step 4.1 (Fulfilled SO)
+      const p1ImeiInput = document.getElementById('p1-imei-input');
+      if (p1ImeiInput) p1ImeiInput.placeholder = data.step4_1.imeiPlaceholder;
+      const lblP1Prod = document.getElementById('lbl-p1-prod');
+      if (lblP1Prod) lblP1Prod.innerText = data.step4_1.prod;
+      const lblP1Price = document.getElementById('lbl-p1-price');
+      if (lblP1Price) lblP1Price.innerText = data.step4_1.price;
+      const lblP1Cust = document.getElementById('lbl-p1-cust');
+      if (lblP1Cust) lblP1Cust.innerText = data.step4_1.cust;
+      const lblP1Phone = document.getElementById('lbl-p1-phone');
+      if (lblP1Phone) lblP1Phone.innerText = data.step4_1.phone;
+      const lblP1Export = document.getElementById('lbl-p1-export-time');
+      if (lblP1Export) lblP1Export.innerText = data.step4_1.exportTime;
+      const lblP1PkgSec = document.getElementById('lbl-p1-pkg-section');
+      if (lblP1PkgSec) lblP1PkgSec.innerText = data.step4_1.pkgSection;
+      const pillP1_12m = document.getElementById('pill-p1-12m');
+      if (pillP1_12m) pillP1_12m.innerText = data.step4_1.dur12;
+      const pillP1_24m = document.getElementById('pill-p1-24m');
+      if (pillP1_24m) pillP1_24m.innerText = data.step4_1.dur24;
+      const lblP1PayTitle = document.getElementById('lbl-p1-pay-title');
+      if (lblP1PayTitle) lblP1PayTitle.innerText = data.step4_1.payTitle;
+      const lblP1InsuredProd = document.getElementById('lbl-p1-insured-prod');
+      if (lblP1InsuredProd) lblP1InsuredProd.innerText = data.step4_1.insuredProd;
+      const lblP1InsuredAmt = document.getElementById('lbl-p1-insured-amount');
+      if (lblP1InsuredAmt) lblP1InsuredAmt.innerText = data.step4_1.insuredAmount;
+      const lblP1EffPeriod = document.getElementById('lbl-p1-effective-period');
+      if (lblP1EffPeriod) lblP1EffPeriod.innerText = data.step4_1.effectivePeriod;
+      const lblP1PkgFee = document.getElementById('lbl-p1-pkg-fee');
+      if (lblP1PkgFee) lblP1PkgFee.innerText = data.step4_1.pkgFee;
+      setHtml('lbl-p1-cust-name-input', data.step4_1.custNameInput);
+      setHtml('lbl-p1-cust-phone-input', data.step4_1.custPhoneInput);
+      setHtml('lbl-p1-cust-email-input', data.step4_1.custEmailInput);
+      const p1CustEmailField = document.getElementById('p1-cust-email-input');
+      if (p1CustEmailField) p1CustEmailField.placeholder = data.step4_1.custEmailPlaceholder;
+      setText('lbl-p1-quick-email', data.step4_1.quickEmailLabel);
+
+      // Update Modal
+      const modalTitle = document.getElementById('modal-pkg-title');
+      if (modalTitle) modalTitle.innerText = data.modal.title;
+
+      // Update Step 5.1 (Unfulfilled SO)
+      const txtOptSo = document.getElementById('txt-opt-so');
+      if (txtOptSo) txtOptSo.innerText = data.step5_1.criteriaSo;
+      const txtOptPhone = document.getElementById('txt-opt-phone');
+      if (txtOptPhone) txtOptPhone.innerText = data.step5_1.criteriaPhone;
+      const labelSelected = document.getElementById('p2-search-selected-label');
+      if (labelSelected) {
+        labelSelected.innerText = currentSearchCriterion === 'phone' ? data.step5_1.criteriaPhone : data.step5_1.criteriaSo;
+      }
+      const p2SoInput = document.getElementById('p2-so-input');
+      if (p2SoInput) {
+        p2SoInput.placeholder = currentSearchCriterion === 'phone' ? data.step5_1.searchPhone : data.step5_1.searchSo;
+      }
+      const lblSoCode = document.getElementById('lbl-so-code-title');
+      if (lblSoCode) lblSoCode.innerText = data.step5_1.orderCode;
+      const lblCust = document.getElementById('lbl-cust-name-title');
+      if (lblCust) lblCust.innerText = data.step5_1.cust;
+      const lblPhone = document.getElementById('lbl-phone-title');
+      if (lblPhone) lblPhone.innerText = data.step5_1.phone;
+      const lblCreateDate = document.getElementById('lbl-create-date-title');
+      if (lblCreateDate) lblCreateDate.innerText = data.step5_1.createDate;
+      const lblSoType = document.getElementById('lbl-so-type-title');
+      if (lblSoType) lblSoType.innerText = data.step5_1.soType;
+      setText('lbl-so-status-title', data.step5_1.statusLabel);
+      setText('val-so-status', data.step5_1.statusVal);
+      const lblTotalPay = document.getElementById('lbl-total-pay-title');
+      if (lblTotalPay) lblTotalPay.innerText = data.step5_1.totalPay;
+      const lblDebt = document.getElementById('lbl-debt-title');
+      if (lblDebt) lblDebt.innerText = data.step5_1.debt;
+      const btnDetail = document.getElementById('btn-view-detail');
+      if (btnDetail) btnDetail.innerText = data.step5_1.viewDetail;
+
+      // Update Step 5.2 (Items in SO)
+      const bannerSo1 = document.getElementById('banner-so-code-1');
+      if (bannerSo1) bannerSo1.innerText = data.step5_2.bannerSo;
+      const bannerSo2 = document.getElementById('banner-so-code-2');
+      if (bannerSo2) bannerSo2.innerText = data.step5_2.bannerSo;
+      const bannerSo3 = document.getElementById('banner-so-code-3');
+      if (bannerSo3) bannerSo3.innerText = data.step5_2.bannerSo;
+      ['lbl-prod-item-1', 'lbl-prod-item-2', 'lbl-prod-item-3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = data.step5_2.prod;
+      });
+      ['lbl-item-status-1', 'lbl-item-status-2', 'lbl-item-status-3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = data.step5_2.statusLabel;
+      });
+      ['val-item-status-1', 'val-item-status-2', 'val-item-status-3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = data.step5_2.statusVal;
+      });
+      ['val-no-imei-1', 'val-no-imei-2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = data.step5_2.noImei;
+      });
+      document.querySelectorAll('.btn-select-device').forEach(btn => {
+        btn.innerText = data.step5_2.btnSelect;
+      });
+      document.querySelectorAll('.btn-disabled-label').forEach(el => {
+        el.innerText = data.step5_2.btnNotApplicable;
+      });
+
+      // Update Step 5.3 (Cart By Dummy)
+      const badgeDelivery = document.getElementById('badge-p2-delivery');
+      if (badgeDelivery) badgeDelivery.innerText = data.step5_3.deliveryBadge;
+      const lblP2Prod = document.getElementById('lbl-p2-prod');
+      if (lblP2Prod) lblP2Prod.innerText = data.step5_3.prod;
+      const lblP2Price = document.getElementById('lbl-p2-price');
+      if (lblP2Price) lblP2Price.innerText = data.step5_3.price;
+      const lblSerialDevice = document.getElementById('lbl-serial-imei-device');
+      if (lblSerialDevice) lblSerialDevice.innerText = data.step5_3.serialImei;
+      const lblP2Status = document.getElementById('lbl-p2-status');
+      if (lblP2Status) lblP2Status.innerText = data.step5_3.statusLabel;
+      const valP2Status = document.getElementById('val-p2-status');
+      if (valP2Status) valP2Status.innerText = data.step5_3.statusVal;
+      const lblP2Cust = document.getElementById('lbl-p2-cust');
+      if (lblP2Cust) lblP2Cust.innerText = data.step5_3.cust;
+      const lblP2Phone = document.getElementById('lbl-p2-phone');
+      if (lblP2Phone) lblP2Phone.innerText = data.step5_3.phone;
+      setHtml('lbl-p2-cust-name-input', data.step5_3.custNameInput);
+      setHtml('lbl-p2-cust-phone-input', data.step5_3.custPhoneInput);
+      setHtml('lbl-p2-cust-email-input', data.step5_3.custEmailInput);
+      const p2EmailField = document.getElementById('p2-email-input');
+      if (p2EmailField) p2EmailField.placeholder = data.step5_3.custEmailPlaceholder;
+      setText('lbl-p2-quick-email', data.step5_3.quickEmailLabel);
+      const lblP2PkgSec = document.getElementById('lbl-p2-pkg-section');
+      if (lblP2PkgSec) lblP2PkgSec.innerText = data.step5_3.pkgSection;
+      const pillP2_12m = document.getElementById('pill-p2-12m');
+      if (pillP2_12m) pillP2_12m.innerText = data.step5_3.dur12;
+      const pillP2_24m = document.getElementById('pill-p2-24m');
+      if (pillP2_24m) pillP2_24m.innerText = data.step5_3.dur24;
+      const lblP2PayTitle = document.getElementById('lbl-p2-pay-title');
+      if (lblP2PayTitle) lblP2PayTitle.innerText = data.step5_3.payTitle;
+      const lblP2InsuredProd = document.getElementById('lbl-p2-insured-prod');
+      if (lblP2InsuredProd) lblP2InsuredProd.innerText = data.step5_3.insuredProd;
+      const lblSerialPay = document.getElementById('lbl-serial-imei-pay');
+      if (lblSerialPay) lblSerialPay.innerText = data.step5_3.serialImei;
+      const lblP2ContractStatus = document.getElementById('lbl-p2-contract-status');
+      if (lblP2ContractStatus) lblP2ContractStatus.innerText = data.step5_3.contractStatusLabel;
+      const valP2ContractStatus = document.getElementById('val-p2-contract-status');
+      if (valP2ContractStatus) valP2ContractStatus.innerText = data.step5_3.contractStatusVal;
+      const lblP2EffDate = document.getElementById('lbl-p2-effective-date');
+      if (lblP2EffDate) lblP2EffDate.innerText = data.step5_3.effectiveDateLabel;
+      const valP2EffDate = document.getElementById('val-p2-effective-date');
+      if (valP2EffDate) valP2EffDate.innerText = data.step5_3.effectiveDateVal;
+      const lblP2PkgFee = document.getElementById('lbl-p2-pkg-fee');
+      if (lblP2PkgFee) lblP2PkgFee.innerText = data.step5_3.pkgFeeLabel;
+
+      // Update Step 6: Collect Money labels
+      const s6 = data.step6;
+      setText('lbl-s6-store', s6.summaryStore);
+      setText('lbl-s6-cust', s6.summaryCust);
+      setText('lbl-s6-phone', s6.summaryPhone);
+      setText('lbl-s6-sales', s6.summarySales);
+      setText('lbl-s6-total', s6.totalLabel);
+      setText('lbl-s6-collected', s6.collectedLabel);
+      setText('lbl-s6-remain', s6.remainLabel);
+      setText('lbl-s6-va-title', s6.vaTitle);
+      setText('lbl-s6-va-bank', s6.vaBankLabel);
+      setText('lbl-s6-va-amount', s6.vaAmountLabel);
+      setText('lbl-s6-va-apply', s6.applyBtn);
+      setText('lbl-s6-voucher-title', s6.voucherTitle);
+      setText('lbl-s6-voucher-code', s6.voucherCodeLabel);
+      setText('lbl-s6-voucher-apply', s6.applyBtn);
+      setText('lbl-s6-card-title', s6.cardTitle);
+      setText('lbl-s6-card-amount', s6.cardAmountLabel);
+      setText('lbl-s6-card-apply', s6.applyBtn);
+      setText('lbl-s6-confirm', s6.confirmBtn);
+      const s6VoucherInput = document.getElementById('s6-voucher-code-input');
+      if (s6VoucherInput) s6VoucherInput.placeholder = s6.voucherCodePlaceholder;
+
+      // Update Step 7: Transaction List labels
+      const s7 = data.step7;
+      setText('lbl-s7-tab-created', s7.tabCreated);
+      setText('lbl-s7-tab-cancelled', s7.tabCancelled);
+      setText('lbl-s7-export-req', s7.exportRequestLabel);
+      setText('lbl-s7-txn-type', s7.transactionTypeLabel);
+      setText('lbl-s7-prod-name', s7.productNameLabel);
+      setText('lbl-s7-status', s7.statusLabel);
+      setText('s7-status-value', s7.statusValue);
+      setText('lbl-s7-note', s7.noteLabel);
+      setText('s7-note-value', s7.noteValue);
+      setText('lbl-s7-cust', s7.custLabel);
+      setText('lbl-s7-collecting', s7.collectingLabel);
+      setText('lbl-s7-empty', s7.emptyState);
+      setText('lbl-s7-new-order', s7.btnNew);
+      const s7SearchInput = document.getElementById('s7-search-input');
+      if (s7SearchInput) s7SearchInput.placeholder = s7.searchPlaceholder;
+
+      // Update Bottom Bar
+      const lblBarTotal = document.getElementById('lbl-bar-total-amount');
+      if (lblBarTotal) lblBarTotal.innerText = data.bottomBar.totalAmount;
+      const lblBarDue = document.getElementById('lbl-bar-amount-due');
+      if (lblBarDue) lblBarDue.innerText = data.bottomBar.amountDue;
+
+      const mainBtn = document.getElementById('pos-main-action-btn');
+      if (mainBtn && (currentScreen === 'step-4-1' || currentScreen === 'step-p2-config')) {
+        mainBtn.innerText = data.bottomBar.mainActionBtn;
+      }
+
+      // Update current header title
+      const headerTitle = document.getElementById('pos-header-title');
+      if (headerTitle && data.screenTitles[currentScreen]) {
+        headerTitle.innerText = data.screenTitles[currentScreen];
+      }
+
+      updatePills();
+      showToast(`🌐 Ngôn ngữ / Language: ${lang.toUpperCase()}`);
+    }
+
+    function cycleLanguage() {
+      const nextLang = currentLang === 'vi' ? 'en' : (currentLang === 'en' ? 'id' : 'vi');
+      setLanguage(nextLang);
+    }
+
+    function navigateTo(screenId) {
+      currentScreen = screenId;
+      document.querySelectorAll('.screen-view').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(`view-${screenId}`);
+      if (target) target.classList.add('active');
+
+      const currentObj = allScreens.find(s => s.id === screenId) || allScreens[0];
+      const langData = i18n[currentLang] || i18n.vi;
+
+      // Update Header Elements
+      const headerTitle = document.getElementById('pos-header-title');
+      if (headerTitle) {
+        headerTitle.innerText = (langData.screenTitles && langData.screenTitles[screenId]) || currentObj.title;
+      }
+      
+      const storeBadge = document.getElementById('pos-store-badge');
+      if (storeBadge && currentObj.store) storeBadge.innerText = '🏪 ' + currentObj.store;
+
+      const speedEl = document.getElementById('pos-speed');
+      if (speedEl && currentObj.speed) speedEl.innerHTML = `● ${currentObj.speed}`;
+
+      const clockEl = document.getElementById('pos-clock');
+      if (clockEl && currentObj.clock) clockEl.innerText = currentObj.clock;
+
+      const batteryEl = document.getElementById('pos-battery');
+      if (batteryEl && currentObj.battery) batteryEl.innerText = `${currentObj.battery} 🔋`;
+
+      // Always EraBlue Blue Header (remove any green class)
+      const posHeader = document.getElementById('pos-header-bar');
+      if (posHeader) {
+        posHeader.classList.remove('theme-green');
+      }
+
+      // Update Bottom Bar visibility & price
+      const bottomBar = document.getElementById('pos-bottom-bar');
+      if (screenId === 'step-4-1') {
+        bottomBar.style.display = 'block';
+        selectDurationP1(12, 499000);
+        document.getElementById('pos-main-action-btn').innerText = langData.bottomBar.mainActionBtn;
+      } else if (screenId === 'step-p2-config') {
+        bottomBar.style.display = 'block';
+        selectDurationP2(12, 499000);
+        document.getElementById('pos-main-action-btn').innerText = langData.bottomBar.mainActionBtn;
+      } else {
+        bottomBar.style.display = 'none';
+      }
+
+      // Update Workbench top button states
+      const btnAll = document.getElementById('btn-flow-all');
+      const btnP1 = document.getElementById('btn-flow-p1');
+      const btnP2 = document.getElementById('btn-flow-p2');
+      if (btnAll) btnAll.classList.toggle('active', screenId === 'step-1' || screenId === 'step-2' || screenId === 'step-3');
+      if (btnP1) btnP1.classList.toggle('active', screenId === 'step-4-1' || ((screenId === 'step-6' || screenId === 'step-7') && lastConfigScreen === 'step-4-1'));
+      if (btnP2) btnP2.classList.toggle('active', screenId.startsWith('step-5') || screenId === 'step-p2-config' || ((screenId === 'step-6' || screenId === 'step-7') && lastConfigScreen === 'step-p2-config'));
+
+      // Update BA Note
+      const note = notesContent[screenId] || { title: 'Thông tin màn hình', desc: '' };
+      document.getElementById('ba-context-note').innerHTML = `
+        <h3>📌 ${note.title}</h3>
+        <p>${note.desc}</p>
+      `;
+
+      updatePills();
+    }
+
+    function handlePosBack() {
+      if (currentScreen === 'step-7') {
+        navigateTo('step-6');
+      } else if (currentScreen === 'step-6') {
+        navigateTo(lastConfigScreen);
+      } else if (currentScreen === 'step-p2-config') {
+        navigateTo('step-5-2');
+      } else if (currentScreen === 'step-5-2') {
+        navigateTo('step-5-1');
+      } else if (currentScreen === 'step-5-1' || currentScreen === 'step-4-1') {
+        navigateTo('step-3');
+      } else if (currentScreen === 'step-3') {
+        navigateTo('step-2');
+      } else if (currentScreen === 'step-2') {
+        navigateTo('step-1');
+      } else {
+        navigateTo('step-1');
+      }
+    }
+
+    function toggleAccordion(id) {
+      const content = document.getElementById(id);
+      const icon = document.getElementById(`${id}-icon`);
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        if (icon) icon.innerText = '⬆';
+      } else {
+        content.style.display = 'none';
+        if (icon) icon.innerText = '⬇';
+      }
+    }
+
+    function selectDurationP1(months, price) {
+      const pill12 = document.getElementById('pill-p1-12m');
+      const pill24 = document.getElementById('pill-p1-24m');
+      if (pill12) pill12.classList.toggle('active', months === 12);
+      if (pill24) pill24.classList.toggle('active', months === 24);
+      const periodEl = document.getElementById('p1-period');
+      if (periodEl) periodEl.innerText = months === 12 ? '07/09/2026 - 07/09/2027' : '07/09/2026 - 07/09/2028';
+      const pkgPriceEl = document.getElementById('p1-pkg-price');
+      if (pkgPriceEl) pkgPriceEl.innerText = formatRp(price);
+      updatePriceDisplay(price);
+    }
+
+    function selectDurationP2(months, price) {
+      const pill12 = document.getElementById('pill-p2-12m');
+      const pill24 = document.getElementById('pill-p2-24m');
+      if (pill12) pill12.classList.toggle('active', months === 12);
+      if (pill24) pill24.classList.toggle('active', months === 24);
+      const pkgPriceEl = document.getElementById('p2-pkg-price');
+      if (pkgPriceEl) pkgPriceEl.innerText = formatRp(price);
+      updatePriceDisplay(price);
+    }
+
+    function updatePriceDisplay(price) {
+      currentAmount = price;
+      const fmt = formatRp(price);
+      const sumTotal = document.getElementById('pos-summary-total');
+      if (sumTotal) sumTotal.innerText = fmt;
+      const sumDue = document.getElementById('pos-summary-due');
+      if (sumDue) sumDue.innerText = fmt;
+      const succAmt = document.getElementById('success-amount');
+      if (succAmt) succAmt.innerText = fmt;
+    }
+
+    function appendEmailDomain(domain, targetId) {
+      const inp = document.getElementById(targetId || 'p2-email-input');
+      if (!inp) return;
+      let val = inp.value.trim();
+      if (val.includes('@')) {
+        val = val.split('@')[0];
+      }
+      if (!val) val = 'zidan.santoso';
+      inp.value = val + domain;
+      showToast(`📧 Đã điền nhanh: ${inp.value}`);
+    }
+
+    let lastConfigScreen = 'step-4-1';
+    let s6TotalAmount = 0;
+    let s6CollectedAmount = 0;
+
+    function handleMainAction() {
+      if (currentScreen === 'step-4-1') {
+        const name = document.getElementById('p1-cust-name-input').value.trim();
+        const phone = document.getElementById('p1-cust-phone-input').value.trim();
+        const email = document.getElementById('p1-cust-email-input').value.trim();
+        if (!name || !phone || !email || !email.includes('@')) {
+          showToast('⚠️ Vui lòng nhập đầy đủ Họ tên / Số điện thoại / Email khách hàng!');
+          return;
+        }
+        lastConfigScreen = 'step-4-1';
+        openCollectMoney(name, phone, currentAmount);
+      } else if (currentScreen === 'step-p2-config') {
+        const name = document.getElementById('p2-cust-name-input').value.trim();
+        const phone = document.getElementById('p2-cust-phone-input').value.trim();
+        const email = document.getElementById('p2-email-input').value.trim();
+        if (!name || !phone || !email || !email.includes('@')) {
+          showToast('⚠️ Vui lòng nhập đầy đủ Họ tên / Số điện thoại / Email khách hàng!');
+          return;
+        }
+        lastConfigScreen = 'step-p2-config';
+        openCollectMoney(name, phone, currentAmount);
+      }
+    }
+
+    // ==========================================
+    // SCREEN 6: COLLECT MONEY LOGIC
+    // ==========================================
+    function openCollectMoney(custName, custPhone, amount) {
+      s6TotalAmount = amount;
+      s6CollectedAmount = 0;
+      const nameEl = document.getElementById('s6-cust-name');
+      if (nameEl) nameEl.innerText = custName;
+      const phoneEl = document.getElementById('s6-cust-phone');
+      if (phoneEl) phoneEl.innerText = custPhone;
+      // Reset input các hình thức thu tiền của lần trước (nếu có)
+      const vaInput = document.getElementById('s6-va-amount-input');
+      if (vaInput) vaInput.value = '';
+      const cardInput = document.getElementById('s6-card-amount-input');
+      if (cardInput) cardInput.value = '';
+      const voucherInput = document.getElementById('s6-voucher-code-input');
+      if (voucherInput) voucherInput.value = '';
+      updateS6Summary();
+      navigateTo('step-6');
+    }
+
+    function updateS6Summary() {
+      const totalEl = document.getElementById('s6-total-amount');
+      if (totalEl) totalEl.innerText = formatRp(s6TotalAmount);
+      const collectedEl = document.getElementById('s6-collected-amount');
+      if (collectedEl) collectedEl.innerText = formatRp(s6CollectedAmount);
+      const remainEl = document.getElementById('s6-remain-amount');
+      if (remainEl) remainEl.innerText = formatRp(Math.max(s6TotalAmount - s6CollectedAmount, 0));
+    }
+
+    // NOTE: Áp dụng theo từng hình thức (VA / Voucher / Card) hiện chỉ ghi nhận số tiền tạm thời,
+    // KHÔNG tự động chuyển màn. Luồng nghiệp vụ chi tiết phía sau mỗi hình thức sẽ được bổ sung sau
+    // theo mô tả của Khánh Ly. Nút "Xác nhận thu tiền" cuối màn mới là nút thực sự hoàn tất Step 6.
+    function applyPayment(method) {
+      const methodLabel = { va: 'Tài khoản ảo (Virtual Account)', voucher: 'Voucher', card: 'Thẻ' }[method] || method;
+
+      if (method === 'voucher') {
+        const code = document.getElementById('s6-voucher-code-input').value.trim();
+        if (!code) {
+          showToast('⚠️ Vui lòng nhập mã voucher!');
+          return;
+        }
+        showToast(`🎟️ Đã ghi nhận mã voucher: ${code}`);
+        return;
+      }
+
+      const inputId = method === 'va' ? 's6-va-amount-input' : 's6-card-amount-input';
+      const amount = Number(document.getElementById(inputId).value) || 0;
+      if (amount <= 0) {
+        showToast('⚠️ Vui lòng nhập số tiền hợp lệ!');
+        return;
+      }
+
+      s6CollectedAmount = Math.min(s6CollectedAmount + amount, s6TotalAmount);
+      updateS6Summary();
+      showToast(`✅ Đã ghi nhận ${formatRp(amount)} qua ${methodLabel}!`);
+    }
+
+    function confirmCollectMoney() {
+      const s7CollectedEl = document.getElementById('s7-collected-amount');
+      if (s7CollectedEl) s7CollectedEl.innerText = formatRp(s6CollectedAmount);
+      const s6CustName = document.getElementById('s6-cust-name').innerText;
+      const s7CustEl = document.getElementById('s7-cust-name');
+      if (s7CustEl) s7CustEl.innerText = s6CustName;
+
+      navigateTo('step-7');
+    }
+
+    function toggleTxnFilter() {
+      const created = document.getElementById('chk-s7-created').checked;
+      const cancelled = document.getElementById('chk-s7-cancelled').checked;
+      // Demo data: đơn hàng mẫu duy nhất là "đơn bạn tạo" và CHƯA từng bị hủy.
+      // Mỗi checkbox là 1 tiêu chí lọc độc lập (AND): tick "Đơn đã hủy" nghĩa là chỉ hiện
+      // đơn có trạng thái hủy => đơn mẫu (chưa hủy) sẽ bị ẩn ngay khi tiêu chí này được bật.
+      const matches = !cancelled;
+      const card = document.getElementById('s7-order-card');
+      const emptyState = document.getElementById('s7-empty-state');
+      if (card) card.style.display = matches ? '' : 'none';
+      if (emptyState) emptyState.style.display = matches ? 'none' : 'block';
+      if (cancelled) {
+        showToast('🔍 Lọc theo: Đơn đã hủy');
+      } else if (created) {
+        showToast('🔍 Lọc theo: Đơn đã tạo');
+      } else {
+        showToast('🔍 Đã bỏ chọn bộ lọc');
+      }
+    }
+
+    // ==========================================
+    // MODAL POPUP CHOOSER FOR INSURANCE PACKAGE (Fix single selection)
+    // ==========================================
+    function openPkgModal(target) {
+      currentPkgTarget = target || 'p1';
+      const backdrop = document.getElementById('pkg-modal-backdrop');
+      if (backdrop) backdrop.classList.add('active');
+    }
+
+    function closePkgModal(e) {
+      if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close-btn')) return;
+      const backdrop = document.getElementById('pkg-modal-backdrop');
+      if (backdrop) backdrop.classList.remove('active');
+    }
+
+    function selectPkgOption(pkgId, name) {
+      selectedPackageName = name;
+      // Toggle .selected ONLY on the chosen pkgId
+      document.querySelectorAll('.pkg-option-item').forEach(item => {
+        item.classList.toggle('selected', item.id === pkgId);
+      });
+      const p1El = document.getElementById('p1-selected-pkg-name');
+      if (p1El && currentPkgTarget === 'p1') p1El.innerText = name;
+      const p2El = document.getElementById('p2-selected-pkg-name');
+      if (p2El && currentPkgTarget === 'p2') p2El.innerText = name;
+      
+      const backdrop = document.getElementById('pkg-modal-backdrop');
+      if (backdrop) backdrop.classList.remove('active');
+      showToast(`✅ Đã chọn gói: ${name}`);
+    }
+
+    // Custom App Dropdown for Step 5.1
+    let currentSearchCriterion = 'so';
+
+    function toggleSearchDropdown() {
+      const menu = document.getElementById('p2-search-dropdown-menu');
+      const trigger = document.getElementById('p2-search-dropdown-trigger');
+      if (!menu || !trigger) return;
+      const isOpen = menu.classList.contains('show');
+      if (isOpen) {
+        closeSearchDropdown();
+      } else {
+        menu.classList.add('show');
+        trigger.classList.add('open');
+      }
+    }
+
+    function closeSearchDropdown() {
+      const menu = document.getElementById('p2-search-dropdown-menu');
+      const trigger = document.getElementById('p2-search-dropdown-trigger');
+      if (menu) menu.classList.remove('show');
+      if (trigger) trigger.classList.remove('open');
+    }
+
+    function selectSearchCriterion(type) {
+      currentSearchCriterion = type;
+      closeSearchDropdown();
+
+      const langData = i18n[currentLang] || i18n.vi;
+      const isPhone = type === 'phone';
+
+      // Update Trigger Icon & Label
+      const iconEl = document.getElementById('p2-search-selected-icon');
+      if (iconEl) iconEl.innerText = isPhone ? '📞' : '📄';
+      const labelEl = document.getElementById('p2-search-selected-label');
+      if (labelEl) labelEl.innerText = isPhone ? langData.step5_1.criteriaPhone : langData.step5_1.criteriaSo;
+
+      // Update Active state & Checkmark
+      const optSo = document.getElementById('opt-search-so');
+      const optPhone = document.getElementById('opt-search-phone');
+      const chkSo = document.getElementById('chk-opt-so');
+      const chkPhone = document.getElementById('chk-opt-phone');
+
+      if (optSo) optSo.classList.toggle('active', !isPhone);
+      if (optPhone) optPhone.classList.toggle('active', isPhone);
+      if (chkSo) chkSo.style.display = !isPhone ? 'inline' : 'none';
+      if (chkPhone) chkPhone.style.display = isPhone ? 'inline' : 'none';
+
+      onSearchCriterionChange(type);
+    }
+
+    // Search Criterion toggle for Step 5.1
+    function onSearchCriterionChange(type) {
+      const input = document.getElementById('p2-so-input');
+      if (!input) return;
+      const langData = i18n[currentLang] || i18n.vi;
+      if (type === 'phone') {
+        input.value = '0895366770136';
+        input.placeholder = (langData.step5_1 && langData.step5_1.searchPhone) || 'Nhập số điện thoại khách...';
+      } else {
+        input.value = '13274SO26090087339';
+        input.placeholder = (langData.step5_1 && langData.step5_1.searchSo) || 'Nhập mã SO...';
+      }
+      const label = type === 'phone' ? langData.step5_1.criteriaPhone : langData.step5_1.criteriaSo;
+      showToast(`🔍 ${label}`);
+    }
+
+    document.addEventListener('click', function(e) {
+      const wrap = document.getElementById('p2-search-dropdown-wrap');
+      if (wrap && !wrap.contains(e.target)) {
+        closeSearchDropdown();
+      }
+    });
+
+    // ==========================================
+    // LIVE IN-PLACE EDIT MODE & LOCAL STORAGE AUTO-SAVE
+    // ==========================================
+    let isLiveEditActive = false;
+    let toastTimeout = null;
+
+    const EDITABLE_SELECTORS = [
+      '.header-title', '.header-subtitle', '.section-label',
+      '.service-label', '.partner-info h4', '.partner-info p',
+      '.accordion-title span', '.data-label', '.data-value',
+      '.primary-btn', '.duration-pill', '.tag-badge',
+      'h3', 'h4', 'p', '.benefits-pill-btn span',
+      '.info-banner div', '.warning-banner div', '.price-due'
+    ].join(', ');
+
+    function toggleLiveEdit(forceState) {
+      if (typeof forceState === 'boolean') {
+        isLiveEditActive = forceState;
+      } else {
+        isLiveEditActive = !isLiveEditActive;
+      }
+
+      document.body.classList.toggle('live-edit-active', isLiveEditActive);
+      const btn = document.getElementById('btn-toggle-edit');
+      const label = document.getElementById('edit-status-label');
+
+      if (btn) btn.classList.toggle('active', isLiveEditActive);
+      if (label) label.innerText = isLiveEditActive ? 'BẬT' : 'TẮT';
+
+      applyContentEditable(isLiveEditActive);
+
+      if (isLiveEditActive) {
+        showToast('✏️ Đã BẬT Chế độ Sửa trực tiếp! Nhấp vào bất kỳ chữ nào để sửa.');
+      } else {
+        showToast('🔒 Đã TẮT Chế độ Sửa trực tiếp.');
+      }
+    }
+
+    function applyContentEditable(enable) {
+      const frame = document.querySelector('.pos-device-frame');
+      if (!frame) return;
+
+      const elements = frame.querySelectorAll(EDITABLE_SELECTORS);
+      elements.forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return;
+
+        if (enable) {
+          el.setAttribute('contenteditable', 'true');
+          el.setAttribute('spellcheck', 'false');
+          el.oninput = handleLiveContentChange;
+        } else {
+          el.removeAttribute('contenteditable');
+        }
+      });
+    }
+
+    function handleLiveContentChange() {
+      saveScreensToLocalStorage();
+      showToast('🟢 Đã tự động lưu vào bộ nhớ! (F5 không mất)');
+    }
+
+    function saveScreensToLocalStorage() {
+      const container = document.getElementById('pos-screen-container');
+      if (container) {
+        localStorage.setItem('erablue_pos_screens_saved_v8', container.innerHTML);
+      }
+    }
+
+    function restoreScreensFromLocalStorage() {
+      // Clear legacy storage keys
+      localStorage.removeItem('erablue_pos_screens_saved_v1');
+      localStorage.removeItem('erablue_pos_screens_saved_v2');
+      localStorage.removeItem('erablue_pos_screens_saved_v3');
+      localStorage.removeItem('erablue_pos_screens_saved_v4');
+      localStorage.removeItem('erablue_pos_screens_saved_v5');
+      localStorage.removeItem('erablue_pos_screens_saved_v6');
+      localStorage.removeItem('erablue_pos_screens_saved_v7');
+      const saved = localStorage.getItem('erablue_pos_screens_saved_v8');
+      if (saved) {
+        const container = document.getElementById('pos-screen-container');
+        if (container) {
+          container.innerHTML = saved;
+          showToast('⚡ Đã tải lại các chỉnh sửa đã lưu trước đó của bạn!');
+        }
+      }
+    }
+
+    function downloadEditedHTML() {
+      const wasActive = isLiveEditActive;
+      if (wasActive) toggleLiveEdit(false);
+
+      const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      if (wasActive) toggleLiveEdit(true);
+      showToast('💾 Đã tải file index.html mới về máy! Bạn chỉ cần ghi đè file là xong.');
+    }
+
+    function resetDefault() {
+      if (confirm('Khôi phục toàn bộ giao diện về bản gốc mặc định của EraBlue?\nMọi chỉnh sửa trực tiếp trước đó sẽ bị xóa.')) {
+        localStorage.removeItem('erablue_pos_screens_saved_v1');
+        localStorage.removeItem('erablue_pos_screens_saved_v2');
+        localStorage.removeItem('erablue_pos_screens_saved_v3');
+        localStorage.removeItem('erablue_pos_screens_saved_v4');
+        localStorage.removeItem('erablue_pos_screens_saved_v5');
+        localStorage.removeItem('erablue_pos_screens_saved_v6');
+        localStorage.removeItem('erablue_pos_screens_saved_v7');
+        localStorage.removeItem('erablue_pos_screens_saved_v8');
+        location.reload();
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('save-toast');
+      const msgSpan = document.getElementById('save-toast-msg');
+      if (!toast || !msgSpan) return;
+
+      msgSpan.innerText = message;
+      toast.classList.add('show');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Init
+    restoreScreensFromLocalStorage();
+    updatePills();
+    navigateTo('step-1');
+  </script>
+</body>
+</html>
