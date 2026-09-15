@@ -1,278 +1,519 @@
 ﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>81759 - TRẦN THỊ KHÁNH LY | BHRV Bolttech Phase 2</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>T&#xE0;i Li&#x1EC7;u Y&#xEA;u C&#x1EA7;u Ph&#x1EA7;n M&#x1EC1;m (SRS)</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
     <style>
         :root {
-            --primary: #0088cc;
-            --primary-dark: #006699;
-            --primary-light: #e6f4fa;
-            --bg: #f6f8fa;
-            --surface: #ffffff;
-            --text-main: #1f2328;
-            --text-muted: #656d76;
-            --border: #d0d7de;
-            --border-light: #eaeef2;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --shadow-focus: 0 0 0 3px rgba(0, 136, 204, 0.25);
-            --radius: 16px;
-            --transition: all 0.2s ease-in-out;
+            --bg-color: #ffffff;
+            --toc-bg: #f4f6f8;
+            --text-color: #333;
+            --border-color: #ddd;
+            --link-color: #0366d6;
+            --code-inline-color: #c7254e;
+            --code-inline-bg: #f0f0f0;
+            --blockquote-bg: #f6f8fa;
+            --blockquote-border: #3b82f6;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg: #0d1117;
-                --surface: #161b22;
-                --text-main: #f0f6fc;
-                --text-muted: #8b949e;
-                --border: #30363d;
-                --border-light: #21262d;
-                --primary-light: #12283a;
-                --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+                --bg-color: #0d1117;
+                --toc-bg: #161b22;
+                --text-color: #c9d1d9;
+                --border-color: #30363d;
+                --link-color: #58a6ff;
+                --code-inline-color: #ff7b72;
+                --code-inline-bg: #2d333b;
+                --blockquote-bg: #1c2128;
+                --blockquote-border: #58a6ff;
             }
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        #login-container {
-            width: 100%;
-            max-width: 410px;
-        }
-
-        .login-card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 36px 30px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #0088cc 0%, #00d2ff 100%);
-        }
-
-        .brand-logo {
-            width: 46px;
-            height: 46px;
-            background: linear-gradient(135deg, #0088cc 0%, #00b4d8 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-size: 22px;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
-            margin: 0 auto 14px;
-        }
-
-        .brand-name {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            color: var(--text-main);
-            margin-bottom: 4px;
-        }
-
-        .brand-sub {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .divider {
-            height: 1px;
-            background-color: var(--border-light);
-            border: none;
-            margin: 0 0 20px 0;
-        }
-
-        .login-form-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .login-desc {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .input-group {
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; color: var(--text-color); background-color: var(--bg-color); margin: 0; padding: 0; display: flex; }
+        #toc { width: 50px; background: var(--toc-bg); padding: 15px; height: 100vh; overflow-x: hidden; overflow-y: auto; position: fixed; border-right: 1px solid var(--border-color); box-sizing: border-box; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; white-space: nowrap; }
+        #toc:hover { width: 320px; padding: 20px; box-shadow: 4px 0 15px rgba(0,0,0,0.08); }
+        #toc .toc-icon { font-size: 22px; cursor: pointer; text-align: center; margin-bottom: 20px; transition: opacity 0.2s; }
+        #toc:hover .toc-icon { display: none; }
+        #toc h3 { margin-top: 0; display: none; }
+        #toc:hover h3 { display: block; }
+        #toc ul { list-style-type: none; padding-left: 0; opacity: 0; transition: opacity 0.2s; display: none; }
+        #toc:hover ul { display: block; opacity: 1; transition-delay: 0.1s; }
+        #toc li { margin-bottom: 5px; }
+        #toc a { text-decoration: none; color: var(--link-color); font-size: 14px; display: block; line-height: 1.4; white-space: normal; }
+        #toc a:hover { text-decoration: underline; }
+        #content-wrapper { margin-left: 50px; padding: 40px; max-width: 100%; width: calc(100% - 50px); box-sizing: border-box; overflow-x: auto; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--link-color); text-decoration: none; font-weight: bold; }
+        .back-link:hover { text-decoration: underline; }
+        
+        /* Blockquote styling */
+        .markdown-body blockquote {
+            background-color: var(--blockquote-bg) !important;
+            border-left: 4px solid var(--blockquote-border) !important;
+            padding: 10px 15px !important;
+            color: var(--text-color) !important;
             margin-bottom: 16px;
         }
+        
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            font-size: 1.15em !important;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        
+        /* Inline code styling */
+        .markdown-body code:not(pre code) {
+            background-color: var(--code-inline-bg) !important;
+            padding: 2px 6px !important;
+            color: var(--code-inline-color) !important;
+            font-weight: 500; /* KhÃ´ng in Ä‘áº­m */
+            border-radius: 4px;
+        }
 
-        input[type="password"] {
+        /* Khá»‘ng cháº¿ mÃ u ná»n tá»‘i vÃ  chá»¯ sÃ¡ng cho Code block (mÃ u xÃ¡m xanh Ä‘áº­m/slate giá»‘ng Swagger/OneDark) */
+        .markdown-body pre {
+            background-color: #282c34 !important; /* hoáº·c #41444e cá»§a Swagger */
+            color: #abb2bf !important; /* Äáº£m báº£o chá»¯ tráº¯ng/xÃ¡m cho cÃ¡c block text thuáº§n khÃ´ng cÃ³ cÃº phÃ¡p */
+        }
+        .markdown-body pre code {
+            font-size: 14px !important; /* TÄƒng size chá»¯ cá»§a code block cho dá»… nhÃ¬n */
+        }
+
+        /* Äá»•i mÃ u comment trong code block sang xanh lÃ¡ giá»‘ng VSCode */
+        .hljs-comment {
+            color: #6A9955 !important;
+        }
+        
+        /* Table layout styling */
+        .markdown-body table {
+            display: table !important;
+            width: 100% !important;
+            table-layout: auto !important;
+        }
+        .markdown-body th, .markdown-body td {
+            min-width: 150px !important;
+            word-wrap: break-word;
+            padding: 10px 14px !important;
+        }
+        .table-responsive-wrapper {
             width: 100%;
-            padding: 12px 14px;
-            font-family: inherit;
-            font-size: 14px;
-            color: var(--text-main);
-            background-color: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        input[type="password"]:focus {
-            border-color: var(--primary);
-            box-shadow: var(--shadow-focus);
-            background-color: var(--surface);
-        }
-
-        button.btn-unlock {
-            width: 100%;
-            padding: 12px;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 600;
-            color: #ffffff;
-            background: linear-gradient(135deg, #0088cc 0%, #006699 100%);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.25);
-            transition: var(--transition);
-        }
-
-        button.btn-unlock:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(0, 136, 204, 0.35);
-        }
-
-        button.btn-unlock:active {
-            transform: translateY(0);
-        }
-
-        #error {
-            margin-top: 14px;
-            padding: 10px 12px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #cf222e;
-            background-color: rgba(207, 34, 46, 0.08);
-            border: 1px solid rgba(207, 34, 46, 0.2);
-            border-radius: 8px;
-            display: none;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            #error {
-                color: #ff7b72;
-                background-color: rgba(248, 81, 73, 0.1);
-                border-color: rgba(248, 81, 73, 0.25);
-            }
-        }
-
-        .auth-footer {
-            margin-top: 22px;
-            font-size: 11px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
         }
     </style>
 </head>
 <body>
-    <div id="login-container">
-        <div class="login-card">
-            <div class="brand-logo">L</div>
-            <div class="brand-name">81759 - TRẦN THỊ KHÁNH LY</div>
-            <div class="brand-sub">Cổng Tài Liệu Kỹ Thuật (Engineering Hub)</div>
-            <hr class="divider">
-            <div class="login-form-title">
-                <span>🔒</span> Xác thực quyền truy cập
-            </div>
-            <div class="login-desc">Vui lòng nhập mật khẩu bảo mật để mở khoá tài liệu</div>
-            <div class="input-group">
-                <input type="password" id="pass" placeholder="Nhập mật khẩu..." onkeypress="handleEnter(event)" autofocus />
-            </div>
-            <button class="btn-unlock" onclick="decrypt()">Mở khoá tài liệu</button>
-            <div id="error">Mật khẩu không chính xác. Vui lòng thử lại!</div>
-            <div class="auth-footer">
-                <span>🛡️</span> AES-256 Encrypted Session SSO
-            </div>
-        </div>
+    <div id="toc">
+        <div class="toc-icon">&#9776;</div>
+        <h3>M&#x1EE5;c l&#x1EE5;c</h3>
+        <div id="toc-content"></div>
     </div>
+    <div id="content-wrapper">
+        <a href="./index.html" class="back-link">&#x2190; Tr&#x1EDF; v&#x1EC1; Trang ch&#x1EE7;</a>
+        <div id="content" class="markdown-body"></div>
+    </div>
+    <script type="text/markdown" id="md-content">
+# Tài liệu Phân tích Change Requirement (CR)
 
+## Tích hợp Bán Bảo hiểm Rơi vỡ (BHRV) Bolttech tại ERABLUE
+
+> **Phiên bản:** Phase 2 — Bổ sung luồng Giao hàng từ Kho (Warehouse Delivery)
+> **Tháng cập nhật:** Aug-2026
+> **Người tổng hợp:** IT BA
+
+> **TÀI LIỆU THAM KHẢO BÊN NGOÀI**
+
+> **Nguồn tài liệu tham khảo - KSNB:**
+>
+> - `[FIGMA] Bolttech Transaction Process.pdf`,
+> - `bolttech-api-request.pdf`,
+> - `Bolttech - Onboarding and Sales Data Processing Sequence Diagram.pdf`
+>
+> **Link Nguồn tài liệu tham khảo - KSNB:**
+> https://drive.google.com/drive/folders/1ygZ8-g0EzaHFvVPPuXbMPg7wgzC-GTCY?usp=sharing
+
+> **Link Nguồn tài liệu tham khảo - IT Sales - Phase1**
+> https://drive.google.com/drive/folders/1TmDTKI6TKDRpiXNZAXzliTpzkswajlhU
+
+> **TÀI LIỆU NỘI BỘ IT**
+
+> **Link Phase 2: BPMN_SALES PROCESS - ACCIDENTAL DAMAGE PROTECTION (ADP) - BOLTTECH - ERABLUE - PHASE 1&2 - 09SEP2026**
+> https://drive.google.com/file/d/1L7F-uWmHHIL9dezAogNr2u18iA5Yhqdf/view?usp=sharing
+
+## 1. Tổng quan Yêu cầu Thay đổi (Executive Summary)
+
+### 1.1 Vấn đề cốt lõi của Hiện trạng (Phase 1)
+
+Hiện tại, API tạo đơn BHRV của Bolttech (`CreateCustomerFulfillOrder`) yêu cầu **bắt buộc phải có số IMEI** ngay tại thời điểm tạo đơn. Điều này chỉ phù hợp với các đơn hàng bán tại cửa hàng (Store Pickup) khi thiết bị có sẵn.
+
+Tuy nhiên, đối với các sản phẩm kích thước lớn (ví dụ: TV ≥ 55"), hàng hóa chỉ được lưu trữ tại Kho Trung Tâm (Central Warehouse) và **giao hàng sau 2-7 ngày**.
+Khi Khách hàng thanh toán tiền bảo hiểm tại Cửa hàng vào Ngày 1, hệ thống chưa có IMEI. Hệ thống kế toán (AR) bắt buộc phải tạo đơn Bolttech ngay khi thu tiền để cân bằng sổ sách, nhưng không thể thực hiện do thiếu IMEI.
+
+### 1.2 Mục tiêu của Phase 2
+
+Mở rộng hệ thống để hỗ trợ luồng **Giao hàng từ Kho (Warehouse Delivery)** bằng cách:
+
+1. Cho phép tạo đơn bảo hiểm ở trạng thái **Pending / Draft** tại cửa hàng (chưa cần IMEI).
+2. Cho phép cập nhật IMEI và kích hoạt (Fulfill) đơn bảo hiểm tại kho khi hàng hóa bắt đầu được xuất đi giao.
+
+---
+
+## 2. Luồng Nghiệp vụ Mong muốn (Desired Business Flow)
+
+Quy trình bán hàng cho sản phẩm giao từ kho sẽ được chia làm 2 giai đoạn:
+
+### Day 1 - Tại Cửa hàng (Store)
+
+1. **Lấy giá bảo hiểm:** Hệ thống gọi API `GetPartnerProduct` để lấy danh sách gói bảo hiểm và giá.
+2. **Tạo đơn Tạm (Dummy Order):** NVST tạo đơn bảo hiểm trên hệ thống. Erablue tự động sinh và truyền **số Serial tạm (Dummy IMEI)** cùng **Ngày kích hoạt tạm (Dummy Activation Date)** vào API `CreateCustomerFulfillOrder` của Bolttech.
+3. **Thu tiền:** NVST thu tiền bảo hiểm từ khách hàng (AR được cân bằng).
+4. **Lấy Số Hợp Đồng Bảo Hiểm:** Erablue gọi API `GetOrder` (kèm OrderID) để lấy về số hợp đồng dịch vụ TecProtec chính thức (với thông tin thiết bị tạm thời) từ Bolttech.
+
+### Day 2-7 - Tại Kho (Warehouse)
+
+4. **Xuất hàng:** Hệ thống Kho tiến hành xuất sản phẩm vật lý. Lúc này **đã có số IMEI thực tế**.
+5. **Cập nhật IMEI & Kích hoạt:** Nhân viên Kho (hoặc hệ thống tự động) nhập IMEI vào hệ thống. Hệ thống gọi API `UpdateContract` để truyền IMEI sang Bolttech và hoàn tất đơn (Fulfill).
+6. **Bảo hiểm có hiệu lực:** Hợp đồng được kích hoạt với ngày hiệu lực dựa trên thỏa thuận.
+
+### Sơ đồ Luồng Tương tác (Sequence Diagram)
+
+- Vùng màu blue là Change Requirement (CR).
+
+```mermaid
+sequenceDiagram
+    actor Customer as Khách hàng
+    participant ERS as Cửa hàng<br/>Erablue
+    participant E as Erablue
+    participant BG as Bolttech<br/>gateway (CW)
+    participant BC as Bolttech<br/>CRMZ
+
+    Note over Customer, BC: NGÀY 1 - TẠI CỬA HÀNG
+    Customer->>ERS: Mua Tivi <br/>hoặc thiết bị gia dụng mới
+    ERS->>E: Mua kèm chương trình bảo vệ<br/>thiết bị TecProtec
+    E->>BG: Gọi API GetPartnerProduct để Kiểm tra Phí/Premium
+    BG->>BC: Kiểm tra phí bảo hiểm sản phẩm
+    BC-->>BG: Trả về phí bảo hiểm
+    BG-->>E: Trả về phí bảo hiểm
+    E-->>ERS: Xử lý đơn hàng TecProtec <br/>& thu phí qua máy POS
+
+	rect rgb(224, 242, 254)
+    Note right of E: [CR - GIAI ĐOẠN 2] Tạo đơn hàng với thông tin dummy (tại cửa hàng)
+    E->>BG: Gọi API CreateCustomerFulfillOrder để truyền<br/>số serial dummy và ngày kích hoạt dummy
+
+
+    BG-->>E: Phản hồi OrderID (Mã đơn hàng)
+    BG->>BC: Đưa dữ liệu vào hàng đợi để đăng ký hợp đồng<br/>thiết bị dummy qua API CreateContract của CRMZ
+    BC->>Customer: Gửi email chào mừng lần 1 với thông tin kích hoạt dummy
+    end
+
+    BC->>BG: Trả về trạng thái sau khi hợp đồng dịch vụ <br/>(`service_contract_number`) <br/>được tạo trong CRMZ
+
+    Note right of E: Retry gọi lại GetOrder nếu chưa có<br/>`service_contract_number` (CRMZ xử lý bất đồng bộ)
+    E->>BG: Gọi API GetOrder (API đã có sẵn) kèm OrderID để kiểm tra trạng thái
+    BG-->>E: Trả về Số hợp đồng dịch vụ chính thức (service_contract_number) <br/>& trạng thái `fulfillment-pending`
+
+
+    Note over Customer, BC: NGÀY 2~7 - TẠI KHO / GIAO HÀNG
+    ERS->>Customer: Hoàn tất đơn hàng/ giao Tivi<br/>hoặc thiết bị gia dụng cho khách
+    ERS->>E: Cập nhật thông tin thiết bị,<br/>1) Số Serial<br/>2) Ngày kích hoạt hợp đồng thực tế
+
+	rect rgb(224, 242, 254)
+    Note right of E: [CR - GIAI ĐOẠN 2] Cập nhật số serial thực tế <br/>& ngày kích hoạt thiết bị thực tế
+    E->>BG: Gọi API UpdateContract để cập nhật số serial thực tế<br/>& ngày kích hoạt thực tế (trùng ngày giao hàng)
+    BG->>BC: Cập nhật Số Serial thực tế & ngày kích hoạt vào hợp đồng dịch vụ
+
+    Note right of E: Retry gọi lại GetOrder - lúc này đã có <br/>`service_contract_number`
+    E->>BG: Gọi API GetOrder (API đã có sẵn) kèm OrderID để kiểm tra trạng thái
+    BG-->>E: Trả về Số hợp đồng dịch vụ chính thức (service_contract_number) <br/>& trạng thái `fulfillment-completed`
+
+    BC->>Customer: Gửi email chào mừng lần 2 & e-cert (chứng nhận điện tử)<br/>với số serial và ngày bắt đầu hợp đồng thực tế
+    end
+```
+
+---
+
+## 3. Phân tích Tích hợp API (Bolttech APIs)
+
+Theo thỏa thuận, API nội bộ `CreateContract` của Bolttech sẽ bị loại bỏ khỏi luồng của ERABLUE. Danh mục API cần tích hợp phía ERABLUE bao gồm 4 API sau (lưu ý: `GetPartnerProduct` và `GetOrder` **đã được tích hợp sẵn từ Phase 1**, không phải API mới - chỉ có `CreateCustomerFulfillOrder` (dùng workaround dummy value) và `UpdateContract` (hoàn toàn mới) là phần thay đổi trọng tâm của Phase 2):
+
+> **Ghi chú Thuật ngữ:** Trong ngành bảo hiểm (hoặc các dịch vụ bảo vệ thiết bị như Bolttech TechProtect), **"Premium"** mang ý nghĩa là **"Phí bảo hiểm"**. Do đó, API `GetPartnerProduct` (Check Premium) có nhiệm vụ trả về "Premium fee" (Phí bảo hiểm).
+
+|     STT     | Tên API                       |  Method  | Chức năng chính                                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| :---------: | :----------------------------- | :------: | :---------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | `GetPartnerProduct`          | `GET` | Lấy giá/phí bảo hiểm tại cửa hàng                                     | •**Trạng thái:** `[GIỮ NGUYÊN]`• **Mục đích:** Lấy danh sách các gói bảo hiểm và phí bảo hiểm (Premium fee) tương ứng trực tiếp từ Bolttech ngay khi tư vấn tại cửa hàng.• **Lưu ý:** Không yêu cầu truyền IMEI.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| **2** | `CreateCustomerFulfillOrder` | `POST` | Tạo đơn hàng bảo hiểm (thông tin tạm)                                 | •**Trạng thái:** `[GIỮ NGUYÊN CẤU TRÚC - DÙNG DUMMY VALUE CHO SẢN PHẨM TIVI]`• **Mục đích:** Tạo đơn bảo hiểm trên Bolttech ngay tại Ngày 1 để thu tiền qua POS và cân bằng sổ sách kế toán (AR).• **Quy định truyền Dummy Value (đối với hàng giao từ kho):**&nbsp;&nbsp;- **`device_unique_id`** *(MANDATORY)*: Truyền chuỗi dummy **`999999999999`** (12 chữ số 9) cho sản phẩm TV Erablue.&nbsp;&nbsp;- **`device_activation_date`** *(MANDATORY)*: Truyền ngày dummy **`0001-01-01T00:00:00Z`** (chuẩn UTC `YYYY-MM-DDTHH:MM:SSZ`).• **Kết quả:** Nhận về `order_id` (Mã đơn Bolttech); hợp đồng ở trạng thái chờ IMEI (`fulfillment-pending`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| **3** | `GetOrder`                   | `GET` | Kiểm tra trạng thái đơn & lấy số hợp đồng chính thức              | •**Trạng thái:** `[GIỮ NGUYÊN API - DÙNG ĐỂ RETRY]`• **Mục đích:** Kiểm tra trạng thái đơn (`fulfillment-pending`) và lấy số hợp đồng dịch vụ chính thức (`service_contract_number`).• **Thời điểm gọi:** Ngay sau khi gọi API 2 thành công ở Ngày 1. Do CRMZ xử lý bất đồng bộ qua hàng đợi nên `service_contract_number` có thể chưa sẵn sàng ngay $\rightarrow$ hệ thống cần **retry (gọi lại nhiều lần)** API này cho đến khi lấy được giá trị.• **Tham số truyền (Query Param):**&nbsp;&nbsp;- `order_id`: Mã đơn hàng Bolttech vừa nhận được từ API 2 (hoặc `partner_order_id` của Erablue).&nbsp;&nbsp;- `partner_code`: Mã đối tác Erablue.• **Dữ liệu cần trích xuất:** Lấy về **`service_contract_number`** (Số hợp đồng bảo hiểm chính thức và duy nhất) và lưu trữ vào Database để dùng cho API 4.                                                                                                                                                                                                                                                                                                                       |
+| **4** | `UpdateContract`             | `PUT` | Cập nhật IMEI thật và kích hoạt hợp đồng khi giao hàng thành công | •**Trạng thái:** `[MỚI]`• **Mục đích:** Cập nhật số Serial/IMEI thực tế và ngày kích hoạt thật khi hàng được xuất kho giao cho khách (Ngày 2~7).• **Request Param (Query URL - Dùng để định vị hợp đồng cũ):**&nbsp;&nbsp;- `partner_code`: Mã đối tác Erablue.&nbsp;&nbsp;- `partner_onboarding_order_id`: Mã đơn hàng Erablue lúc onboarding.&nbsp;&nbsp;- `service_contract_number`: Số hợp đồng dịch vụ chính thức (lấy từ API 3).&nbsp;&nbsp;- `device_unique_id`: Số Serial/IMEI dummy cũ (`999999999999`).&nbsp;&nbsp;- `device_id_type`: Loại mã định danh cũ (`serial-number` hoặc `imei`).• **Request Body (JSON Payload - Ghi đè thông tin thật):**&nbsp;&nbsp;- **`device_unique_id`** *(Optional - New)*: Số IMEI / Serial Number **thật** xuất từ kho.&nbsp;&nbsp;- **`device_id_type`** *(Optional - New)*: Loại mã định danh thật (`imei` hoặc `serial-number`).&nbsp;&nbsp;- **`device_activation_date`** *(MANDATORY)*: Ngày kích hoạt thật = Ngày giao hàng thật (`YYYY-MM-DDTHH:MM:SSZ`).&nbsp;&nbsp;- **`customer_contract_status`** *(Optional)*: Trạng thái hợp đồng (mặc định: `"ACTIVE"`). |
+
+> [!NOTE]
+> **1. Quy định Dummy Value từ tài liệu đặc tả Bolttech (`CreateCustomerFulfillOrder` ver 2.1 - Siju Pillai):**
+>
+> - **`device_unique_id`**: *"Unique identification IMEI / Serial Number - Set to dummy value of `999999999999` in case of Erablue TV product (Set as dummy for Erablue for the particular product code)"*
+> - **`device_activation_date`**: *"Activation date of the device - For Erablue it will pass dummy value for particular product code: `0001-01-01T00:00:00Z` (format YYYY-MM-DDTHH:MM:SSZ)"*
+>
+> **2. Quy định Request Body & URL Param từ đặc tả Bolttech (`UpdateContract` ver 1.8 - Siju Pillai):**
+>
+> - **Method:** `PUT` (Endpoint: `/contract/customercontracts`)
+> - **Request Param (URL):** Dùng để định vị hợp đồng: `partner_code`, `partner_onboarding_order_id`, `service_contract_number`, `device_unique_id` (Dummy cũ: `999999999999`), `device_id_type`.
+> - **Request Body (JSON):** Chuẩn tên field theo đặc tả: `device_unique_id` (IMEI thật mới), `device_id_type` (loại mã định danh), `device_activation_date` (ngày giao hàng thật), `customer_contract_status` (`"ACTIVE"`).
+
+---
+
+## 4. Những Thay đổi Kỹ thuật Cần Thiết trong Hệ thống ERABLUE
+
+### 4.1 Luồng bán hàng chính (User Stories)
+
+Bảng dưới đây hợp nhất quy trình bán hàng của cả 2 Phase, giúp đối chiếu rõ ràng sự khác biệt trong từng bước thực hiện:
+
+| Bước | Actor             | Mô tả hành động (Phase 1 - Hiện tại)                                                                                                                                  | Mô tả hành động (Phase 2 - Mới)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| :----: | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   1   | Khách hàng      | Khách mua thiết bị tại cửa hàng ĐMX và có nhu cầu mua kèm Bảo hiểm rơi vỡ TechProtect (BHRV) cho thiết bị đó.                                             | *(Giữ nguyên như Phase 1)*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|   2   | NVST              | Nhân viên siêu thị truy cập vào tool Bán BHRV$\rightarrow$ Chọn Nhà cung cấp = **Bolttech** $\rightarrow$ Chọn Chương trình bảo hiểm tương ứng. | *(Giữ nguyên như Phase 1)*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|   3   | NVST / Hệ thống | **[Phase 1]:**• NVST nhập số IMEI của sản phẩm chính muốn mua BHRV.• Hệ thống kiểm tra điều kiện (validate đích danh ở mức IMEI).                   | **[THAY ĐỔI - 2 lựa chọn xuất bán]:**• **Xuất tại siêu thị (Store Pickup):** Tìm kiếm theo IMEI đích danh của sản phẩm chính.• **Giao hàng từ kho (Warehouse Delivery):** Do chưa có IMEI vật lý, app POS cho phép tìm kiếm theo **Mã đơn hàng (SO)** của sản phẩm chính $\rightarrow$ Chọn đích danh dòng chi tiết sản phẩm (Detail) cần mua BHRV.• **Hệ thống validate điều kiện mua BHRV:**&nbsp;&nbsp;+ Nếu có IMEI đích danh $\rightarrow$ Validate đích danh ở mức IMEI.&nbsp;&nbsp;+ Nếu chưa có IMEI (hàng kho) $\rightarrow$ Validate ở mức Sản phẩm.*(Xem chi tiết quy tắc validate tại mục 4.1.1 bên dưới)*. |
+|   4   | Hệ thống        | *(Chưa có ở luồng này)*                                                                                                                                               | Gọi API`GetPartnerProduct` *(API đã có sẵn từ Phase 1, không đổi)* lấy danh sách gói bảo hiểm và giá (Premium).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|   5   | Hệ thống        | Cập nhật UI bán hàng, hiển thị giá phí.                                                                                                                              | *(Giữ nguyên như Phase 1)*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|   6   | NVST              | Nhập thông tin KH (Họ tên, SĐT, Email) & hoàn tất đăng ký.                                                                                                         | *(Giữ nguyên như Phase 1)*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|   7   | Hệ thống        | Xử lý thanh toán và thu phí qua máy POS.                                                                                                                               | *(Giữ nguyên như Phase 1)*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|   8   | Hệ thống        | Gọi API`CreateCustomerFulfillOrder` truyền **IMEI thật**.                                                                                                         | **[THAY ĐỔI]** Gọi API `CreateCustomerFulfillOrder` truyền **Dummy IMEI** và **Dummy Date** cho sản phẩm Tivi.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|   9   | Bolttech          | Tạo hợp đồng chính thức, trả về OrderID, gửi Email hợp đồng.                                                                                                     | Tạo hợp đồng tạm, trả về OrderID & gửi Welcome Email#1 (Nội dung tạm).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|   10   | Hệ thống        | *(Kết thúc nếu luồng API ổn định)*                                                                                                                                  | Gọi API`GetOrder` *(API đã có sẵn, không mới - dùng retry)* (kèm OrderID) để lấy về số Hợp đồng Dịch vụ chính thức (service_contract_number) với thông tin thiết bị tạm.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|   11   | Hệ thống        | In biên nhận, hoàn tất đơn bán (Trạng thái Thành công).                                                                                                           | In biên nhận, hoàn tất đơn bán (Trạng thái Pending IMEI).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|   12   | Kho (ERP)         | *(Quy trình kết thúc)*                                                                                                                                                  | **[MỚI] Ngày 2~7:** Kho xuất hàng, ghi nhận Số Serial (IMEI) thực tế và ngày giao.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|   13   | Hệ thống        | *(Không có)*                                                                                                                                                             | **[MỚI]** Gọi API `UpdateContract` truyền IMEI thật và ngày giao hàng cho Bolttech.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|   14   | Bolttech          | *(Không có)*                                                                                                                                                             | **[MỚI]** Cập nhật dữ liệu thật, gửi Welcome Email #2 kèm E-cert chính thức.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+#### 4.1.1 Chi tiết Quy tắc Kiểm tra Điều kiện Mua BHRV (Validation Rules)
+
+> 🔗 **Link Khai báo Chương trình bảo hiểm tham chiếu (ERP) hiện nay:**
+> https://newweberp.thegioididong.com/#!/insurancedetails/10659
+
+Sau khi NVST chọn sản phẩm chính (theo IMEI hoặc theo dòng đơn hàng SO), hệ thống POS tiến hành kiểm tra tính hợp lệ dựa trên các điều kiện cấu hình/khai báo của Chương trình bảo hiểm (theo link ERP ở trên) trước khi cho phép đi tiếp:
+
+* **Trường hợp 1: Sản phẩm xuất tại siêu thị (Validate đích danh ở mức IMEI):**
+
+  1. Số IMEI phải tồn tại trong hệ thống xuất bán của ERABLUE.
+  2. Thời điểm mua bảo hiểm phải nằm trong khung thời gian cho phép kể từ lúc xuất bán sản phẩm chính.
+     * Chương trình 10659 : đang khai báo [Số ngày được mua bảo hiểm] = 1 ngày.
+  3. Giá bán của IMEI nằm trong khung giá/band giá được phép mua bảo hiểm.
+  4. Sản phẩm thỏa mãn các điều kiện cấu hình: Hãng sản xuất, Nhóm hàng áp dụng, Trạng thái máy (máy mới).
+  5. Số IMEI này chưa từng được đăng ký gói BHRV tại bất kỳ nhà cung cấp (NCC) nào khác.
+     *(Nếu không thỏa điều kiện $\rightarrow$ Hiển thị thông báo lý do lỗi trên POS và dừng luồng).*
+* **Trường hợp 2: Sản phẩm giao hàng từ kho (Validate ở mức Sản phẩm - Chưa có IMEI):**
+
+  1. **Mã đơn hàng SO sản phẩm chính phải đang ở trạng thái [Chưa xuất].**
+  2. Dòng sản phẩm (Detail) được chọn phải thuộc danh mục áp dụng chương trình BHRV (ví dụ: Tivi $\ge$ 55", Tủ lạnh, Máy giặt...).
+     * **Hardcode hoặc tạo config, hoặc sửa khai báo Chương trình bảo hiểm, nhóm hàng nào cho phép chạy theo luồng mới phase 2 này (truyền dummy value).**
+  3. Thời điểm mua bảo hiểm nằm trong khung thời gian hợp lệ tính từ lúc lập đơn hàng SO.
+  4. Giá bán của dòng sản phẩm nằm trong khung giá/band giá khai báo của chương trình bảo hiểm.
+  5. Dòng sản phẩm này trong đơn hàng SO chưa từng được liên kết mua gói BHRV nào trước đó.
+     *(Nếu thỏa mãn điều kiện $\rightarrow$ Chuyển sang Bước 4 gọi API `GetPartnerProduct` để lấy biểu phí).*
+
+### 4.2 Backend (Hệ thống xử lý API)
+
+- API `GetPartnerProduct` đã được tích hợp sẵn từ Phase 1 (dùng để lấy giá trực tiếp từ Bolttech) — Phase 2 **không cần xây mới**, chỉ tái sử dụng nguyên trạng.
+- Điều chỉnh payload của `CreateCustomerFulfillOrder`: Thay vì bắt buộc NVST nhập IMEI, đối với sản phẩm giao sau như Tivi, thì hệ thống mặc định truyền:
+  - **Dummy IMEI (`device_unique_id = "999999999999"`)**
+  - **Dummy Activation Date (`device_activation_date = "0001-01-01T00:00:00Z"`)** đối với các đơn hàng giao từ kho theo đúng quy chuẩn đặc tả của Bolttech.
+- API `GetOrder` cũng đã có sẵn từ Phase 1; Phase 2 chỉ bổ sung logic gọi **retry (lặp lại nhiều lần)** ngay sau khi tạo đơn thành công cho đến khi lấy được số Hợp đồng Dịch vụ chính thức (Service Contract Number) — do CRMZ xử lý bất đồng bộ qua hàng đợi nên kết quả có thể chưa có ngay lần gọi đầu tiên.
+- Viết job/hàm gọi API `UpdateContract` khi có tín hiệu xuất kho (đã có IMEI thật và Ngày giao thật) từ hệ thống ERP/WMS. Xử lý kịch bản lỗi nếu `UpdateContract` thất bại (Retry mechanism).
+
+#### 4.2.1 Đặc tả Chi tiết các API Tích hợp (API Specifications)
+
+##### 1. API GetPartnerProduct (Tra cứu Phí bảo hiểm - Check Premium) — *API đã có sẵn, không phải API mới*
+
+* **Endpoint:** `/v1/integration/product/partnerproduct`
+* **Method:** `GET`
+* **Thời điểm gọi:** Ngày 1 - Khi NVST chọn sản phẩm chính và tư vấn gói BHRV tại màn hình POS.
+* **Ghi chú:** API này đã được ERABLUE tích hợp và gọi từ Phase 1, Phase 2 không có thay đổi kỹ thuật nào đối với API này.
+* **Request Headers:**
+  * `bolt-tenant-id`: Định danh Tenant đối tác (ví dụ: `DigitalNinja`).
+  * `bolt-country-code`: `ID` (Indonesia).
+  * `bolt-language-code`: `ID` (hoặc `EN`).
+  * `Authorization`: `Bearer <token>`
+* **Request Query Parameters:**
+  * `partner_code` *(string, MANDATORY)*: Mã đối tác Erablue do Bolttech cấp.
+  * `device_rrp` *(float, MANDATORY)*: Giá bán lẻ đề xuất của sản phẩm chính (Recommended Retail Price).
+  * `deviceType` *(string, MANDATORY)*: Loại thiết bị (`SMARTPHONES`, `TABLET`, `LAPTOP`, `TV`...).
+  * `tenure` *(string/int, MANDATORY)*: Thời hạn bảo hiểm (tháng, ví dụ: `12`).
+  * `coverageCodes` *(string, Optional)*: Mã gói bảo vệ nếu có yêu cầu lọc cụ thể.
+* **Xử lý Response:**
+  * Trả về danh sách gói cước (`plans`): Hệ thống trích xuất `product_id`, `plan_id` và giá trị **`totalPlanRRPWithTax`** (đây chính là phí bảo hiểm Premium fee cần hiển thị trên POS để thu tiền khách).
+
+##### 2. API CreateCustomerFulfillOrder (Tạo đơn hàng bảo hiểm với thông tin tạm)
+
+* **Endpoint:** `/v1/order/create-customer-fulfill`
+* **Method:** `POST`
+* **Thời điểm gọi:** Ngày 1 - Ngay khi khách hàng đồng ý mua và thanh toán tiền bảo hiểm thành công qua máy POS.
+* **Request Headers:** Common Headers (`bolt-tenant-id`, `bolt-country-code: ID`, `bolt-language-code`, `Authorization`) + `Content-Type: application/json`.
+* **Request Body Payload (JSON):**
+  * **Thông tin đối tác & đơn hàng:**
+    * `partner_code` *(string, MANDATORY)*: Mã đối tác Erablue.
+    * `partner_order_id` *(string, MANDATORY)*: Mã đơn hàng POS của Erablue.
+    * `product_id` *(string, MANDATORY)*: Mã gói bảo hiểm đã chọn từ API 1.
+    * `plan_id` *(string, OPTIONAL / B2B MANDATORY)*: Mã plan tương ứng.
+    * `device_rrp` *(float, MANDATORY)*: Giá bán lẻ của thiết bị.
+  * **Thông tin khách hàng:**
+    * `first_name` *(string, OPTIONAL)*: Tên khách hàng.
+    * `last_name` *(string, MANDATORY for Erablue)*: Họ và tên đệm của khách hàng.
+    * `phone_mobile_number` *(string, MANDATORY)*: Số điện thoại khách hàng.
+    * `email` *(string, MANDATORY for Erablue)*: Địa chỉ email nhận hợp đồng điện tử.
+  * **Thông số Dummy (Quy định bắt buộc đối với hàng giao từ kho như Tivi):**
+    * `device_unique_id` *(string, MANDATORY)*: Truyền chuỗi cố định **`"999999999999"`** (12 chữ số 9).
+    * `device_activation_date` *(timestamp, MANDATORY)*: Truyền ngày cố định **`"0001-01-01T00:00:00Z"`** (chuẩn UTC).
+    * `device_id_type` *(string, MANDATORY)*: Truyền `"serial-number"` (cho Tivi/Gia dụng) hoặc `"imei"`.
+* **Xử lý Response:**
+  * `order_id`: Mã đơn hàng UUID do Bolttech sinh ra. **Hệ thống bắt buộc lưu trữ vào Database Erablue**.
+  * `order_status`: Trả về trạng thái `"fulfillment-pending"` (chờ kích hoạt IMEI thật).
+  * `_status.code`: `"80001"` (Thành công).
+
+##### 3. API GetOrder (Kiểm tra trạng thái & Lấy số Hợp Đồng Dịch Vụ chính thức) — *API đã có sẵn, Phase 2 chỉ bổ sung retry*
+
+* **Endpoint:** `/v1/order`
+* **Method:** `GET`
+* **Thời điểm gọi:** Ngày 1 - Gọi ngay sau khi API `CreateCustomerFulfillOrder` trả về kết quả thành công.
+* **Ghi chú:** API này đã có sẵn từ Phase 1. Do Bolttech CRMZ xử lý tạo hợp đồng bất đồng bộ qua hàng đợi (queue), giá trị `service_contract_number` có thể **chưa sẵn sàng ngay ở lần gọi đầu tiên** $\rightarrow$ Phase 2 bổ sung cơ chế **retry (gọi lại định kỳ)** cho đến khi lấy được giá trị hoặc hết số lần thử quy định.
+* **Request Headers:** Common Headers.
+* **Request Query Parameters:**
+  * `order_id` *(string, MANDATORY)*: Mã đơn hàng Bolttech vừa nhận được từ API 2.
+  * `partner_code` *(string, MANDATORY)*: Mã đối tác Erablue.
+* **Xử lý Response:**
+  * `service_contract_number`: Số hợp đồng dịch vụ TecProtec chính thức do Bolttech CRMZ khởi tạo (ví dụ: `BESAMBENUB2026...`). Nếu chưa có, hệ thống **retry** lại việc gọi API này.
+  * `order_status`: Trả về trạng thái `"fulfillment-pending"` (do thiết bị chưa được giao từ kho).
+  * **Hành động Backend:** **Bắt buộc lưu giá trị `service_contract_number` này vào CSDL** (liên kết với đơn bảo hiểm) để làm khóa truy vấn khi gọi API `UpdateContract` ở giai đoạn xuất kho.
+
+##### 4. API UpdateContract (Cập nhật IMEI thật & Kích hoạt bảo hiểm khi EraBlue giao hàng thành công)
+
+* **Endpoint:** `/v1/contract/customercontracts`
+* **Method:** `PUT` *(Lưu ý chuẩn Method là PUT theo tài liệu đặc tả Bolttech)*
+* **Thời điểm gọi:** Ngày 2~7 - Khi hệ thống Kho (WMS) xuất hàng vật lý, quét được số IMEI/Serial thật và tiến hành **giao hàng thành công** cho khách.
+* **Request Headers:** Common Headers + `Content-Type: application/json`.
+* **Request Query Parameters (Dùng trên URL để định vị hợp đồng cũ):**
+
+  * `partner_code` *(string, MANDATORY)*: Mã đối tác Erablue.
+  * `partner_onboarding_order_id` *(string, MANDATORY for Erablue)*: Mã đơn hàng POS Erablue lúc onboarding.
+  * `service_contract_number` *(string, MANDATORY for Asia)*: Số hợp đồng dịch vụ chính thức lấy từ API 3 (`GetOrder`).
+  * `device_unique_id` *(string, MANDATORY for Erablue)*: Số Serial/IMEI dummy cũ đã dùng ở Ngày 1 (**`"999999999999"`**).
+  * `device_id_type` *(string, MANDATORY for Erablue)*: Loại định danh cũ (`"serial-number"` hoặc `"imei"`).
+* **Request Body Payload (JSON - Dùng để ghi đè thông tin thật):**
+
+  ```json
+  {
+    "customer_contract_status": "ACTIVE",
+    "device_unique_id": "847592837482910",
+    "device_id_type": "serial-number",
+    "device_activation_date": "2026-08-28T09:30:00Z"
+  }
+  ```
+
+  * `device_unique_id` *(string, Optional - New)*: Số Serial / IMEI **thật** xuất từ kho.
+  * `device_id_type` *(string, Optional - New)*: Loại định danh thật (`"serial-number"` cho TV hoặc `"imei"`).
+  * `device_activation_date` *(timestamp, MANDATORY)*: Ngày kích hoạt thật = Ngày giao hàng thực tế (chuẩn UTC `YYYY-MM-DDTHH:MM:SSZ`).
+  * `customer_contract_status` *(string, Optional)*: Trạng thái hợp đồng, truyền `"ACTIVE"`.
+* **Xử lý Response:**
+
+  * `customer_contract_number`: Số hợp đồng bảo hiểm chính thức.
+  * `customer_contract_status`: Trả về `"ACTIVE"`.
+  * `_status.code`: `"80001"` (Thành công). Phía Bolttech sẽ hoàn tất hợp đồng và tự động gửi Welcome Email lần 2 kèm E-cert chính thức cho khách hàng.
+  * **Cơ chế Retry:** Nếu gọi API thất bại (lỗi mạng hoặc timeout), hệ thống Backend cần đưa vào hàng đợi (Queue) để tự động Retry với cơ chế Exponential Backoff.
+
+### 4.3 Frontend (POS / Web)
+
+- **Tại Màn hình Bán hàng (POS / Web Cửa hàng):**
+  - **Thay đổi cơ chế tìm kiếm:** Bỏ cơ chế bắt buộc nhập/quét IMEI để lấy thông tin sản phẩm (do các sản phẩm giao từ kho như Tivi chưa có IMEI vật lý tại cửa hàng).
+  - **Tìm kiếm theo Mã đơn hàng (Sales Order - SO):** Cho phép NVST nhập mã đơn hàng SO để truy vấn danh sách các sản phẩm trong đơn.
+  - **Chọn đích danh dòng sản phẩm (Detail):** Cho phép NVST chọn đích danh sản phẩm cần mua kèm gói BHRV từ danh sách chi tiết đơn hàng SO.
+  - **Kiểm tra điều kiện chương trình:** Hệ thống tự động đối chiếu thông tin sản phẩm được chọn với cấu hình/khai báo của chương trình bảo hiểm (nhóm hàng, phân khúc giá, điều kiện áp dụng...).
+  - **Tách luồng bán Bảo hiểm cho đích danh IMEI và không đích danh IMEI:** Cho phép hoàn tất đơn bán và tiến hành thu tiền bình thường.
+
+### 4.4 Database (Lưu trữ Dữ liệu)
+
+- **Đây là nội dung gợi ý từ AI, team IT Product toàn quyền quyết định cách lưu trữ dữ liệu.**
+- Bảng `PM_INSURANCETRANSACTION` (hoặc tương đương) cần thêm cột hoặc trạng thái mới:
+  - `INSURANCE_STATUS`: `PENDING_IMEI` (Chờ IMEI), `FULFILLED` (Đã có IMEI, thành công).
+  - Cần lưu lại `bolttech_order_id` ngay khi gọi hàm Create để tái sử dụng cho hàm Update và hàm GetOrder.
+  - Bổ sung cột lưu trữ `service_contract_number` (Số hợp đồng bảo hiểm) lấy về từ API `GetOrder`.
+  - Cột `INSURANCE_ACTIVATION_DATE`: Chỉ cập nhật khi hàng thực sự được giao/xuất kho.
+
+---
+
+## 5. Câu hỏi Cần Làm Rõ với Bolttech (Pending Confirmations)
+
+Dựa trên Sequence Diagram từ Bolttech, một số vấn đề đã được làm rõ, nhưng vẫn còn một số câu hỏi mở:
+
+1. ✅ **[Đã rõ] API Tương thích:** Bolttech chọn phương án dùng lại `CreateCustomerFulfillOrder` bằng cách truyền **IMEI Dummy** (workaround).
+2. **[Chờ xác nhận] Timeout của đơn Pending:** Đơn bảo hiểm được phép nằm ở trạng thái "Dummy IMEI" tối đa bao nhiêu ngày trước khi bị hủy?
+3. **[Chờ xác nhận] Hoàn tiền & Hủy đơn Pending:** Nếu Khách hàng đổi ý và hủy đơn trong lúc hàng chưa giao, Erablue hủy đơn như thế nào?
+4. ✅ **[Đã rõ] Ngày kích hoạt bảo hiểm (Activation Date):** Ngày kích hoạt chính thức là **Ngày Giao Hàng** (Actual device activation date = delivery date), truyền trong hàm `UpdateContract`.
+
+> [!WARNING]
+> **Lưu ý về Trải nghiệm Khách hàng (Customer Experience):**
+> Theo sơ đồ của Bolttech, khách hàng sẽ nhận được **2 Email Welcome**.
+>
+> - Lần 1: Ngay lúc thanh toán tại cửa hàng (chứa IMEI Dummy).
+> - Lần 2: Lúc giao hàng (chứa IMEI Thật + E-cert).
+>   👉 BA cần note cho NVST/Team Training dặn dò Khách hàng trước để KH không bị hoang mang khi nhận Email lần 1 có thông tin Dummy.
+
+    </script>
     <script>
-        const ciphertext = "U2FsdGVkX19h+hGTYcQHLLElgfw7ZRs5iUJfH7Wx+C9m4F0NYMI4t3bmnePKKYzPViT7EUOeBtb/tdKlj8fnsFxV0yPSKgSm2ZE1ErrejXn3eUxDGIvpi6Hlst3ct8Xz6I//TeUPh1Yvdy+C+vzSNRCXe3eJZ+RcBGxqROStJy8An3nI6GNv8ts5ktYauQ6VNjN98U/HO2nCwqUBESV2wZ2utnJ9mXnwl6PyKDiGFtQ8Z22GmoMphE7vIPSpgaDGpxVmk5en9y/T3E1K2061nhqLHZXGUMg5Iqr6inlQbKv9r+hXK96OZ+OJO+bAYv4ukW31MHMPzOtnUqjSFQdPuHKU6UHD4RHIpHT1pwKhZhMw9k7K4nNrWJV48vTLWlc76JZ1vb4C7kfEDKfMV6yWo06Qccgtsr4gxI9YmLRD4YDU+RtzUWzh/7OZ03PvjnVe1cuGr+XExxtxafuxuGLpu5ViPhthnSBda76QawNv7tmifaJ/IlSa8I7Z/dfd6zpvI4QrB7A7Lzo8WWgcIQOqyjYu28nndt/RIbuYVJU6rn6+Yb8cq0bLj4cz1Rl0upSTjFePWjEsqvVf9QdWEbZtYcN+T3yTE/NNGh7kEh2u2NqJlK/BCmYQaXusmdDd+wT12lM8UATo/8HhJVzwSXLg+onxA6r+dkETWRzwTyefG6WZhHpOX6ocS22wN2JpMQ8racFnakK+kxwQX/q2u2aBSq/VncnC2NJ1IoCjWRQczt49MzyVbazwqd94x5sR8+Akcg6eDQtgJ/AgkjUA85m5X09nwZYe3AfzIK0ORoCPDnwwIPxCOSkkh4ZVTcSKMuwHn1gsMgzC0Lw8nZLGUxnbMPeu01AirzFKHOWcIBxv9eW0JULQh3O/llbv7wfllFg8cEvhuzLxKqPtNOcp87JXAh6HhJKqdzCUBXDOq+5t3EESe3SXLxiblQRBfdLXX9XGRiIy++hLnAqHaYI+H4xIh3otMpG7T2ruEpsrE1Q+XN+PYxn4Xz9zkk7EpeHBVJ0dL/2z8pbeh5Ev4k2TqiMvq5pd9sY/47Ui9HjG1igFFeR0FwpNruBS5/8fO2meBEUw7xHBh45DI7lXjg1Hj44S4mZAhcsGzzfmMpTGCHPnffMfEu6L2GYsixJPqfY/WdXEPTNjV96mvGyT3WIy3Pgue/yYwDsCDMVm5g7SRb+xqM++7G1IdKibFX8GbM4u2mu347l0sf6jR+J/Nm4L+3gx0xF950fq5C23373YyJX1fzLezdTdXo7hqCzua85pLkXfgVAPCHRxvhNLvKmZ5oQFvYhW4rQk6Z5u9/JRqmhyQwe6jXwVWW+1G61oaEok0A9Qq+HbCa70nlnUBoQVDpJz7y0qYj+1gPTn/XWKQ5/bBWqG6C45wsoDR2cXMJTZe6vgxs4U2QoMNYPFni5YuyoCapfwO61PzTTfSIuMV7C1IMGQx4MmO67hVHjw9zUuqljTL1JsSZIlf7z3WiUH3uNQ7ac0v2Qr8LH/IUoLGl5UYDixiLfTC2H26GgeNSpAEj3ckqv1frHCkuYijMaZIUkXUKXnZHhl61hlRo8ahqgd5mYVYRJ5w/tB2ao3Sxvkd8oVSfWlI9HIQvMVzxVJuDa6ogTj7LyuBRW3xgjjElDIypFwifetSud3lSXhfxhzx85Rp9Sdhb/pvoYHyvMu+2TBgjHPKq/kEXx73jEu6kOZ5YD7cLktrqDeVSu3lVFY41g4g5vf58hi8LLerRDqaCr+wDF0VprKNpAPxf8Fs2gfDXz4goebkvycnUYUDHG2dDRQ+FwTnuipy4NNPbbph+F5aNa7Q5SPDoZ/vlI3HWY6Fy6QELs2siAVBLx2fbRDcy7jsRkDAOLt/S4jUAQwZK+YjCGc1c8gk8kFlGnGp+SKd/y0JnxXFbT9EQ0wRAckud9v1zhwqCww7eD0w491uZP5T+Thz2bOtL2qcsqW2HZ+cLpeGhZuLctO5fRqmdf9Fk9tG+278lWRju7aPM3p4qeLoY5g46hSDSpfrMbsVNleBMPciJEvucsGRBV+kTzc6oeyXmr5ysGeSBi0mlViS0joTX8cTWWyCMQJJw/gnuLDE7qr8ncI8VmI3ZCyyitBUiN5DeYkLKiEYo6U85oy98lGUsLVOMC2Iq0iaI9I5WE4621y9nclQTA6IGmb3vSQH2AHYBbjSFiSbuNmrm16alGfPgL6hynqlfMGVDwFRw3VKgUYcdL2KjKpWU46ZgbwId3cIQU5w4UYV6NkL6duu5HyTgTiYlpH6Th0TPWvyWASO8IifuPvftbO978IEuTjP8QZTGfKu0xO4NHMhvwfvHmsuZLteyyqiSAjsQwJ/Z5i5xsIrOKEX3oKgIKMC6PnE8005uREvNLotwDeIwMdqVeEXgdnHJXfYFuwRSFpjw+tcf5GbRPhqyss2qqdcQRMCwzGechL/g+mp16sbJcDXos9HjuiCGxPefOtNPsXXCEXXAFHONj4RnASZ4LWLY0y5+MznD3mZTvSDHPyVeAvDh+zEmSJ3I6TU5wEotfYiE3CIDB4x8LuNYLKrKjA2WGJHHJkSzc2gQiAjxnYXcYMzB7TFVMJesY6Js+XXuEiLUTjHyN1OnbgJVa1PkUvC4xgIv0omDicQBmV1N58zg1yzMGYpzcnXvq4nS3YiA1/tbJ2vNQWz6E1U8Gc+tKmwKj4h9VGLQd75BVM1fJhbC/6gbfAi4i+3A6OfpLKxYvSIHhWt78vz/O4pmuL/0dlwkM03V59cKOSiKTiqQVfGNLPET8rAT16fn4Zj5D62o8kEpKrpbG4kxkilrwpRL5X+a62ICoJFcFM0R7VkXJKMFHeZsH7klTep68hX1cinmrx0OzgnxLv7uysjgtOAHm+DIaw8Zzqj1Ca3esOAH78Ate+FNck7OWpqkYgsP7P62EagwyMyoNDOI3gMwMbWKQ0U/zty1dG7sNMQOukPlgRxZT3/BbxMnU3t8UAXnOI3MXJxeNewzPj2+7IG+CRCU+TwR1OGYNya2xsp+fo+k++99pGliUnsDQxwqF5+vqrSFtJ8KB5i78tNcBBUlxlA4tUKAD0l0gHh42qnxIcukH+Dg+1CtXka1ed7i5OHpFdpDfJ4p56BLjLobODgUruQmDLKq1YOHl8pa3aAZRol8HVrFS/LE9wq6AKUrHhL9qJZUrS92UJPumdZ1N3Umt0kiNnCuXtX3vmlT++LLlGiITc1U1HaaSaTT82uGvS4w5Ru68f8m1OJpGicI2nGezbZ8RykEh8aE+3uvaT78MZZUP7uNSktFnaf5CtOm55Ji8NstfCB3FMC10fKaU9h/xlXsuXemHx+w8RK2cBlAnlCuNh4NWvlKUworSgrPDFkOInvvR5spc/863md/Wd2tA2h5HEmEEsFxPvDujaEJeETqr1RBjYAjd4ZKIGyuHgmY3wuW+jS7bSiwuwTSkg7b7WbYmuJ/YwVFzM5J42VgiDo5JTnv8odVglt1Dho+0CWYM+TCWLLspcX3uIwTdNoOYtniujqfcjisRz2BfujlrMrqmOwxw7zL9AMu/rNBY1B2HWJ5eglO04ZgxK8smIkH3ateQONFQto4iLG+3kMb/dWbUEhVNEl0zqxIPce+Yl5D9lP+SkQjWSQnJZ0nlS6ynkhGmYxYOFyRtseGmL1R6QLe+sPWX7TpMzEr+MrfCHPtWo5RY1Flzu4uRSnYcg+UywJtj03AlqkZRp4YIgKZixowMG8QkPoP6lb0OYOu2FQdeKeO061TiI6gpv+cwI0MCerJzr+96DYDuShD9vGQDMcfiIzNP+sXnQO2wzdLuHWrJ6qLjZZfF3aterdYaUK+GtXaocysgzjc3sj09q8dn1mjMVIVB9QWb4OxaTGmcY+H43aT4Ft13XnAwkOaurX5eZRWLEC8Ban0ZH8qSMD/QyJsMSVv7F6C5YFWSM6nC7Yb1Y/irJGx5LZBBjOiF2HfslRp42/0+GDC/RLhqB1Pp+4bXO3OtGfdiEJuBXfCfaYGwr+ev6q1eA+e8xuwJPuSf2OJ39Wz6tv1xxhuQt0qwu+MyBZKv+vDNI7io/kdxA+J+VB6vTVlPn71Ml+ZLjCmCClcSwd47VBEBmljsn6fpw23Sq8f366zw5DCe3GG2OZbFu5Z62fuyzJ7XsFGF10vk4/kMS+/iqXISqERCNX2idxc9G81X+SMtjuFsSk9xMBKmQjgF2Y6VFA+thkI0ANUCehFznwwOQnpVAV6KJd0XozBc22cHOnvk/L4N6BqUGCi0J4HejqCh5r30WAT/C98DLZGvWJWfkG7SKSf5ubbIgAKseOs+hCt3KaKV5Nl026zNqmHnpvsBNyvHJTthWZj5CPu538QR3tPKPAMfysl4p85pNNrk6e81Qoie9479appduQSGdzQASU6PZWL88vdQ1qvdToxRZYz4gFx96ryouB7k6b0n6VU8aD26QQ3lhaPk1ijneY6APa5wO1IgTF7zghp9eEnMIEkYRkfQFuw+GZCtWvQ5Ju7FSV7PBAb/ZcPwgxmS/H1gT5FnK8S8r/FG5He2IeEHYuEJIsAcSj5wqa0Ahfob3hMwljBoTbcU+bBBefINnpsSAoGZBb1H8Fed7Gqy3sps9sF0N85MtcG7ZbEurunXZfF2lRNvEcnv/nvpTSIL0w2X8ngsHlS1SwEPiLWDMEH63xA/pfGpmVa/EJaRnZWRpqVt09/X0FE6gbMDAYQnJt50HgptbEtS1yP1R7FZOeEIhL/hHuPofgGb9m6UKfH+0iH6dfV4Mja0/0qPyw0teu7DpULatXIbWr1wkwamhJgBJ7q0cTdopaljnN/JH39cUHKRT3WgcPfHyRg0YPVMuV7ne7RSvs1fwKVFXgnCUTlxdLAasA0h4B1R3dePk70htl4YURbhPcL+VNxEbTpq9DgkQJKwOCvwS8zQzmBIxxYTmqu92jNlrlDZFmPsvcuwhKJP3SloqJM/wyUzt7FTCcF7Ac4Z3bnTojTxvU6N2FllXcFMvgpyYQdHLU+dSzRhPO2NqkJDhkYtUxIObJKQ4fX5nZ8aW+xym2gxdVun2p29ktU9l22bPi3TexrZOEU/+28j7yOi1bGk9EvHGDO5btySJPa+TY0SG71BhDEuYHRumuCXV66AIwXN93C8z2Gu1ry5SJnevevD3Fyzb/j2nL5/Qa92sR5w0uhNOmTJk0UTEXH/hTM/hnpdRDaiLrmWZnxTQGG/PPrLRZ7EcepGFljThYQaIrnzBOh3E8swvAWwNill3jlfB88nPMN9NrrtUJXLfE5katoLYhicwpwmMHRaQtKd5ozEAnXoNmj0tm8vsg3lNsTyAU2T0xDIFzT6UQtEJ/agXGtY7Yj8W3ZOCxSFVId+QJxjpcAicRmoH2EY2EePhtw+W2K/8wNNIcmd9cmvquMFgX/AXTamDzJCDk2Io9h1yYI2pOgtsD8b+TYTadTn6fZHXNOlKHwzpz0CV7E6V1HT5rKzcrYK9gYXA96f08N/QAhHsVSVOfQTjhO6yGk2x51vTjX5hME88i9QjbL0sp7LNopMicmNKCxR7aNg85XUOvz84cJTNxw1Ai68vgE6JSubpMkLwP+JPUQjtTbZ0AK/Z7Nskzo/A4+qlsY951i3l091XSwm0KNOsjiIZk6l0ochI+6e4sVBYFSAhznumvd3P1aqUfO8EMdAoiKBiod2nHKcAmcCQpfZPqyQf+Ep2LIjgEBdQN8ui2kzleFCHyN80UVRvbllisdHHrKCO//xFOb2TDENQ9Mabxojnf/0Sg8KKE/hlnxGkAPFNeWxmW8H+fSjvTh97AhgREbyWyAt3yxITWVAcl1qcZXwJeAaNaLB+WQZw6WX9k7TZufor8I6et+Sy7pUuJJWMBz1VukU06YJ4U8Rt4R6mYIC5qOLM3/gUtBaMT5icHnPMNcHp0p+apORDIr+woCIT1CuxHQCQfD0wkSunntk33Yo4zJm3hOV+Wavt99IGYWJhulBnnpK0S6X84V8lw4vM7+Kb2GdU08x6pP/Dou7KPFb1zI/ANBH9uGAKy4URpwMVxrscsi23Xi8lQaC5W4wBqhoK5TfvKjhmfcEN8O1zCxn2y0iDnVeBv1pxRkO2FzlPclHGtPnoNUNvTqzVVji8h8vCmzI2nVoUq5XtNj3ezADt/RsK/EQ3gZd9bLdVpSYTNe2GFK9x1IO3KAlfbug7e1BwMUcSRi+9qapNVisJrV2bPjXHmwXWZ1KVEnQtnEz4iiMkcfwPXuiQZgq93LKnqXS035nn1gF1BuZpu6ad8RjJ5wPVavYoeKw3OqjJ9ScYCVh2BLPKZdSkVwZX2thC/1Bf3BZnImitwJ6bmktEeKFGXBK0FaaaQfWe3IkyQW7rZHyM+dTSNosq+P0JvCGfSmdO9xm6uyYiVofzxGgsc+CRgDS86kp3Ll02bvF7/O4ii51vDtJqcHpZlZ2VUtuIunnwwACFxvvpNls5Te3+FDVoSxS2sYbKZsx4prP9WCb0Qx5E/Da0jvlqAczb1pqkOdgcPU0pdrkqHLEY5Do4dax1yliLR+/AR8RlTLZokIylWdSfpjpD74aYfRj7RChHzm/R/tglUMUwGUUQ3MtjdkSYbkm9kZakDoBFVw9Y8Vq4d1VSaseojxHWofiXKM/E2fFaqLot9nDX6ISRW8lzcIrl2/Fbudak6RJJoXfILKwLp7colQTI3pD6E3PLtuJByfCbjjZGU+ObH9TjIcrewfBLvhlVDtGruvsASYpvEjOFp1JAv26jF4u+nzkUAGz6M++Gxv5xy/D9RFtUc31TvFKOSErevkLStunLEmJlWFwSluDmMvHM/JHugrcMsNLboEQcFREyLjS5u8zxjQ/0WOp0Pabo/IT9rmUvFdXqJMG7BtUyw8ECnAVtjstKfqncSt3Z/OXu2IQNo5ED8vsnRq2ZgReeeXwo950YKYYMn3/QvieoV7YCLoNAPOb0YhYnDQdG7QfRLk12NQw4IduUxuz3TiYp5i91MgvSeyW6UFVuXrDu3Pj/mKiL+KIvXqrrHYgXzgHQjEsjGAxCqHu3g12B1y1w+7ctGqyV8HR1BBOWcdcoMlT9LOIyJ5x2FtsOgI68wv7wQ9AZcq4V3Ikh/F+K2ucr9eJehhQJkTTKj8HYAWDSHRc5IpMhKJn4M4TKw0lWbQ8R083kktONxOAzLSYJE6tZ4nNG81SGkjD1OOyN2ekOIF+9lmXNvRFSEWBmEcLGrlD/3zq3uDWQsRfAyoS9mW21DPTcxvKPsuGXsZgtFHDg3+Gas2+TrjumBfpAMKO26+rNueFaM0xPy1PiUsDeKobAwkFL3TNCqslp7iMiOvuVNmF4RimuxHVIBgT98ppGbFdJ6+6Dy+Npb3vjB3foy90j4S7KQfSKno7C47jsg//3XNNdHnn4yfvOiin9Y/Z7IduTbEvIogb/9cPyyOIGmy0iOa1ySOtRs7Jg35XksZzvjtMojOeUNUGG1jhONl4eBq5kb/Dddvls8ekMgaNk63TF9U0axExve3Nz5stOaod23Lg16YS0sdgzW0bzQIxYGvVwp3myleVbIHqNGUho2JCT5rLPVuJjMsWlqsBq7oK4wPv8nF1mQezaWDbWpYv+seGUkDbhek6FVYNR2cJS07Z4WqztKVAjfMKL/EU62WYkQZRYIT+d/sWkRG4hBJ34gOjoz+9gy5xqSqFXDQMqv/ZTja6sF0cok3T2PJlyY9PbYYyL9ns9gNc/OhJFWXjsZ7a5IZMgdTmKn4DDNL04BHWe4REx58qmH7ULAMlpwWUJhva5kuF2b/3u5RbQ3mTdvqNPmYstPXuOJhRRXh4qrTrw4Mwb5flU+hOLOHdJ6Z5xeh1/Fqch7SvAEmvGt1R+QwVL9bononTUswSyRFLgxSbNvo3C22qjDOvdwoyo6NAYnUKIir6IWP38pTBmd1hBfue4tQ+NAi/TeVYmSlWsilePobxz6fl0UE4m7hwVrRFl+HzMDnNojDanyigmr8wPbO3Z4TCIFqyyB59jo6M5bfa31O18zdglqTutB/F7qahQItjmJ4ccx9pEx7dHnfE4y2SW/moTo3R7RtNiA7D7yEvEOKafBlIbrYmgQf3pU3RDieeOd5HNA69GC7Fckk7Uecp5T00buCjpqnnvo+dMMk+LgAJGMCFSqK48gB1wHJlLUbRAWTH2/ld9znxasnCSkcZvfiKcxjmBAqm9FAy4McJnF87wpbIrTSa5ZNqqJMa9h5zqyu+9gwWtdhcY+W4LrxZcD7gVTAss4oldmSdqZtV3uBemdH+5BILigMJtvYELdzcTBp56rBOg7mSU1LFisaaVKfcFPrq4n8Fg2W8RTbI29yNiWy0EWFgu39FHHYN/lohONhe5oaPK4LVoOhhs0/UEyOXycI+jejibrBL6TCJeuf0HueC0FNREdHrWB2z0IuccAqTiH75uF54KmMRO+F+c0eyq4MdYCqqQvVMI46/r+V8hgckkTtOG1Yzi/IcXV78QOOVGuEXn2qwVKhZgZeBkoFuawbjpSA0Db6elJhGseIdALnSsm2t8y9LME7sUIIJwNvT4unsZhn3qOdvr7oa/95VO4jSZs7tdq8bL5Z1sjB9EPRrlZ6jrme7HYT8KXRgpxMIGlYpRBKyOdgE27JYFLoGFuyy8AhqbNcFTo6LpHaPy6U2EDzffHdKqCkpgPXkYvMyb0glubPNfT2sS8aBgf+kBhs3I4aNyiCfixG0Tgoq1uFu38h7okCbRwg54QFcKcxIyzdil/v0JhWwzjqDtP1UZ1cTMVDnKam+vsEOZ8Kmta087KBpzEHNnJvi7rDw4Iavl9mc2wKnq4zVvGdgxsc82whqMqsR3mA/U5+hYnHOn2y8g+BSdfkgFP7hGg44if61eAfs1Da6o3Y7ROiZWP4vAmUCgl472KKHZXWX99/RyXkBdqPh9Qx4E3vRO1Yve7mhIoFyyWSDZDiman7ONfBrQUelvj2uuZ3m6tqKlrJ7o5UN4PnXF5/SYrPFCfOXfdSNUDNOKdzyYarRZbze6COW4iWF34l+WdXiy/r5rNAoQGKdz9QSDNRCXnNJTkL5yWQQQ30lHLTeE3eruqamKq+v6n1i3zuZhzn56UgFQ9GTY0vQDVrHooUo80JmYI/cxhjFOR/zSQ2lwdSujWhoquSD6fQ3mMzs7ND+dg30aOnPdG5CDaWnT8lZNPFpnZCcBVNqXXKBSOypuQ5nE4DkPFZIvNEqmpaD4R1XxeW+TGVetW/5d4pEeTjFIgGXTZqfl5Az3Jll2IWO6763UpN9DbInjQqbhQ4WPl2b/zDLnOGk2BwguvyhL6CxS8mDjyAX+C4etSkUeqc1Kx3dwRXWsFBnVrv1n913hwyM2ItnjvpTwRffExPN1X3KNCHmDr9O41nKTtvm+ma7qEw/wwUM7QWpiClSONy1pfP+1d1jPAQY66n9UKwQJ4ZOBxjEYIK/c9ZfAUaGR5jEFvbXZliNbYL1OrTAlMwNjBmJ7+wFfTiUoYs9BN8ucmaYOQB/MVwxebK1Z0z6eTwUKuT8ZYrA9i0ZXjhDVo0IRo7LyG4LaqVcB8vmHOWJHFI3E3hxUzNFOu3OlWIciY8V2nYSPp3en6rv2TOJmsnTYnKowaoxBduPvfMPv8GsqjBJGwijKz6NNWwpo9J/8/p24rdQ6JIAZJ8hCFs4EXQO2BrommETI61eIoMINZoFjkKiuwcj1WJd7wSM6toUKH68FJhaRaeH+ZoDiZiYlN63Y5LOIGQ6ufN9Guhtx1G2Qenn7qqsSq8R8oHOCm8kuOfQw+hlmrgCfozM2gm5xoIATfzUJrZAxRAP2FSiYMT2BY4oPZ+yh3e2TLUIrpz/vKb2YdOoCDu0Oo/63Zf3dB6BT2NWKb8pSr6BxdRoEHs87ckX1ie5hDA03GB7UgppSzy86WiNlMuu2lo5DbQ7IQ8SKiiiqUP5jNdteu3R/pTMAgb5eSQBhUolBqvtxkgZK8NnS9qsW0fj0thtXIHiQUdaw9s6NUXqpXi4QdJOYqmyHkwUD8p3lL8vfnq2KY266v2Bg1RzlsAb8f0nBdx2w0hWUeRnAKU7MAj3EVwTR7R78Jm1JPrrNZ9wlGJ7CWeVJNuRSytzWpRJkYUflgvtxCNSQHU+IRi11hYcz5Dl6kDsaEvD3yesGophkK35NRLicv6bzgnCNtyvLPR2+mtaoO6ZgrvDHhm8yoZAncYjHRcg6K/JzOJKLoT4oSuBpkq2xyqa7eaomWGEaQ7dp7/iypAl+6ko/H5QkPJu6H7tMnyxy2VVA4JFzSROQBS+NNCujlfkg5cbbbR8vpAsrwnEeBmN3pf4jDQNL7ArzdT+P1LOlH55oODdkojmaZlkdRUxD3g0Ym287ByodEUgnYb+UKgGS5smcBoTWo0dL8fU8gF4grerGGnhyDoCIjQQIc/T7uO9jQisu4fU5n4Lrg02ctj8wa8yTbPn8BZULJFTiJiMRuNd6qBJieJ58buak4OZzeCMx3jdFhQgeGTA9YfDHCfgqQa6PfNhFyaXbvltJwMmhwK2j4KrNerJWnssu5TZWbepWf1Zh8whgG3clb+G+vH2Xkzmr+3RFqxtaoNBKqHBCfR41hJhe7bvcap94eiT7r1xstpW28FPIm8u2hUAQz6LUXeAiykJdnLzryVaUYMd3nz1BDQVcQElQVsFhhiSk+ZlYI1zYDdD0Z95+J+KC4FC+SDI183adL0QifcsjKE5/bjC/uFlrg8LbHsqdQs836Vd8bLHVy9ZEGz/9gKoCx29/fdOjY7sTVmyrNRmJ1C9cj3hhz1N+7M86fzsMiBAJnnCDQMlz86Gq59QR7DIZAPxeEelDIFUVFOlaBBxnX8Mk7IqLPjdb+ZQmy9yp+q8kZUd0vReca/r0smm3yZ2wb5+fbRCdeoS1ygATpnUhudZMvtrD5lTGsGRhSS1G6vhg8zjlGaUZl+XBKGtgJV9uGK+J6BNEwjlhzDIeM8OfUAJcQTn/JwwTMqkYlQrmCQpgP6ISWlymGfdp82TFV8hk0KXaCL7k9iLRGrVBAuqtnmRNl7zrDSZDD4yLyjzp2e1sTMQG7PXccmnbcM5XF8fkjLMwnvDfePMoKk7jcAO3mwBeariehh6U/2RZYQb1Wxzsc8eVtQUd4QvjaU+PmEqK7wfAz7NYvisTHVCi4ZnqbgsUT4TyVLfh2WgS9WzPHz0KuzFw3RYp2X8m8cVYwCO1qAXJKrBoMr2c5HBHVjwvZAXKIUaA93x9mFbqc2ODPYjdlt8x6m36SX2pAJHT8mg6aKfAqnUpyy2LacuRCw3u9cJgqwT4oh4cNO5kin9m26t9e5liBOmhPYEyFPOFnsUYHVMbamWx2eQc4cMyp4pg+RRuxgzQozn8bOMmAxpi3emTjv4trKjM9dXuZv0T/QAVRs7fz3+hnNeI/x+m8RWftnPkfQrr5ztMXOjgUf9OJzgrHo6oGMNguzmpJXsTHAYMh3E0rBiTORu6GvZr1F4veGaW3MRG4QdGG6Zo6qvDw1MlqOWIRwz7Xt2aiLEVGgTkzSA5YYEbCqMmJfvhEDOYE2srIogLuCpU/QPRcA1Cnf1YaS/PRI5PxHU8v6amlPNnzqfOie1pIlATrGkiBTIlDbjLi9tUuHluenrXsHZNuaaMp4XpFi2bRk1IQrRcguLGAMdn/i9ZM0LBQMxfK79unk1gW0O0ktuVSfqO5wGtMnugIa+CMopspAr7mUPiMZ2ClCQZ6FbM/hlRf+SQY58Fta5A+07spi69ruUKLAgam7iaDPOY7vJRWb4OUvRc81Su75uQ4HWw8tyZAWiI17RVwEnZhAgndvk6PAHuTNuRjw8uaR8VE56lFUGethU8x77Q91mQk8CUYbKejHARbhr5+jA2HMTn0ABUFcWLenhnfYCRfuQ4Zi4avtYiB6TApJ0bh4I5DsPkCsxyxhbEM/d722O6CmlPP6DZfi07RaoTcF8QUkl9NeZqD0xdeqOVBUka+rZgBzwScy0jB0ok1/mvybDYVzTB5pv0PSh9s5mTr3+c8jtlysHmyAX0oUi0Dv43LFsWcSYscS7xY6CSZd8nmsMbFlwxBPxtJLwnsXi44rKoSADt8mWDuS2swrscohx2QUN5uvlf8zRhU/thjpTaW8tdwMzUqy7wXD90Mz5gh2Xd6sBNUFDqrgubBVeXNzabHsdjkUZtocWOTPp00gAbsh7jlUUKRmHr60VxBp1XUdB65wFNScVeAvzyR+39nGE0IzeOWFq07qea8UQkA1DUgRpLvpWhC46MZjbz99XnEOVFKUyohSWNPW/aoF/mxBbsVNJX81o5mvdwL5NEqSaMcbOfImm2l6r8vjHlr43Mf+O9j96uiYfRmDH1KnDZF9h+q+RJBK4/SaG0z0v3mIvOaa2cDJ/cpVFp+IT3s1dv1vXoA4vDl7FND+/+Vj2ltSDX+lz/CxKqc78i2awVQL9k5Ux4FII7qb+H9MRXcGDAoffAkxjTzuuqxXrvg4MwG1l5s1aSDklwp1e3MYycPW1QVBzeu1RnpMF/HujCUuDRET/RXpegAx4WFDus4TR2DJPQ3bFbRk1mF5uJe9IbH3RJTKES9ziyR4a5tv8UkYnrfnRy6yTUbNFJiD4XXVXWw4I8+liHAEWvMJEZMEzaeiZQ5yfjV2DUlpUHvQVJpsPI1/73WQNqbTw62cPICpWZ1ktAkttuuTwM5d25KCxNcrTN2G8ZIOsLVNJxVrsd81qkRwnBk/7eY2XcgWkPEe0URTb2lyjxlX1qBrfY+vPJgGIfZ3co7imQd8HOwnMlv8w/BTbQ83FZGgJCS9vsk+zYBrlgQWpV5+cu4lU8Qc3DEMsjKxdVj8mSDBdo7Ok4qAUlERG3hwHSghE8jnyEVkKNNOFPTNzHdBjW+EK6Q7pZ8X70Xt2C4sFAyyYbN+RarUavaBF8IyWFNjIxnHBxSb1UURHhItZbzyZcjbKS4LSj9JZuadzdrFOrc79HGo+lWI+IqbJzrwpIaMo6tMJG0h8PVxXNhwvaxHXEivHNFoPm7OorHaT0tFret9Dog4TfX5BqTmK7iE5UJPPZRsepe1kLpqrW4P0sq0f6JQVnKkHSS8Ddxhkf46TMV7v5fyCUw+j5Q5fG0TBmP+JKNKB5jaWBlzk4LPhDlRmkZzh4a6qSQA/lzqu6fogWHhd1jxDXQaOmRcZMeAvQw+feyOjqAA2f8cCMYJ2p6OCbXCTJ0WDwzN5I4yATiU9e+KWU4gBS+rMIp7cPLILEhIZzcpyYSXsr/+Z9lP4DBE9NV3jUn6bOYjZKeKgb+FyMdpBjywu6urmDtvyZYhIC11fQmlDy4XdW3BX9A2HjAWm3wu6jRblPzZG04mKWpbvOLZ3t4CxbU/1tYjJYuEWd1fneak809sobm/jWbl3TPxwgi0euNQk9NoUe6ACQB5xKkDmIzuD6xEqOyJ0VcS5HosY6b+aXmXbUlONwoZs8dS7pxj2F14uOx5E+CEX5VhkHvDQINY9w82E8qxc3nlf1Mcc3uCDKMMF0ZHWSpW5ff+nuUM6cBAL7PhB96qSinpuKojAU+19sMEwyD+K40tnGXnsCQdzWVqATcz4pfZizEdnw8Rmup3E7wFGf3G7PrQ7fc6joueE/dyR/M0z9+ylLM1kOsXp4aDGFijArAnLfpUa8IWOB0j82s9mRi0MFr5YrIVVVCHoXaYPlJ+8N0yAE1SKBjlZLVr7c3WHMe+EIBb9/x4P1Z4iXhkeEroQMJ1DvkQzHXtyZB9yJNL/R/uiXwF/OBbOIxKeX/DHAoWBx9mYOjrSj3kODg4QWIpIKxr+dbrH+Zqs1+F8CFTt3x2Tuu3yHxxYUpDjsmhb6oH1eyVNgO8aSck/3X7lmCtC1O/kcbKb0p8P8iQTrISyImIPOMHKA5QFhPfwI4ShRzb4fHB+t80VuZwTAtTVexRN0S0TZdl3enNhVdNxAC3IImxJjTkTF5S2TEerDurAuVjoqeYfThMshN0FLbZw4+vMebfkkSfWyVtwcTo1Nl2FQwC5jsV2JlGmoOXJThE/9tN+J200BSRuqPtMlKioikUhCVsIrMRlQs/gEyccUPAUwcQebWiMs9xgXAK095qobKFVoONPeRoxoJphYrFUp0aSAVsisMbdraPqLrOgmCU77SvwwrawKkppm1k71faHkRUlHwGeAdkwR2ZPOCHNX9YZ26/FLE7seUsOE2RVH91R+aJ1FVOR475k585JeL9DkY2kHLbi8SvUuMdPlWvWPEJFbju0s2smYoz/0ZDK6nfDd+D68rGfJPEfq8WvYfp+8c2CIP+sSAoi1wGOkD69azCtGctoyHXjKBof5uHdk8Zt5vR3f39vpsved3a48KD40I+JX6NNnyYY+xV0rU+UjPTUypyQy5IqwwlsC4UaT7V1FzLtkKlgLUS4dacQnzc92G0wvtivH9Yf7xsecW+W+x5196szi7jzhJySgQK0hqYh9B42SfHp9VQAXWmK8Qqfwa56CM1iZFKWVqmbFIK3YnKVi6zSUn1SWqpgsvMisN86PC6yo39h8vVt2V+jJMlolZvSI5uHLTFGOXiRrD/EFS8cKpmFeWqVPzll8Kgbu8RTf5PIf8F7RCuJ7v3XpXftWaUqHYS3JsH89dnXotCu4FKAlORy+SbzU9yS0EuJThFGdsW8TlTGuPmPq0v8uW3k7AAQNkKfyjyCUuGvLT7Gc73PMb/9q7ucabjChe5BYyQD9ght7mCe/7jqUAn8wzLHQV0pL6zVD6fVTVmR6+psxqBONwcGVOakhwx1fzXnZBV0MR4akNsJtws5W/hKfnolMdzKmgKLV1khPlbpEzLKHcwpCput0hwsBIKS3We4PtPN7dh8Gs+hvPigI6sgjIzd5hamdidy6GXoRLpW6ZFXOw4lDD4gMhqiQ7dcwTXfKwLGc8LfP/ERebZJ2Wj0iNVF2p6diuZzp7tio9ZDmkkR7d1uAQp+6ssqKMRY/9+E5SfSq697r2OAIaPc3VFSW3sItu7Y8ecCjSmihaAFoIBWmIxcdW7Ag4AI3gUjVNVCJrg8hV5hrnRfv0SuQRNUZ/aAmbMgwkoNfyUyPW/UDRUXIO5uorW1+ZbgUf1Yd0hNYEv2WfUphW9TNzROY4tSRXdLKdKg3DwT94Sba1gwmcHOI95tQHRuBQWsv/vBnUuKu9uRHeJlt+v8wqQuoifE8RZNYxgQECYawVu7kY40BkuNewTstcoqOy98XEa7vALGO/7dC3cxW5T9KiyjWlluwBuens7cc5EPfVDYX71Vjmrt4W+PebTFD3dqwoV7snXbNcWkV8uXY8yFP12O9mJJO7OWywNNT6EHmct8y+wWc+STYwUNdyDAJbUTZvHgCaIhpkzBr6oJNRwyBKzPUgQAS8Gy1KfJv5Yc32/kYyvvZERUcp/p1Zh38zAy3Ry4bF07Dvnq6c9DOjIaK0cFbwxMc6QbQzZbHkdL3Y+mbChajee2/9yAEBfeqjitwEk/5wUzBXMwZafYOA3fj9vWEMZlDmlmL6vLeq5eQtXirEoB4HWGNY/enzIMItTRZkrvYMOK+S/DGfll204aKVWkj4Ky/K0cN8BkJYDRSZ1KniBHsOrzYlVHvEr6wR5Z6Id6oHS8YEoLqOgQJawp8c3v2wugb/7QRdX83LrKOnR4bbrDFHOc5RY+Dp288MokatJj0/ApVHuPT3jbv/+liKm8qwM4TH0B72CLZmzCA75Tn9pNiE9LIG5rz3f3458RMrswLtH28dTTBlJRWlW3r6E/sl10oKaHTlYtazBKyc3GofcQUlOboqE2gnup5gbE1Vc/hh4tr1XM6D3qR1bzpQWT8pndpizsKnj40IauGdMyGQK1Dkopsq5rXHpHZPs8W9fV1ZfKTzHKAeTQZzAswKowAW4Da9BZKsecKSnK/knjCdQCkzoLbdd/kLMmSgxi0C0u2QmBVZJocRzw+PR1GE9Hl2MfdU16RI+e7zsCJ/KVlexZc0y05SHkNKU78Khj/ngklWuk6oUNHZoHifqg0P4erMCsvjTrcZ8dL2X3vwUobICD4iugbdUCP8fMyTVa61rLtP0Ic0bf32JepWbMw8OYs+9q8Eak/9cZ/9s+NJaqQXDQH6Ygaw2rxb267PDphmyZ9LjlbNmewifLlK0HaIvCS5zfei/Wiyqzd/CTsy+u4De08Nj9dHYmQr59wynoJ9D57H6VFtjR8Zf+vke6bPmgbKQsWWScQpnAMJD3Jjo2weF5L19oiMeGpXqz7Ubuqndf5AygiiftgIHn61dy9EcAWfjBiiqm3zHA3eO/m1in/9HQtgVrwCTiPM2Lr2fsplD336xRdbX1iWt+ptgk0IIBjnl8fUn80TKhx55uQwxaLXyg/TaiJgmJKpgUQpVPY3VQ1gDfn2oerSYRUB5vJWID2qtz23M9qB9oDEleLGAhdijSXzjcy3MFQQXGtNa4TmiOpk85FF5VojnhsU4YYY1eHrUN6dS2bye2y1CQlwnGbzAryUi8NNtuWEvlW5aW7sQBp/ilm0q6PAuQCDEpql1qExXeIvad26mkwSnmM9tciqC0ZrbTtGbQbWRwu7/FOMPWJRwA/1KP0jE77witLY3ELV5qlLe9zGvLP6+dIneuFZBR56AB07D86jt3YzTu7D+E1CvDujMoGXFYjpW2VQ6yPj7UH+BBFOxWaz3RvTeAFtJoygWLXLMQVFzWIu7Y/LTbBmhawZaeAfVeOhf2jFixPPeorcZzpbEJibk+wXLVROeX7ShRjmzmAHDHkot560F6AR6bXahNRQHnwXU1NxIWm1CCdy2cJoMLePuw4bikuPNki3D7CNfRGf+zIAYuMwSPLPl56p6yRd/GyJ8s/zABXOT8oK6nxo3QXQ5HXRsbDNm8im2mNfXMLL4XlUoAKFbvZUZJmhSGg+GHYIzAMJ23pWZcONZJDFtEbEDN41ZyWv0rt7RyXwPMk3x/tQmmkv62wbNrDzbc2o1VulzqCYBsq25SPeiaH4tXc2FXc5yAM1kff8ELyJ9UhU789kIf9tPvIxN1ymvBxao9pXhvR2UMttxemgo7bMbvO72x97PGL60sh6/59XUqTE5smCU1M3QG9o0JtqgaUA+WaN9KwmpO5JAQ1gAjmqRib1TyPqZ3l0OgLjxiRK0ZmYLMtiSVhNDWj8qlPFu9sdA6f7GxG9TPsfH701SXnT6JCmuzrRXeYPKBx+XbWtMm+sRFYtbXo2uXxuIb3ioeFeAiGwvF7KtD5FTDUuH9tqjH98ESXG0JFolxfgHbQexQCab+84VAAQKOmyXUIoJXpk+fenMqsB09GrjdbYeDQ6G299xyVGdEYW6q7OhCXGvBgM0JTpVSGQ3I2GCKuPzoDgQjcN0QYhUDdurJNWMvlIjE/gONEp01nnDmKibtXhvAQW/MHMndqAHboB8lILuWLffUeHeVRG8ofCfrUTQ7y7iWlBV9yMMy0VsCwxvuW9Lh3h4P4QgjSehU/0iGXOepIy9y5nkwCa2pb7f+SEWAkJSCF5Ycqo38vBDMidsUvywVuReDUrgk1KHsDPaLfHY2+a4R5rZuEBsXBnqdHkZ+7qD593GpKvtcg3cjM1PkciuVUxp9OxwRG5NqkhA928waQ1ZmwZboUf2i4HhAUDPon0rh2ShcjBxKT4W3U8YJ8Wiu17A0UcdGUopo21dReU7pmuwPouBMj1rL/aHy+JLHVUZeMekYAJUFUjfo4cCTPXhIMHQPJGYSH6joB6Ae47iYwhulDluX/MtOmHQST/S3+W/eE/S4Y6Vg2AULPUc5vjvYXBbJk8GtcbfxL+jxYRBEGmf53uJE2izvhNCgSLhUpkAQBFQNh1BTS03lCTiO2iOmL1W5WDS1dfNojX1uT5s2CCZ0RIIa3MAp9OzT2NngvFr9WT0tH+prcJd+5WQz2ggMeNVZi/VrRhjQSf5nTcmID3e+xvnwvljfT/TIq9dbogE+1SgBgaryk9vJ26rrwmiMJy497tfQVmj1oAmGGYL63dJYz2fjuKI358hBFeTRtq8U3cTrsm+rnKC9W/YKitRrpKltlaEC/wvcKRA5wMvITSS0Kpr98qS4/jXdXj8JyIJL1kP/ybjklEjA+eGtQf9VtPpNsykaEhvPu9aAzaw2qEJLqbASfIdbZ5rB/BXDhGuBg1VJ+Sjz3PQ0HKJBeFri2ij6nb8SGcr/WLwzWlbXNywUAnL740as0AqruwBoyVT5xCo9fgYs4fg0407gCxx/fEtNFvC2QsilCOnWHv6+yx+h6daujqG9pPQgKSUXro4KDKlchOemzxTqhQnmUDXZ03zcl5NK1SrsZUKm5DHcBCFv4cX05MFKobOAd+MVwIUzW0bsS04UeuH+2CdzE42DuAUeMpiguYGmgmFlROKjg609zsoEYG7znshg32rmwaU1ygKIk7ptWypQzMWJQTeMGRG/4XkPqBV3Rp7RHKB2AT0Vt7dqYcl3UqVbfmwcBcKGsTAk+QRua1ropRwZDBSd6vhEMYHEUQj/v8LL32rVR8Ey23LiBrNBmdI5x5btzbzbQ6cowNZKbPTdPnLC0DgmrE4IpFvQfQn8y44hzfK8En8escNbwFxfuaFSHMtnmdwBk7lApS54QXcF6x0MHyXHLLUHFJe4+wHp6OwJaNf+41Z0Zf8OeK1FA3YeFka4ToSPc+93AHCbjvkL7bCAcA99QqqX28tev94qSsIpOfvQ2nqMdRABCz3JpGxLNChDcOFTBJlWbds1etCigNnPzRBCzm6VRaQwrVXg01VAN2/zYqm4APKi7k3QSkXAPNQhfoKHXCG0EEpFjUsjz0PLXV4iA8LHcip8TH9Y2BYyF4KTuNOH82ZzZHDGIsAfLAYN88HumIYN0vbQFJKxliRf5o9JeLuLH+DNFGSLMJaYZADZrkKqNJyahSfsDz5ltm9B9Kbh6itDzNhnDl/XmujisFk2IQ0Z0FfvRem8bVeJ/1TpzE3aJHHAcJbbrKIgvG23ppCe1IyZkMQrR9PJElmH9UUQk+ldvZKwfaCzKhBlyZDhy1Ocf5ZqldZyxMUPxMkguYuCX1uGlNogV3D85F1DgWpA0+REmcVmHhz8UDiUyunE9m6aeY8R/iPDEMzmLsV1dXevUmrvjPg1CFFVG+nRtIRtZldAWHG6EELLTJFXlfj9z9+cEjTTIgyVWfmP8ZzGOl3PWbHXGCrPyF286zlIgvM5tUGg8h/63y/CNkqg0G5KO9tPiYagP7HEd22FBnaze3huPePVRlMF+X1bAcfy95vNEAWm8jpQsTkxJIU27Ued0bWhrybjj6bYVRcVNn6YqiQRxDnxBgHiIaFVxmOF6yqZlsKxjmrqmPYAJofv0POOmv3+LKlSJVC7iwCY71Mx96JTeU27HoUU8C3JBSkx1NwPLwcoxwLhSVU5PsFzrq7QFhZoj8aE7OWGKdk0H4I+DqHMPT4HF+gcBDXCWDQe/07wCR+8p02U9VxogAt1t6569kAzd6z0yjcB9Wzo8TEOSpgnrv6bnnftEucsbOBW/GJkBSDkk0YuxOxOAxjRf+5/DlfViRcWsivLJWGRL0+F/FWQkN4HTZrryU6VeV9dsIINl2XCUKn0Gu+xRAPBPMB5mALdKm+9qnBBPTMhKg4tMgoqs6hx7tpjRLd6ISaB3+7RJDrt3PeTm0qH/aBDxNlX4QmSWBGKuu3CTifleoVS36pbqhEb1AwfsuSvC5WqvQM+f1hWW4ld4K8CqwOM0KORn4IOF/tYh6o/1YpMrEQHX2B1OYolOXSpZKLGP5HXnBOnIuItdlc0JUrZx+9ryy+IB+d1yDs60xUMN30eg7bskKzYicyPBLUaMXghCF7PZQR1hGQRSThuOPH4DSLN1fuFFJhMxU9zeNBBj6lq/MS2RUGmsVPBeeqb2Up8ZFK73S13/B9+/7COSim//k1g17y+3Pct4LpQ8SOlO0B4wpuv36LxTX/cfjj3cxYsbvyD35c1hp+z/V/LsC0MbcEpXoPYPvE++VIBziy0aqnLFBLl+DwL5g0kqp7M41FbvmtSeHT+FcB5LvVkkUk1HpnieXKAr7zanzqmVdiFhks0fp2NA76vXD8tbLvQP1ukvspnrqVa3fWo2IGZzJ+HfaCD7mImtJOhnXGPt/aiRGVzGFEwgSdohf16r8FH8uMqATojecjIq3GDF+/VC63qYCC0Wkmc5yf7xHopQKfdvPy7Jh+5G1oVr4vcbEc9HoBm9G7MBuBF06HZi4p3kt74qnjlwxJXIczCdsINXTReHTXlqwaHtTD9htF570JuGAsJA5VnKO4A49DSEYxTEh3dexM0Z27G3cClmDfD/TBjL1fI/MXdABng+uiy8lg+kuTfRuzfljxsV9Lf0cILQtpbrXCSjIrJFDttZuZjKrNplBdLYaLzNE6gxGFSppJCubycsDRg+JwnuSAoq4Ly2UM7wUI4vJVifPjQDI7eCXAP4tCXPuDm1Ah453BVDkTgNoOPg/UgQaM0Ap2JAzk8cEtwvIlY11u7mBKipH3AdMQO4QHvIoFRrKnrw9WQO4JMH+A5KabzRTtOUdd60gkJ0IvRYD1Ss4Moqo12fqELCVAcIuJF3dGSQHur2vf3QO+Z2C4hh7/S1eeXCwcyBQ1Q8sKYdrRagGKACQphOT23E2ysvf1F2DL2AswoD5UrYPz2XwrEC4Uvlm4terfewIGty9m0wYKjtWQ2FPnOwSpB8fdelnJuS+ImcVz8rI6Wsbip6GqKBJaP4xDL9VivPtuLf9l3zgNSFPWeQlErA0Ei4yHWCKtvZ/B+2BHiUlggFdUV9H9AqMVxzTcjO1srd6rdQ834quYfRTEKfOiiSSk8v3TSzaDotAsGyLkxNn+mImrZ1s6ZV2enDFes0p3usZGYnHImTdhNJVAEKr1PKhiDgHyzvYLp/RqjvMW2HLMN3TmzugTt4Fq8Z+rPsa3QbfHILKe0gacudIkSpZakSNkMVuWj6FV80NMLhDx5SBWG/Z8sUc4sG1wSL2dlMyVjdUzPjSXp/xl5oLIq3Nzn7uHu9Ccf5nElhMyEcnsPcOS3CryLxAweQ4n9iyxZqRIvWN+rarHFYiUmTMvY1LyA5Wyb5EhIOaqCudQX3EhopdLk+Aq+15fpS+239PHHFw1P/rHxENbZrGVo07ZcetaZDtruzWk30HJ6+Owu7REJPO7w2sftcMhNNwp1kX+TuUwGjO9rPMeEIr+Q1rgRdNsOU9+EqToy/eP5eRs99XeFBBd9EuWmFujsnyZOuCVv9YTPAjUyh+I8DG3zSqB8WLSHUfUcE1ODwAFCUxTsLADg8X0jv3ZfTBQCWokzvpY40sbJAOpNnB1BFmTpJW3ZhvTZfBzls2/3qjFKE5X7c7EKEVc/EgWzMX5BoKMNk+9qFH72GFSWYaYOmPlxemdIU7XZgN5FalP3XOvjVfVhqTFdjvymF7MAa2K5Yct2JTzBFnv/5BP5vTwdGXolB+c3VMmNfEmpb4XVVykUFSUcxnTVbGkWRa4+QJhl9bLWDCvbf7ZtlPeA0+xBpxZAO6Yp3cDaazhJX7e04PQD8T1K65r/dAvm4rY9yxDTo++LG+AKfVRRX+mDJClsKJv4f82sLPiQTNjdLA8y53GTebyff+rlsAP5cLFzJ1OrTlZrBIp/TZJeklHL0SZUCh+nDxyM+yjjdfNhSqpLAQigdZp+ZzgBMC9v0dDbbbyMWbO+rUZnppF34AkoLjwqQHAz2YPraAEicUixgUS7BC1TqiupPs8j+KqDx1NcFqsS4u7vKfa32unG6ojVadmsHsDJC21HrMM6/hrtCrlOGpXATkTH8rwvIAAMjzygGIHSmhFFmX0X7yn26ow8T3e6EjKooVAaYnG+C9ew9qL2+JyWTBDQMZ/fJ7nIdcDqWp1xvlwmE/QIrX4l3qKYD1tKj24+Bt9vyG/82pfAisaA9UfhAyJGS3CaS9qZEokXhOXEAWgXHANB8/7t6UhslDBbByIJMcwXvPzl/uDgsmea3mbXMaaMEAM1OGILsl1HzH22oI4+bYMRFdyJvDIzrUrP8RSTKSZNebFR2S7zC+yc7boJLyFcYae0FOZ3raxFmVgw17AddR6a0Eb/pfJi8nddxq4h2w7lZyugas6Y5ZAzlBp5gpAkpWevNfOj2bNncjC36USg+6gma03kxrGq7ZanB4CnvOWyqLKyS6jhj5F705lWA3IPakE1zf/gqH0MDjfPJ/exCRsDy+tPcpR2MWDnYH+uPC03bItebA84g66L8BNeDg+mF4Q6sxgDDYOHu5WrlMJmiIpjrVAA1tFI7lvErfbYopyRhSULyuTk5ycVQt0/bHsVOlDH+YTzlu8gEA4POJZslH3fLLScWeWrRtEiynYBgHeFmju5wp82ZM4JiDl5CFryIPr9J6VIg7JZApGKzHoQd4oAtw5F9H+VwZ/vhjnx5HHuzYxGhX5FKQ4xa/Qq/GvVTzVNmuPeC3f0oNmUODqlrnFfqd62vXNVKZRWgPJGSZLYnn2atl8E2xcgvyeLx++EcsIJPZzVCNNz0iAsfEDsxlVuLe8zchH2ivT614c7p2gjog/76P17KW5DvuLWPmx4IrBd0F6biCKxjQwXMext4dy/jGYL3KjxvfG87KR0IJBjNVAxWx9afq1dMPF67jpngrBBRBK/Wp672G/iCdqmhBLNGve0eCZMLRdCOFUu0qTkLA6KnkOeIBBMCs7UHWkzGgNwLrEbGpO6XAEztZIYp/Oh+elJzDhARbZgZigYwMn6zMY1DYQf11mar/ZVxQTsEi82JCxzqcKPTs06+BHX0KLTUl4CC1yBSk5k0r22MA82NBNHl+t5wbc8SooDME3bEoPgZOD1kqBeeEb/aClifzM6D4ADCAv997evPJoaulEIdZEZwc2MV6A2/F0SyWz1IfJeqLMxs1QseGsthOESN/iQvSSoFQRvQohkuzdEWlUYGvhpcOTwPDF4EqpBjiMlhVTiQROoDG29GX3J5vtixvcsMFJ6A8gTA03Pid3jwQYc6rQoIxyEKIJdxqn5S2fxrqdNdv/aWEMsF9lcMbt8V/+PEyBTzKyXp4nsEDeMC5jEqgxb63Xmb98lk7PTC4QzC9u8MVKN0yQHtxliXW8/M3L/2gDVdWoHh1Nq85nof/crXCuEI6JzKFfmKDOjqJQmCNQ99kOcRgeqDFL5+1A4rqJESxlkKzGnJKF2xPkTxkvVenHqtSX63lt9fG36kNUogOkie9Meu3iVykxomQIwj9ajXDUJTmvl8vBqst4ig2fmoOPRgnvPa750hL1FCdLf91cylikXb2vEvEiBbMRYas2QICroed0M+X5PdFSLPK7CKF5IaI5JDWZ0xpCUbk6UuAQiE6rng+FsDJhtaCJ5a3FhsV/t+ls9kb3pHd0Ki9LV4AfKFKxLalqhMu9f15uy9JbT4Ymeg7/Ql9qLcJJrLKlqBBKCCff8tD4pU6jwoleP4LacFMP4AMAV8Kqi2H1KpcWZHYC5ipIPat183LZzkgqMw9BV3BSJvSqmbRl+iNIjtY9yiToRC2z/mInJotXYFkIDwqOD7N9V7Gh/s84pZT+Bj2ir+UIQEXotYKvALbG0leJyKxcUUNfrGuFhyLK63DP/R2ouP4zF4BpE+8/KOGJWzmvDxXL52Ynbfc3Y1Ykoa7n7Yf1phHnhM/s3+k/H88mC29Neuc2JjTJIjr1rEjPkk77WHQa4MlP/0jU1rmPRMsJMLjHRC10eaImiSa6rdSVi20WWmvtLmNj4i+rr1BXslq9NhMbBcn8+GvlEeXjQUOMmFrWwAWSKgWtmMgcZOt5L9kmt112nsYoF167Vi7/SqZv4arn0+VVih7ii2qFF4wTHz38DihaGamL3dZRFFvD/GfTl/sKM0hp5hlMCHwFC/zBn3jASHOcXLZvO05lbKfvxz6Pz1P06EkC0K9QtzgW6rY4wKKcl9IHGQVWZtfHqWQ1avkCqzIh/NM7S98ke+IXRNBjxguAy97+7OircMaWdm8+MU1NdD+2X2NNnoOZSELFXR7hIbPX/7VMIkhL5GMBW+maVENlyWkXL9MiC4DQYlNyLiqYLloehXeZn11N0sosQFlZsKfk0vtNLA/VSW6nk9zIReYnPMUSR9uJC60ukiyvJE00EJlUXm3vMF+eXwk6kTcbNvaff0fodpbbL8BMWjLNIX8G51CnNkdHdJ33SC8x5gjJ7ma+CXwokuD/vyYpeahQ3/9PlFnB4SpUxKGveuEmOcEr4vf8bQWesu3FHr3laUb0s2/C9cUyeMlulmdt+AxjRtBdjXq4L8idEGcUR2YB4xbo+Rid4EimAJvHOjbqlfhJwoqVzJFp4EEC3RMrl64mW2y0krC4/5iDhaC1btIVINSq0oX+eoitN9D6keh043k+YVMcnKh7Vf06UGt6Y9GRgN7ERvgv5hA7+vFJLD24CHGVx/TRS0bNXB31gR0rO0H/g7J6UYtDQ0x4KAdd7atcozPRsxjn0GMB2ELH7at7QIwM7s1gkFSl1J3zZlfy0oLyD+s7hnSdE1hIHdgfixmYLUEAxCH+YPp6WkQrWLm/X3QZCfsZ+HsTEiEDIIKNbO4AVkNDMptfbD9Xvo4+k5rWcOOanh7KfhmZtSG1weun3XF+4bBZ+V/BpdvH0hEk8WcSudNF8QzUMu3V0SZgp0UkvG3QzrvwsHweM6dOuepXhfaebF+vd/uaincqW7FBwffk0rnEtEaxrWBrE+7lJwEqhGxkJHJfmj8hRwwHtdFpW/QXSdqzBUIrBGSm43Z4gkJF89HNs+bIDAKy4VxW6FUQSLNFbfVdC0UQm1+/oubb8Y09DjAoJ0bohkM+NJGSU1zUVIaKHhfFiOiaNgvu3V8B3rDFWuLn22FC4hAgwpVRKxM3kKV4AsYBRM4nz8Zamq9F44QDdAHdykMrVKhEX2b0IfazaHFSHb70bm53prmX6N/+Cb9OdGuShPhq9+Sf7NmPA1hxDmNRUyPrIijscZb8uFr/05v5ljdeIQYo7z00UAlY/CNN7+t/e65hcZf37Y5yiPHX/KjBpguRZyz3pzSeVpExPAwm4nZ/XwjuYd7dl+R7P117kn225OYzojNduUEpKEEnT/9BNMNLRP4AyD8HQN0oGlXLS40bogoVbZYXdTQxUfkbcl6X1xflptECtR7BqM61qCcOj7Wa0BJGmk/2xNd2Rr6dUpAHBGjE3kMhXdzy4Yjc2a5M7tyVsl4lHU4baGPCGiBZnrviM68NWsqA59vtXEQUaXCGB9ewj1I6kra188dWIs+8uoP4x/RDDTwXaQTI7cPHzZOFd+R53f+YQJlVOZ/+iFWcranrHEvX5iNIAfeKV/XlCtK88I51AMqPwlfsrTRgRVfWmNJLdvs0AxF7VBKKsNCJTRLo5NNDdOvlNBPb0kXlrN4ld8gBO2MzlaLlHlwqLd2XGUfzW7WeEZ/G8/xLpzyEegafrWJMV2CsryUZNCnHa/Pj1yvTV7VnBWZAI8/xPhMB9JTNwKBxreprqoDr1MTVJm1KSv29S5SsR/v3S/C/EX+nhTFBHSNOYHIwK/U5gmQ7OizNaBnI97/oBCXiA5GmOvAb/nRgCk/hpZOSwmoITcrlRWn+QZtYnn/BURplEzYKT/GU25QjVn4OFUtjuGq8IVxufs01TNLjJl+ZJmzenxKwPl0OhplpGXpDwmFYIH/kTnPPZkM7H71LelLEf0mAHFRoNwC3xp67TyMk5pKCGqQW13TRl3sQrMFkHM5ip6jHGU/dXfjdOo2vpT7SGadBtQNW6lVC8JsgZi/i9Z7x7NzwsGdmEBTZsQK8q0ZBKYTMbfPaimjlwmzNEzKmCVXVrEpQwJWtYc8qsjwQRSdfQmAmuAR4ApYaKyyyu9MU5LUqR1fVD/HUavIHaCg/rsDQW4TgEqBnu0Id7nq8nD9K7+IQK3/cQibZ1b2pYTODp0dmNBUpZoHeXJLNdGkfVejI+SIU9fw41UCK5ySDcFLyfSwekGXBpRa+NXv22o5OenFddoajHcwqqZFKz2ORIJj3S0yszddDwFdGT+8R7ORTrheBPKPGVpm2H0ko2OwNQAFtnAKUwAn71qIgZ8FMNGwWLwDYao/hFfgrH1gX4xz9d18pU5C5SgJ1i1nbiLKjR9lZ/ctdIbu4od0XNYGzMN9h477ZvzpAtJ1aOzbQjypPD+GmtgqXW6DqcFdWFxMmVfMHyMDIGwPH9o0yywlsVSu4pH75AtetfUEkAshUS8LPjso3Hmivw/9vFKVs3q+n2gUPV+tozzS8TSk6Y4PTaFh6kxukHVknjFWGqgXrYmnpVYTc2XItLbz+qN0z1mfNBkCb64RyDA205/17n2UBFPPEXxInff2nlyLts/VVu3AZux9fKi2o0Cp0yZP5/ZWpOV7IeYmGqV1OPEQAdZXF1rzAb+/FKm5DC0uAx1xhFp5EQF2UTjiVkfRg70GKorKLYwD1WnhQfdu7c3tVcvJJKB0s1aNhBvGjnloGtaGbjxBwaW6fOT9zpb6moSr43ljvI2UTH+4vN1HVPlgXSp2ie/JMs9xf9tjfyfkE9w74Zm/U9MnDOqCkwHaWYiGrS8JF1U8MxWeumxCk0KXVLB1Omed6NJiQD6qmdaMLaWVFShPqNilVl8uRdS9IEn3D9GfcoNhOZhr3KE/UNazQldqSvYOMcUOPqBXhb8xJy+dZzZH25yE66d+0MlLSP+Ygf/d22WpzyJUQXumPuzE66BrrHT34VcklrkdIo3vRhAC17lRUcPazKKRvAweMKqpBS3cojeGVu0xRDI5+eSxLmBuUacY6R/F3++64eNcX2dFXSfGeSggbZzR4sa4soUaWYFjqwwY3sSoBSyUtmYAgPm2M9fxyvgYt0I9pm6I4WKyJ7KJ9TjbQ0zRD4hR52vIbfEFjmWI4J0Kzd53trg4cZgMMw/UgmmemvsDTGb/0EzZBeQSXeuyUyP3/k04VObIPrW6w8T8qaIiK5MRgncPa7/MrrSjHnTOXJNFv6SkvhdGae+QNEZHTz70C4+5hAOSJi9taP5K6HJ+e/M/AuJ9RgLdKDlum0QE/Nf9qxQAEQCug4GIvi3BeCPPP3JSIbtl1LZO4zvvokuHdBHLQo0LZxCX4p2zPs4mMEAaNA0/91Q/DRQJufvu8tAKBguSte8fioCFb+gUkjxmnw6KQT0F4Z1SouNQno2A3xwBFMimykk4aSJyb78u6W33oWomqH4qhR9/E62sQruLAPx9kj4EwbBKxtkPxztKRZ/yTDrfXnIEkFDGdUndT+baILTJgdyUTpk9CMrlsnp9gVc4sQiv6bSnvQnl1H51hLu8JaUy157pGeXIjRO65IbNdc/CHa3663M56Yi43NThZly3ZJ0FBjxBekp5G0J9bd/DxUhBT0fkhGOseOiVHZa19ALnE4TNmft7d0G7E4lDGZLREUzMt3QfUjfZPqLDA/5rFi04o9Xe6ETyvdKnUcsMFNDRfwdu2KBNNkvyaePZtrIPHmtV38/7X/V8IBC5pbbVKbH8OZJrM6A5tr7wChy63pEvjCiD38STGPQORMaW3SEvbR02+uky+APg+Q6Pb9ute+p2mqxDBwD5BnKXf7KHKZ4+PCCdNRXlnNokVqnQEM4hob6T5RUngySYFOgUZk72E96NTuB7PqLvebOdkreGra0lQie8RpdBI7p9/vsYjxrgxIE8xqp+bdodlcmOlkt4m15Uhja3NCoQhbUKsCHoK+ZOF+UuT9MRwkJmtBe9pL2RsHNs3e5ZhkuY88oYavWTGeAwa6x83Y4BuOfLLRQNF8zRwttnzFhNG5qBRvqk7ST+nYzcDd+V3r665f+SbtLGWA+L3Mnc+wx2SGq64gVyJ6ngifFVyLg+eSeDl8Y4qyO8Uy+J7YPlytrZN1zjxoo4luV5B9fapN/3ZHf9yr6uCbiTDwUjjyUIz1hU/dauCRaTEJ6J3IBXEgNuv8frnVpFP8p0xEd3H5bDaMAMMPu6wXXh0wP2iqeqcGUhiCJbowzSgpD5AxNl1mk6pRtf+DSBFNXMZXxGtVb94BO+3RuHPQaw+XzVVKEViP/LoSk7cyBzHATdmeoVQGTp3UqSp+zCXVEAtucNRiQqiE+m4+6w4ulzmBkTU/ltqE/XfBwVI4GmFj2r9hPXKQuPs+EyzfaF2dIk6UaxJAr1HF0mUZQbqbQV0ZYQ3PtjCjSP7b409q2oodcKpidAiLbdPyJ8TEtDTwxz4iiVWA3+m2ZbySi0w6omquiCamljM5ETNB3nmrRnloDYHrZjCrls8Qz3+bHl6A95OQ1mNErJbSmGSR4RUg4sXdg7k8Hqz6K7Pm0GeYHddefrl6iClCwT7t/QlG5DrG5UXdSx+XjrQ/XSWanSOXVjy1wTED27k7Ln4+nDtj5RQAkPFv97fUZYOfzANGVrMlkKK6P3z4kIjgTq/XZyBGETj9MbltVwsQJOXD/W1fw+5Lsse4ifTdSJE7D+HpY7lHwVuberNeOkrnisdSEOM3T/YhZAwMCX1BMAgnuKs1Rvx9J3AhHrqnHoP4ILB10+xT8Kkt7V3FtiMxoDLXe2Bop/lB1XYTG6PApIPPkSx/cA5CwKC1hlQsuUgCvHcW321r/P+dWiAL42BL0E4Mdklp8YoyB8ajvKJhHoLKX8Ain8tytZLa7biA/WXLXsVq9VXjueDL5H0iN0n9qk7agX4YHQ/JeTo7ZMfY6ez5j3Q/ApcBg7uBJFHN6r3SWHETu3ctYnLWSZJhaOgGxybMN0U0Yw9toVkLudy0vhaEYIEhIR5I/SBMmw+bCKUV9ciCoGHbOu1gU81vedqAWWZsLHcXAe0ektTAScDLYL/psRz7yPWxqx+qz03UWN5Cl8kPE59VLo1k3SKO4fKrxEAfhbJjC2lBeik3zDIuHRhva+M4KquxmkqN0XSNZ9JRr0R/pC4cwWsJlm+5UTkAYdVgLAJJ22an9n9BRfXV0bEMzlFD2cO6AGHgp5WgANHXDZec7LZM5QRK3gwhAdaLRJWfCDI1QQbnxcq5tAOuYcvHWFg8gXc3Ak4wg2yZlglXbvGMEWQ+HJwSt8p04I+DZYcAD7za5pSUHBTdrn3+7YvBH0aNj79kgUrWnEoqkCDnE7hVWq+hUFZ8Z0ZIl4+qK1UciYQrae6gUSi3wOMHQ4b9eXzU8UvkyixMEuzhhH2jm4SANIuuzzLK9Z0fBdocmVIj/wn64wPvEtB9jHBAibJNPfodQzOBxU+GQ5dGpkB/F5EOquwxcu9mATDlJ31CCL8C7CKuU05FsB/8v2V6nYFu1vNoMnZYw9sZ8XeOftMbMg3DrzZLkPBHqCGkWIFjmP63xASsLVriJsvv2k8U0Qh1Q7tWCdnX7BQN6WvPSTE/OWV5F2ttzrmhzUv3EP0ZJUDK0ZbJ1J+ogMhIQeg1HIW51aiVRRc+0BAernvhVGCdxESw/RNx4hM+qUs5fet+fOCVhQXEyqVa6hAPKU4ALp5nEe8mMl/A28NHqas3lGUjjWo5MA9Z6z3XH18flq9SUL2dyVc4v1QCYWCUSIx4eKcoa02EJlFKcxk9rY2PG5yGKJDS9ROAG7yF2SWf55q76FX+NHWC7MYzcbkFaLYEW9Fkc7wnq/mxAblk7SeLL43it4QNJXHX4eKI8BWC0yf45d6Tq3roYqHE8Sg2KlnMdbhnjqAb4QrE8PhAOty6T2z/0f4kUQ0RfQDkEfBMQUTMrpDxLeX76F3dtxo5xA4VBkNm29eaoyFICA9BKDjjVlB27BeaoWxIQogzyHvFLfyMpCrekqYR+iczXBxJziGyVWc7vzG+S7+VyJdBDj6ZO1Ebp83YgutZmlTL0BLyQisOyRB8P2/xuunzb2g6Y/J5rF84NK4FKvgxwV5VzJckMxQbXeuvbfyqzJUfXQivN2jOvzUkXq16rGSRY0CqCbIaftp7teeT9dB7Q9eqJh2CU7RmgemXXs59ObBzc8lT4MoIIT+6TaKFRosrSZPHyyhDkA/G7QXOog6469QcbjX5e7qp9e8x6YwDCgKoDUv4vfnwlHgarnOG8CMEnekJ9hAMmlO8bTl/IEfWnjml0+XyLz5c1pLRgc4Bmu+vT0412XeEoOdVF1UOsRehgIkmz1XgLpgZdaffUIute8ouXxfLXvDBe3q1RBkaG4nI/4XXOJ0Wzf6UZbL3ZG6NLqFT69LI65zqYxWw6++SmXTvS0GCmXUI/pacW6pbODXbVakyQRykdU1kMmg9SMhNCGpkMW8liw5YD7rDJ3xs+e5hasPT92iznIZIx+TSRexNTz++ivvkn+mQK8eYrnZCrREaJ/nVaJWNB2S25uFsAXVKHfWQ6lvkyQuMuiMRdrXAuJ6ELmu4AhZAEt/PrYZUn5v2Pik+uOM40uXaiCsWRib3wHphYJ9wXWgIIjmulgXWogJqNYptdtML0sKB26ZqMdYmU8cj25yhPCnveUh+8JJy+ShV0zH9CKM92miU31Vyi45zOX/unmZGrGZKSrusFShOasEJz5apCI5Zz22T4LRMhvgFgPtg/VbCxXN6H2h5sB4N2KXOZgKODMw/REU8dY5znAAybibokgkRrJ6g0zenMsboaPDZFsV4CMbxw+otTB77xSekSj1pQMHjmmXpTo/dV+2WoZ0DyXqamaSnUTUeMfMZsD9TZvgGrDUONK4vQXIMM2QkYIhdLfH88DXnnUHFtraKchHnv94xpb5Xk/2a0UmAnWCkobEfwSlGEH09Sd+KUmpAw4f5w0cIWTYlmOP0itfGuQXy/htek9bMkueoTkXEYc3pP/8bxV4hdq6YrnhfB5FzNzvMC+rd/zfiWYnwHntGiOmAuf+4z2/uhhdsX99s3+CI0+AfykQ1I+aytJlLPyez3ow4KqtujeMO6FmvMSonNVq+1/1a/qKywijMmxEHhQ2DXpxk+UVrYnFJdgfq6VM9dwl82VTeIHkf15qFym63ZqsRIkJBxNzB3TSf0s4adysdBUHaWLNqERZCXd8Yg+t8Af6HStbPyK9c+EUZ1nLtifElaLo1imCZ9Sia3o+Hd9al2SG6buZXXM7xR0UML4Di8ojMwxnpYVeicPuWsF7767zV/CDC5qrG4aHSkPyEspBx2Jk33PNeDGcECct/uvXh65rAAmleJHIlPb1i89R7TaIaX07TzyAf9I9gNuUd0TwwxmfCPfZ/7oyinZK4KtW2Bxjsg5a+O2KRHfHl3FH1DmXtPXkphqqhOKyRd8MyTxd/lw2NkclpNynXD36ugShbOAcH2UDYvpvgNw5Nysp0HjzK+0qDp+8bcWEg0iJR7p4zm+U8aYaQUHXPdnKHozrAfNRMGHYhks8HPPIXz/kIE/LBoCwFXqevjgmF4jYB46MwYRdvsJW9p6YS/GSz8eIPXePxjyNqqHLIOGMgjXiVE3ayUqnQvBbOd5FfImyRnoZPP2tyzG0cmFeZZ+d3jxnzwewZAPcMRD7J9MpYENTImabJJisuvQ/SSrgkfkiRnvbxRkMm9ivWOiTPNk27TQF9GiMkQ+A3iPI66l4QR3Cuz4KVyZN3Z9LivM5qo6H4hndcZNhunLaL9idh3MHLfq9mpBdz1+zZ+3kDkWAWOGMoGv8uBOe7l271Vx2dpMIlNeTCBO53CaKqAjDzbTCRYf7xejH6uJHUiRLuEBkcbEMybBdLf4fW81Wp4lcHvceY4yNoo1szIQ29A8z9iRyUKX51l0RgmjAGJvvjjGWlB8wqMYqUWzpwoBDJ8shVGX2p8cSXNSuCVeVjcAYa5Z7HdrmUN+hPg0tNRX85ZUnWco6zF0rpocJvih9LQA3g7WZPavd9bYf7Zc7RXf9sRbQZ6xY/h9dyTOtVtFpWJ3rYImJOAxA+jsFC+rnjiwuXUSRMANe3e9bSgfrBty7xJVTlRXihhaZSgIQ+xLSxCgdD0C1VtnVh3if6F52EsIhg/LUsWYfri0dIDCmwD4B6gTGAX5ghkYLXTambzFHr+eSpkExRTUS0WYEsTz6+F79ql/ni+Bwg99BQmJaOWLBfzJ7cdyvYf978I2EtuTeAXonsSrVzkdCkMG/onr3Qa2ma2jTWJmBHRwjTxAF/J1L8kMfNN8g3PiDYvxV1c/S8j8sIMaGDJZbtPMl0zAvZLuYUM00QUFyiSe9XKug3ntJcuFy6buXtIaRSh+WkMWvDJsOtp9n0rMKNdeE0Z6E8D+JoRfqVqon6SeDe98iF4jbUJZw4YFKljedzl2ak8M04bjKDRQTdSi/pVTwbT8moQEONEj9aPjc/zKY9jIXE2Lmv6zqNPVJE+N0kVHZSGCyPE8LFgTxEo+UeLX4DLZ+aud4F6DMSWYmNwJAbSIL2ZYHww8+JUcmgOajTKJDj2As8umN64ylW9pCsLpT/PECrK6vPMqeTrL2L6BZWJqbPsspA/VyO/1I25X8uptCX3JMNSEvmp0duqZ+nZmzqhZh6OasxqK0ALkP1F7ddE2TMzvJP42o96MUi0N2EMyKqj8PVulXgHUzFFb8k9oNRI8M6ZzEo9nsV3yUHOipDMRsmP/Z5b876VntZXqIOTxXeXGOjbUKsaisFX8kd9JZOmKQM8jB+krmRTrfy1QXt+aZRX/sL/cKfocoQhV0gw/hIsyxIKL9qcKl9CSG4mlaJDzkncH2dGhAPDhk423yukWxAwOvP/jm4vPuEp8bqYlYKthMcb1jU+B269KWkh8/WAhWILJ6sSDuZy/BiSWSDMLA87gh748XT3yk/6GNo8dzVN++Gtq96OV/oECADcIX4Ot47NbgpcqLcAk6kJehWNgusnp1cLtFFB6l+juvNcI3yTi51903Qy9LRML4ik2BQe+b3JrJ4ZQXzPGWpmpCO1/QtSNhXKRtymZdytKapUJWdBs12jHFinmNAWJmEzZ5xoA9JVPxb/hiyt3lK9TpgQTuaOu8xCsjigIfY0y+xrmHiC+eS8VPgK2eLb9tJWbY/kuwNa5qDFSd1olZ8KnoFqPAPW4cfRSS9iBF8hJfZuALsHW8kWpaVsPMfLdocMrO4N4cZYCFxLXi2XkKNJtttUxNpg1P4vNw38ci51PHYpDzINHZHxjyuD8n9OulNtzki48XY9eReYgfelAqM4bpm5j+PODy5HVD0aQO+EN66OgWX2FuawKirpPsXnbp+2KplDSy8RmAgInbPDpPp50pzNfM1FZxVc2NQALPznui60lOksCcevzpOm1eRIrQqsV2yfenRpCAQccNubSA3qsXasFDu3w6CfHuV9pUmoJ3DS0UnoVlFAX2u8ukPChbNWeXbGHuiULZsDadYzdPdSl0FZUflp/GM8IorW50WAU1mszMO33twu8maF5jmPFnTtszrwuiyFLC1DUpjXTSN7WfONfkmHetF5XSIEK6TsN3BVkCLLSWngcQOSJmbp4Tk0TK/6hVdbt3rUpUZ7YfI/QiYliIFxCaXalys7phuVyGqoA/5BjJb6z5JLOqYARd6k5nxQVxxH016PyVSN0r0CeyaoHxxF/jQuvcvIyaHGSB9c0lNiCVDhhxzSVYYr5GMung+kpa2BaYZA++jgGTWDjCKFbxwLu9O7awRxPWHwAScvLZkTx4tEky+ser/lsX+WsSSoaVjEYV0mliNde8lvuVOSNAgahcS6/3hv5rxyjTMRrHbzeKWabyrV3SVq9f4Ep5hNR358e9JNuKykqLTA7xN1/6IG94uc1z+LTjBY1gb0Mbi5VZ7Tvc+vp8FbiVocoMmsgPrMjXKLUBaaRT7r+YOXsBo7Yhz4cr0InieIr2j5sInk2pAEOlK30kc5xJtAR7rPRHfUw8Se+FQ2AvwTEhlFupfIdoGaBAxpi1YhrIjpdMKQ/d3MCPzUQxgbgamTHe7LHcRPQU1apihjbwlLOLGs5CjDKhjPdWxGZVUg6AaJb+UFjbY56aeu+zmNq79jTUarxlgiaJUSs0AwaOB6Ww1NAtu/Xzx1XgdURF2zsYW6Tt8vs6+zP9NiE7YIXRm2xF4C2d7wgG2Gkd1Fxtw8a4QaFWYZbTxexdl/MWp1pnm3x3VokdgYvNvItrV332L/HVcK+da84yxRRvT7q+I7TNwXU3AEyDka6MiE34a4sKTMUUYMQcykW0Sa4T1dQveVBNSCXnJWzinlAAklf2pzL0uvMmqJlJjUXkxyiFYKbjrOEYA9h1SbE+FsZTxCZ5LmUbsBBaMf8VtZSPEspHvr+VMNnh0zkqw32jjDtmuzjjksHJGe+TJoQkU2qTL3+ReEOLOCRynmrrQq4YqlBhzw6XngHavYZ2qzSSqr2vgp1YZJVk/f+H8PXi7qWvyqrHljq+v0nbs7Mq2TzQDbps6skT+S1NEZhQ2TiY0GsVrFcQEHjEycarNVm537yiuN1ShyD6kFbxPP8JjYUPvU6Zuu+l+dwi1c6bEQ/HpEt6l5Hgw8V9I4J96n0rdqFOPY3h0gQM2jJFfv8EkeL+enLGnusKY4sAdmPhfgfVmlLuts4GBr9kFxl55AphHV6xD2CSqbWPX014sgLDXbYKuI4XgKTdAyDffBYixSB1zsTUZJU3e4Spna9qqI3FnXSO+yGQdF/q7Jgd7X5x8adQzufCoYJPCMPzu/0FYZQO39ZlSRZO4O9WjpFHeCLV0UG7wDSiSDRx9CPOpbzrJLYbMDDpYL63uXF5Bv4D3pzCqwtz+oKh8T+GiyXrnhBTOFkF5rOB7oQ+LfCUSlcRsyt5Mq8x61a5853GxCAx07UAZgyICDuJJIjPUevRuuG+94Yqvaqv3xj3pmNQSlA0lQtjdY2T5RRgybrkSUGTVx9Z7QZHSauXA85bUYJDRw8Mm1TYtaGIVS4cPl96wL4CXCUzhHBkrtOqBL3pkjQmw4eR39pTZNINTb+OIzks/+XQk+K6Kv3uX8xXrOlrSSORtdz6FWHAkNx9eCTVFVZvKfIw/qqo9uyL6ufTFxYSyBWNkI02vQq0AZvGvWIDuvicDV0743gHo0+jN+9xUrWH+wk4ykkmja+SVujwXyHRgnhqQEh5u/SF/yNuiilyhEACbZtQUTRZmZJGOZusBkjikT4thq7r4JkXGzm/yN7is5Vb5u54cpVKUvZXkg16RfQJU7cRJiSr/JKeB13eM6Jeqi+AtwQ7najCjmajaRyQttS0Mc7I1vvU2PCfxHbNJocsKBjFbI1AaUwxDbl1/q42n7uYdDKjipocKITUg71eMEmqaZ/Rf6VJ1nbDUkcIUm92Ttp0y0lvgsqqHBQn9WwJqpgvaJLmJ5xJF2knw3hWyzheliQzBtFi4CdL+ZFL14VGw8FGYNjJTtovazPloxE8An/PYZXW7YynGiR9yqfr4NQ/T1H/W1iLqpO/QvqgLmvr1IUGnXWpcrMa+Uvx9349GPVnhAKjJm+fKQtYDoVPHf5eFkA9MJTI4JKljUuTOUkS2exEPaVTon+A7N7ZGO6g3aa5YG4nWCGW11QSARS6u79RQGpNFEYpLUYlILHSQ+CpIBaQ+Ao90H/t7tdBK5dsBK1BmHch35uYjOmlPB+p/lpXWJU5kNKd5jPEy6U0PbWAPtLqU672g9YwhngtmCEp8m2Aerdeb3+28jSquORgIJJfPIa0bgB5QFCMivHBPbqz6YpcX0kNqeyFU18iV6JC4YB0a2HRROY11SCGtDy2cDXeBKHIVGpcVf9jRLDKS1sTDoHi78NYeTIhc6GWDdQDCEpwZNVffl5W9iCPy875TkVQVs4AaTtmy7WFKeGY2ljh1thYEtH8XAe2jzk9Deib+XJ2bNY2bqONCAIx2RFLumCaESj3vQS+WhC3PUlyLjKy2WmVYL/zWiH2bUecomGi/0t8oUZ4vuejjAsEU09MkeKwQYjeB4g4AgTRrTmYLuHLVbXrfjPGQakueTT/oFZFixbRkoBaKsBRuntUzwqftf2MKipBQMK45K/TuzPHDPOpAgeELw5HEm1JvTFvJ5HC8SFDGeAUMuSRNhjPgPGILAW7R3bVlCWPY38h50IXUBmvUhfLvi5R5gc4jbzI2wpAVMg0Oxj7qrgHj3/geUTqGzI/tucah1JaPJ0xL21urAfsz26fvCp3yt9PcLQicwlfKTQs0ZmPElJIvKApa3tikKxdCyT+EgxbJ5w68TGSSJid1PaV2ffmrXtfwrMEijW3vAOqqLflQ1ucB7ch1g+1hvmTVcPGLxqB/iEvkHSSiwXMF1pfoGYvFstInExASottak6Ith/mT4e9OQBESUZDUVmqM16V1sSV/Ti1pvKJ+3tawfpGQ/N2cYy/7y5ccIvDBhyRi+cFVmuk+hljzGPx5t8vhGfz/pGDPnG8S9V7u9nErA9zfD12h78IIEfBrcLK195UaLP6rmdY0tfNuq7H/N0rh4qF7X/MO9aXceN5VI7mcr/cg/awe0ZKjJiwM4HbMHZqzIM5JRloD7FLWpyoPeEDo2R3Y3xsyMiPfKc7z+Ky4M+RR8ffEwJEAVzFsEty78W4ZbuEyhmnizbHx1L6809yzVvopG538CqyYrKMSBD4YD6zr/CwiiKmfQ5TfUI/R0ADIsLiae8MPk/FruBf55quCpUAmz7xIiBjnHRuaklLWIP/FswaCj0t4wjHcegis2tcOzh5+8wzU79lf4pJyazKMJIBqg1I3zIVb0m5rGo03WzB6hMyAHrUBw8YrxmbXRGiYvhxLQpA21Bne0p+XMK+/wbiI8Q7H/nkfYmfm0aKZ7z2h+JXxbTCoqiwfWWr8WJlAmXmCvkDZG5v6+QaM8Cl12kIF43T4JbpeX2vhj95zQ2w6dWxqzy0RscXxsw/oF7acgKOx8i/v8oZitzvFxcSq6bY0TjC8CuDgxFOaeIDVe9UM5jUUJHEgy9nJLUIhCEmRJGseSlAWySNCgTzj3L0ESCtOXWtR6zGLP1s2quOlJ/Rkk57E616xxvd1e4iZH+KlHYdeU048y+8k6V+162GlEBnJ4TaSUU7FdQZNR5iuwEQ/tJoxRns6jhdkr1RPHlzPZAnU21/5mMncSqn6Gcg4AUKAG+982FvWpbs6SJSCeez+gMxwVaoOFmbNZepe6IKIiyQk2gr7lBqMP5Y5+RJF4rZGY6eMsKhLdazNi3dxV6Y8/SzkhtvILU4MXi8zjAlrtOXZ3waCDih10TLRW7El0nlVkTuYtwS/BfS2iCXHTLhhixRYHfatntIEe5Pzo7tQXPEbnTCsun3UQlZqSDk9IJ13oNxaBHQD1HhFPXv9ZVMEh64ej/BzZncamDlPIdAOSlMRZ7rkZYypwenLnlaARZEX9vHMCU1sxhclkDFdddIN3ArgVc5gCwpfnr+MCAoBZBc/81UaLbJJKBbKIB1WT7kR0pQkkHeD0SgDzKU8hB3gCr9kpNz++m6SWIn+/etLFPvGyCBg7HyY/rc4GGyyt4r54xbWRKRWx617RJy573YATfjWMnCC18hY432YhrXSg0WkOO0k5H0VntTW7cAG9KHQ8yirRu2SSixGBv70qI0zl28FujGYKw6+IOyufLflTzB3fXdRAWRCnvwyXV+x2QqgismQRUTLZs4yrdVehB/TEniXxv7ZgPWvtYnWg6OZgVFd/hqMH6tpOgfEc18Rc7gUSy8G8eA7JBI36bcHUndLLMvEs8TcxyhikuUUCGreXZTUynJBKHgPw39wEP2qe5/ii7A515xKCQ78ul2TRN4jzUt4D387cYwusVYOXsW6AFDSRpNW9WfexHfvkDmtw2NRepVmStH4O548uS3YKJ8LhzpnyRlBHI7YOf+mXhjpn3yHFVcB3ZCnU1nSBF8VRI5wjdEMwiunmDbzEt9xQnUuCgUd2vzmk5v0cOqpic5FgDMlin9QV82gmaJHyy+QjSfaG+8cs8eyhUUEW5tXgvcvP8hvlljUXC95DwGpN8WkrisxFI7fRXs5Y/GdKacp66cOvj6WA2UVNtp0o+zNKjB5U9JWlgxItlxbA+B2ehzwDdyjOMfl4Ab6U8V/SJUjxcn3yHgA5AC+7nhZAgz896ysQy2MeNj+/GJLBPYIbuYGEX3b/1daYCT0f7hDpXYJkMeUlDz6MtpNoDjx4d1W279ixBmiuXborD5yzpPw4pUMPpwozburJfd8tER4RIL/YWE9YbrkHjCg6MTnZZFQUbWtTFb+aUyjPX94kOpKtyGgBZKGxMHurKXgjbmFmiawOxji2SZmGXG8T44gODzTPqR1e/02/En+inK83KTdIYVaqjMn4aP9mw50ec6zYf0URF/TXDknzfg4/mUdwh8HbJRjUco2I4Re29QPZ6a1MbRXBEP5VXvKAgAZa3KZtWHfFESnTxice8TyLKRXKOCRyzVId4EqfYKbEX2cyKVVORfEfLSDMY/qa4KykEoKrFEtbZq8RuX11sq527DdLHFV9AqxC11ICdr1tPTlGQR1QfjssRO0OrbGO43/YeLzKsACI570z9Nt/SY2NYQwBcdMr5DB7r3hy4oPoHde0tS6p4mWo9E6Ew9QO9N+Ftajh+tftf9AOE/zm9jmBXCWEqfCWbCxGy9FJrpCtp5tOuqsppwpfdeL7m1N+kC52eDwyr/7Qdqbhda/f+MiXPW2myAFIG/9pFLd3PCXfAeHNdmQ5iwPJvm2SJB3pf4aS2p3CJ0QNU1wqamWwpcaKcRFvYzR95VM7WN89EJc/KjRScmVmn2TPoAFFx9pf498ZeBC30jTnH/PzuJ3bHexOxjKazbnbO8yEQc70XnorVPzN91DW6DwNi19X+HOzc76te282UzST/4BuZHJ5U4UKFQ24GM7Rh7By63gLBMG6cqHVcAtq8tgBvs5BgEYkbSgb2bRvc0RyiNpc6Z7NEg/LR7xYea2UD75JQ8ALRM7wmaYtua2/FwDGKl/dpyZQ35iCig1/vJbKyxWx5Og9hOFWq+AxEH0JkAgsTGw5Hdox118AlZSvXSscas7tNiCr2k1SClXFvAP3GmdfBZShxbhdWsAyaZdRHtOaHqls/Cm8ZZVa7Iqts9NGQYFi7iDMFR6WQ1DvGCh8kHWuoFPIsdCxLOPU5eBCL/NPzwLsW7Jw8dHgSYIi20ACUAy3de/MWWxJQXx2fufY1j8zPCNfGutsYrc53hffX0uMO3R08LyGx1ujbQytg6YowcZKQ47YTY29eesTQ3X/2XQ4Xcj69M0jp7Pf4rHXhLP5KhaMdLt1jmj0AF3YeagEOp+iZYXj9FFzqqi1YyqmR27Qll/KjwsfyZdOu/Ie0Q8DAK0sNM0a/eHe18aniCpkNaG86cW9eoB16IfejD9N50UhUB9iJgHFZGf6dkuXp4likLuG6raxg80lRY9dSerRoA7nQVF9tUJ6EXiujV+A0HOKZnwouv9TCjSeVebpw1tRNQIM0BD5t3pSf6WlFS+DsmVqEl8NkKmdG8l78i+gnBJKZAQRUbCVYoazwAC5iHt17Sq3awSkSBtKpzBnKDcUgJyxzUbK+3Kk3NuRg32eszSeahw4BCsTNrI1uujxwsEcOVdsvkkNGHyPrK2BI68GQYPJemH/JQ3CVP1nqfJZ5D+zoMEpSBw2PSXwRoyqpdC/EvWP5zPbuZJ8PHwwJVstPkZP5sfod2F9Xr0KPBZPpyGb5jtsCadmS4lqzWaQ5s16DIWpvowbbwKEgFWjMDhtpuYeRYjALRbwJhnORWXEcIzH5Z4CnH2x6VfP6mo/AP3leiSLe4y63xZt9F9V65BSND6QKG9C2LoDSZkPXOqygKp6ANSO8Xyk54rwfYfQm7G46oOBdDs1OyffDMMjmHqAbumyHXeGx4VlYeWPEYsRteoP2rIVnPWM9Jn11z86qnnbmp8mIeFarWrWo23o8KoWDN9yHEamNhO7QWPthRwXg/wB83dMrcU0puETivVhnN0+S0WD0ZIiDiH2sJ4rAs8ejdoVyBwhgdw5tsX9uNiGf36Z8KUZkP/dxUnsWZpqQ2aSPyWTuWLvyc/YiSYvgcynG8h8Xw5p8wD87FkZEFZAJtuHX0CvLO0Zu6Ake7GnTdUoK6NCNFJAP6DSuQGE0qcBR10cE3X38pXXPYcdWGoLlX42en3EddDgg/5snQ8cJsYbvSlz/ofXs4fWvveSleRABDVypmW8tanQYyuzIyOZ9JwOCQNnaqd6ux1b9udhQGqgVLIHb9QAIVSdwF5i/x1AUU4GrDxS6X0QctUW3n1hrlY0v5N9c0vLbZWrT2EfmjYy5FFx03QhBKJ/WBvMb5+kLB8MLZwpfWOQwBTa/cqcTvS+CP8BVPO8YGOakxuJbKcm6wgWZ9Jg+Q9Hi0MzfTdL9WQidxrlvUbbApSMfFHNyC6v8vpacIYXe1JU2XoyU6yIpNhIlIe6nDMg7rv3mvsX1EqLtcYxwKLsPFJiVBvrCogMUwEhqXkbG47HgJh+70PUfcJYV0/f1618QIyyxWncYgpPC5/CAVxybevQTPYedZY4LMnKeRY+Q3a9AfN5JoB5bFTxkOMqc3jNueMJzfOCFtdwxdLyQSXXfA38pVQf2dvlA4qaPCThEECrBY81SXkr6UgvAi7x/ueJUmeG4qcLmPH230T4k60Uw8fswyV4wZHgyw+++r4VLY7BwCbX+XUT6ObnT75tXBBheQccil+wTxswkASQeBNsTi5Vj19vfikridJwJzrv15w4QlTlTOojLi+EPd/7VSbIgC078cJGwgZQFjCPH+X5qhjUQVN5Mx61iAVro8RLwQd/b1kopR3ESwBCa0W3AeJl3cchneJuKZ5O3NRjPxauiD/yPb7teEtvpVJk+ifqzY0hAzJq63d+NDCVWVpFGTiJN9ms65stNfbWtvcxehgGNKXUKnEa6pQHvhbqGIuHz3oPVPeyZ6djwTlJHAnlbTfhPHLV1CCjD8UYzUwjYnUgMjtYNpA8pzm7xk+Ls9+2fBQXqEenLFgAoZK1Wju7w8sS04UE+sNDwTcayYfcspq3bF1c577cNSAQr8qBeLkdP7Ry9gTpRnSJcX9K/OvnNKGVmeQSnAr91skGFTiA7qobnpT0LyS7pPXvpCK4H5VudRu9x0wdAQ/1QT+tO+GR6/zxhaBhygXVK/clsWvZObWLqFOIjuBYQsolc1DlWsNBUFryfD1u5EbZVWyxhymxmtTv+demzpx5ncQaUiWzET9QYEW2AaucNOIoCGj72nDPCnb6t/HFntQPNZ8IvmsnGBV5GWH/lFpExDoR/F+ZGnLgALnCrl+0pOsQpokqBBZ2N5Vckyk1kKJwtxk55+qO/M4JE8fF+0qrg1s8ivRW20rINUmIY8mp4qNJ+VQ0Bxoms+1oGEGFaf4bAxT3BrgsiMs1/DPEhkEa8OBvZaHgMutnVN60srYogspJrYZnKUTlF6RJD6Ita3SZi7wfjItzSsCxrJJBh6eTyFGLdnuFrj2KWyxxyI5dov2qmMnbv8uGAUJuX1d+60TBshKrCmxBHIa3mm9OSr/+wDA3AUkMpN/Rpdva0/gerNyNO42H7Th0hnVKjsivN9LUC7ynOguE42BpM7nTyMV5sh7q9+jnZdcAMrn7j11qR6EZacOybYVUdXXhzqNiKcb2/brYeZUwRfPEMFYmYT3l2VNDus6bHtS0WstnAxpnFoa3WcUSx057jMuYWPjTLQiWpODClGWxIpej+acns3mTxbjg9/0Im3reDIJt8wrNHHjyZYr9Cl7z0CnntuOKYSUG+h947rrRI7uIzei6shcxldx3rxOujOUwTe6DhMHWf7R/gk2Ewm8e7xqRq8fjgLqMONpW0EQs6Nxl8fzHaAmzW2GA8tarUeSU1LpqnHBDbvnkT8DnStSYbAnkC8HlG+C6Ich3vPMijxVU+gHu9yP+oDBUh91fNobkyKhjnmeCfxO2Y+YrLAFAx1WeqUhAWHpFld23wODRyCEia1VUoag/jsc1tcFkwQw+8HdrlXff5FE9hG2Cmuhv9/rW9qqZd9c+gVg4obvyrP6KP2XT0fyVSjsrFF9G+EQ5y6zYCaJL/016yJg6xF6uPmH6p3VSeazZ5rPvjCedqCbK7jaCwjDZA8x0n5gi+v/miPBS3TTO8PxYlBPM7FDDfOlHE0Y/E0CN5XK8P6nsEVevbAcPR4mSB/eMU+3qls368JCbhoAVcLvno94Qc6SgpL9I/lL1LaXl5WnjrYulem6WigOpj7F37E1Q++19oRCCbMdG9WCcCXWhdQWpyG/EVl4bFI6tZF7YVVoJm2TXUyhGOfOvxzXzsxb27WAru5qMk8tuhb/tfDtQa2/06zc0UeRXatIkXjEhpUmTqrJv6KFcUCcQurodokHmnjCxpizIFzLh01moVdvNnoFfByE31Jq2AtGZDo17ObVb+KoOvq20HYzYjNkQkAQCvulgmul/jguxP7J1gqE5mnC5xAQvwz0x4aoXjxVQS1E4Uq1e96cd0/QrLqY8ya+ZDdM/Ev7EfCk01fb4OTSWoFEXr1p1W7P8YhsQaPw0uq4xUPuAXEK1lc/liW67vqOLMT8f+MJOPLZXYGv64nU+8KF2dlZQYexBZ4AbLr7RrRBxQFPCjgjlC19MlIChiL1yq3l4jelvNsrwWG3ZMUy4JNrQiLVXjN4JYWwStTkukLCHCSMWxrv4nBMkxCSMxZI9SdtTY1aSeqVXSE6UJtI3Lb4mT8znCn9QeWtXsPssS7tO6AQKWfvitoBCmm5+mhTx1CEnioyvq1WsnQwu3iE4tXBZm4Oak4oK6gPzhhBTDjSp53ALnfjt0DMBKhU92OQhabZ+gMT/uTjryAvM99YrA5Bgo+zxnVNwIOH+k9Vkh68nL2lxdmZwE7b5ofp51iXYLEEp9m5Ot6lbVkDjluM4QKJ7PUh5Bd1gj28sZ/fPLtYh2QuyNQ3F1LNqR6P6JkmbX7GQyreeeMNLJMiM6jAmAGTZlwsglDf/yoT2W2Id8OFnXOJoQONZjOQX7pJ8alxj/QBGAvSaA2yWhPxlA9QR+w1HUp+JP+toJPKQyUhfD/jVQAu4uaPgGaS7UU5bQeoC3ZPeHiN/3JAg5F2icZCtDx/pgG8ngUPRIZhaWFXQ2XjNwxntSty7GODyzHYCKEoUcOKjnOh2uT6YMEP+bDeCdf4QBdavR4UluYxiHfzwCvsWgeczVNGgWBwA6qsXrpU9F4akzUedd4jTJ187VvxuC1qPvpyrz4sTLlEImxUnScdtS4JelPzZFUCsZ+pp79aaQmjzoKJ7IlZlfpPfNBPFiMgYFXHpn6YMKI8NUTeCBHQvnxSRk4vzvg7UT7tYA6LCfZ5HZxQB2DyLSUMAytNb9Jul2ztpl/QzFH4lQbuc7lOQIiJIDz6KZV2V9nbEiyXrXK6qM71ZJtJ2uR278wGRx0toUH6f4plCHqf9Rf8GA+AP/A7dy73w8jfrTI0pAVm+Ma2Wkstndg+9ysu1JWxdz77+s69an/U8HkGHf5Hesi9h1umOhGcFp5jUWYCRXiWUZdGPLBRP9hfLNtNfWOdFweRQOERIgKElpSG7LhelY1V+oevp3e1rWzEUE5DQhZUIDg376fQSgFTgZ9+mk6/5qNXA66maSQGjEPywynvRZ+15Ce5YFuZH+RkTDlLdma8QdLjr1KeC3dwi8ITX9k2plsbhWfIcXP1iSY5poJxtbhz5VPoRFzkyA+8IYC4pgQjx17UDtN8Zlag1p8Lz27/t8RmSwHdVanfmlNG70jKAwty6IV2+WKANmdfa+eHx31zp1BUeE2dROhbL3iWtEqZHuvo5oetK/oF6EoeSaetgEM2Eemx39SSI70t+OFx29yPm+jrFwukMMNbL+3cwQfm4u+sApEYVFh9G5QcPT6sCLbSzuP1x0UZaramBf3L9MIq/dsky1o47vKmra+CeCJBaSwwAYxysFKZiSdGEIXJrsn2OHFNKd+7qvD1ceDJ8oG72qKvdwbcEa9gvd4J7edWmJRnyEQV7QiLS1JpN9YTuKHyWe5kdR4wfJA1I7bEmiCLI0kZ+kpIvG9PDCiIBlI/0HC8WDhI4I7UXa4i8b8RgB7oJPg3xxIIf1yDt62K4pIrEWdFSnw9t0zBpG5Wzph/61bAElfZqBXKpgHNxEuJSse+Cxb73HGb36fTYptFYSCx0C6im5S3wHas45siSpg4XS/aouHuwItegrOEHSW6sI5ko296Z/r76ogtWegABmy118Oy7SN8rM0XyeXeRfkKz+70l6zsJp0+iQJh5u1xf/T/FunMW3oPJptyiRiHzEBzp3jvB4zYy+164h5I5Y7fJRMLWDxTvJyTTQJOB8KTh9kLMkiBRBSvTQFV9rMY24FJva9sfdih1vHHgMPwFjqtrtWgEg5aX1tNmj2oBNpTzkWnHU4UPef4ZqziHLPsTTb/zA/2mEH/Q5AITYg8URSOYNmZoN7Ql8vbM52jbr2FH/L4V+6p58HiDEOPGZK+A0J2F6zAiGUsy2FDQUmAjYrqO4L39Y6nvDBALDZceUGAE13/wd4sWt1Xf57g0UZsS0I5dfiHRFsj5ttobTDHVy4jhkk8R8IN0LJyEQXmq91bedxJPYlfHSQ942JAxdkkMVFNVO7WAOD2i9Ok6LdVrsA2fdNSOEjYql9sndghIT0IIKhzwwyYlg1d0hxvkBab+6CrXpzT3sjn/5NoLpmbEscHYZKtlFX+upwGF+yP4iUvRFWC0DDa8/pkDLXx6kL2OKlOg8S/Xzo9+MDd6z/rQ80+2exeGCP6+4mY6X3JND2N8F9IFdtHUQgI2E33IPksiere3xg8ZQ6YzM3k4yf4Tjc3A/3+V7vT660J8yOijHEcOADfFzg2wB9K/U8P4V7EXJukjmfNQ6Dl4TZCN94Po3q9vCk2CxwE2vCN6LIynuV02Pe82TjvLLA3Lgt1tIFOhloG9tBpbSASpU9JdmcXmHukSbhE7Tpt2BUSc+4Kc6RKxiKeYqkTv+qlBGYYX+0b/FCJ3c/F41lAj/5zKdANrhEQ4gTqkP3G+lKat+3GYlaXQSp9J8sUyal+Oq6S7DAV5Wt6uz5XtoYhJHZhOese+VochKcKZzZuZpPfkdtVFam+UTXO8LZuKfZ24TRsqhImca9qQIuVG9Eu/ms/Yklsj7ly0+ECB06yWeDALUlhucWEUVObz1QBo0zs6ngiJ8UKEGBO6vA6zJ0WlEUK2bDeZWe388c1dRBFrkmnugs8OSs+QGa+TiXgvobYLMhOloBr/tfpQ4fUjJW3tupJMu8EJB6uLait8Mwlv4/2gB9kXlJ/jd0n7mY5c5sh3VqorEM5DiNw/Mm0VzQnu33ighrH5k2NUh6HftXyR2ITGPDgoWmBStoZ1n+LcY7QAkFYLAW8CfdnqfBIoFGoaQruE6XihxDk2xXxEdxWUMDYYUKx6NPzRty3a8F1qwGP37ISCaeatU8i9fAYI5ql1EW7OMU15NDUgDLiMpV7Qxh41XKjWSvUKb6+7M9DvBg4wWnuXDPFtKZlTzXzOkCYkQIWpciN4nV2b/ZcxDE9RNcJVlL6GOKVkgOkjjJ8x0kbfHZbGX2MDYryIOLiptvnxCglnuOeKHoHvYKbcrjpSkf8PaLvpLn19jDzGmMy9mZI8wWsqcaJ+qFkrZFB6mMXMvXDT3kscchzKXmHNtp6VUdRGgfMUFIwXPZi8IwIwJV5CD0KghMp19kmD+5gxOBEdLc9s3Fbc4XYjY3rVXbyeMjeZHPTyteGGoTblGGZ3sBkz7qCvgTRXDxsd+tlXV4ZjCFhySHec2VslN59XLiC6LE0EIe6WvtcFkyMP5273KQZjvd7/yJ/NkqZTtliJlNSKjsX7fj5GcCbDLbQXmNatCDdW0BCgOyfkiH43w+aT97PxafhX/bWpoVfCQakBue+zwovEtUH0OUnB/FgwwFaQAkp3MDmZtDkvxA0nGkhcF057hpawhA9gQOEVezI8yi386SaeYfCJl4D0MXTAR+l8BxS90We7Gb5t/Kuss5ZcMDQmYzyutjYFEDEK1RCRSfgVeSRlMUyJqaUhfoJEjftL9rqNFPFKGR6aP/pi4leJ9UaRse5df3kUMtA0JSJS43JB9QjLdOYKDXQjiHU0+gWMb00PTl53XMqjJu79WIo99rQFf1UVeo2HJpJ4x68Q8YSgtgn7Go7EDkhEEGiE/1NQWX2l34RsIzHvCfc0TuuvgXHyjc/1NjrspnKvmLJvogD7Lz43hvtyI2Lk+Ox9ALhauy6VFYwwor6HG4I9MAuCVwtO3gOus4vdAqYcfE/RR/34kyCF5vYnORYj9MH5u2ahs2YybskY46aTH+zdNDhJBj3IeX6KFMCAS4J9lujWnMqEPDt8aAf3yWwF/irG5qJMUGh/YglTFHbM0l4L8QOyd/gFyaLeCrJ9jud6N26EqUy8yv6QbYfOT+MQGlBofINb8wAViG+ofNwmQPSEYxjppUXuyqHfrkA3s2YAxwwspfaxUqn8pdXNTbjUou5b0fWJjAua1OjoaOcOtD4UDJnUnctseFJtcBwOcdDn5TL8UVPQl5W3BTBHWEOqonebTu0juustaZdsUFk4hRIXWlnRlAY94Md1R7aCET+OKda0PpYUErQGrGcod+leQePQvu6ZPIYvMT3FwfeQDOkBi2iui79U1NRiETcgzBh8RBq6fPgKgQlMwo5xmqKBxUpAibE8qv/AQMoeLgRJuCVwhYpttfoWNyy6IoqweAHgEaKWal2QLMAhhSGwyRSKILExU4iI/AuCnsiyzGvXu9Hh9hoU8JKtWJp2HgqK3eu3SLD9zHQgVt8YKMxTSYDfSQ3Zhzdk1lj6aS8HuF6DY/8h2mobSLsv0VL+yhIiibePYlWCufrYCoXZ+4luRQ4dJcHi21FR6/9ixBR8z1o+kE0U0GWb522NOXDnDKgD0SR40VFemW8R3lwogkffMRHArtNpQ+PH/j6v1M5p0P1QwsUFuIHFLrxYstwejD+cyvnYaAbTYZouHL63aAbR74heOE+vm9QY6UzDN+zWPUafnY+sl8pqJkpSLBghw7OJ2dt8bhTb+S5ayHXwR5slIyF4mqgzb6HqnaEgQnRDZ72NAfy8gH+kkb4LKQHhNGYYo0KtGyqp4kvW6U+Hlz9548Re7A8fd9qvT0GYr/bzq4mABf5Qb1j7UNzz2jjWGYWUWkJxV/8hn8zA6/XqxA2KPEO62PnhdkNpJbyGFr12sjymuZbyTMAh76M4W/7I5QGI5jgOlLUCW6OUSMtNdodZ/4uSRRRG0OSn8LofVh0TZKXcZe6K3GoKYQBAet+QkI3wBi5BmfFr87ESgWv1qbNjRSKsaH5W7Hea/nfj4tYrm2FLaGXIw/SuflOkN01ed7c1Pj8oe5kiHDPDRpTKQxQ9pb37w0EPgfFbVG/if3Zi0hNwuzeTceHVJ/VcW6sPk7SQUsNNiSU5WT/QEuBvaJTLRE48tDp1mYlOPfFRkxbnPMcDd0jRQu4MaeaY5QfKDtbRzJ9VY968VO40aoS+kRvuuLQ9S+Df2FqqtHpTe+x6rc+V0RHDAO0zV+JIfgU7Zai3lKuTP39dBG3pmN3SKpNk6ZtPgeTYhPz7opsVxsh4QYWDZ+Nd9ib3dVuk1b0wCDaKTzS+cLkcfqayH/YrldOVBEOcxZSDSZkdnsqJXaNrty3nEiyA02bKM+tpxvkPTlH5SBUZZLj0kbEdkYT22Z0bnfIvxRzgxxNABXCPxTa7wdRCxjScSC2K82MjNX60hJTypBTALUilDpr0Yp8N2QD1CmvsIITNsIqne7Tg7i+HY26pWDzMY6pKy3ff3BDuFDq0/x8fgmjhrM9bou8PdHWRIfE530DpUEH3IvC2/m2TL4or16gHCXA5ojZxp+0mqFDmzP/vjktZwCQ5OSIdVJSxoicw+SggqkS6QVTRo/7xxbqHV4Pu32IspWdJtPmtG39cYhZxQomKSD7es9FgwYTrqlZe3nVpz+Ot9mG7D7I0p+alw2M8XM0099mhKoqh+4dC1l4xPtkJOoup7OqDWuLxY5ttNztdzP4a+/QRzVHjselrqmGcjjBtEBZEUgZCL3gglRdl6+Sp2hKtp9yHe6IyiYZ0b8jfYEn9pMtF4Zx6X5BatriQDJLC5+d0k6rshtFsCBI/csdINZ1y2ZmhOuoeY57MImG4r4HAbE14pyxdvltRfDnCdfFQZJfN27n/5UKEKaoM8wC6Yk/vj4o3FVTmgG3uJAzxd0ECcFt7aKkjmUAYRb0yxWZ7VzlxFhzbTsuRXROGRtTpQ+OFs4NyTwy5JBw5nmVJX2ChhT5YAwrqOhPHVSLDrt15m97LGz0uv0c3aTR5f8gHHinN+UhNY7YE3TEsKZwIei8Lzl+PhHKME1EKyxsX+OXg0t+4f+MJ6/AqLaNMXGSR1BqGjczYDXNu821ixTIdTevlEM3T9ZgH37UhJ7oN6ecVgLuSC7/auRIw4eKSILYjyTBzySLeJJM3j1p/ozwPSCBx/vQdB/F50QkouawFxXhgozNHN5Vp/9L7T8tyeoFTuclO3OXpjB7D0T0fQVbo+ORPgQinIWoQXSnG2SJnR8Ln/18RLpETHhBVa9tMZlkB2Kp+jWxL1LTfdenDJ1UF6+RMdHSk15KUadbG9DWZD6Ad48W4JhIwKphdiWoffLhzA0RhoGknY0euQsPbNsjjZtSKpc9pTkePqSuavgjBeh2932o6QpMIQ+sfJ2yg5fnMrodvxtBfgQDWhaYfej8sTp32PWPrO/yQuo0vH8lnqz85LFJuM/2sSxdPVLhKEa0aWOUQmvLCuA4v6f8zg1Hw5WZZisa7sWzrN5s8Iic8Y97rTm9raaHQM+++tJO1pSULcIGpfjPq2g0JnhPkcJ44KZcJbTnXzJ28GEwII8OXDoVOKrZXEAHYP9tb4V76az3zSv/rNc0W2nfSAVR9Rd+J8IzY3ysGGUqu4g2Rnc1dQjRYjqN4IHToWenDWCkz1Im5lPgdaRjWIJvrgXLL2XjX75biUZg0k5ADAjh7L+cuc2sXKKpFN7xfiEPR7NLGsJ5LiSUJyiCDgwHzMbeJ7GXWujD6udCTdZemWJgF/UUSEaM9Zen7pNbj8/rZTdQAe6R6EWHTeQPgXP14yoQ2BrgCNkqYV1boXULMJsu6Zm41qsQC21+jNynFtTUtNIFDD1rDeI+/DHhVi0EhN2QIzyFnrS9DHKK3g+8gPE+8sJS8zui2lOswReSbVKk5TD/Cse0g6YJ22+11pCeNpvRxthf6zjhmo+cYXR4BneN0KV2KKdHd/FuXlmPDIie+u1A8iJRrNe/mKsmhRWDHyCHPm87uVRqCINvnsME7UxWsvwobZ7AkcMj9FNfbRgpS6AFSnFcwvVk4zhXCSR7Sr142TbZOVnWFb/u15pRfCpi6yIxPYHZTFOv6vnYlURuGZSAbNuOxAkf2CPPCQDeD9ig6IGyH42ARy9GxZqui8FMdMU+jDdDW0wMZi7MxnKJBOlGmJqKK63IHxCoRgKZzROK0uk15DTWUVvE3Xa4M5pyFyNA+U1FM5PfVTVhVEkYHKV21S15uEtkPja+IJ02Vj6s6Z2n8nfLcTNOxYp5lEvpPfAYBpHSMYyenktZrHHnuxIH2sLN9r85Tsd0bw8xv6qDCzyYy6u6beYoIDmK7d7sDqEIhwQLLa0A3ywZsfG62QEF3jJdGbZWFrTN57HjhClLkRz4iQl7FLAADbn43KbpuwsJqCRvQCttSCRYpiiDBGqjJkAj5V7o4zBBhN7GCbN8uy+WTH5naaxdrA18pqWUotCtnlJAffG53GNh02YGG5ewSe85Wi4Q67ppHu4Eg3OgbA0vyv73lFG9eysnefrCusEiILeMxBNDy5Cjbmv1NL2YhWP0v3zpEvYFXI2G2V9PwAw+GWYM+bS22JHY45Gb9cnH3QVV9Nv4WGe2fiqIQxrOI4fJp5iEb+Lx0KQUveG/+KSZ98Ez1ot3l8seiSaxDIKCmguR8Ri7Snoh5gwYVrhFOYZF1U9ojKn0nnMo3eIqjImMCoqRK1yA22P9WdkWGHXBguX6w5y90gta9VWW+K6/4jIBFncLhUFtE8X4+0aJ7Tq7hO19jj30AT3akcZAxsN+o9Ac4buIq1D46lgJZmzRqxHdNZ9ZGdkmpEFoBATUhxmYcF42MaEhrC2l2c2mlv22G0kX7t9+6qMw5yhxbq2iDYoddNWXjviBf2y8MBxoXlj/HIwMhsWv8CG5Fr7Ra3PkUi2lTavKbyjwZW3QU3hVbgmZi0yUnXpxw/a2E54qvITObmYY3LNxq4+ARQ40+oCcMX3RIyQs9h7Ch0TD4Dnh0qIk127flMU0uybagQRsZEAqWwQ3Gt8Oew7qxm85IayLghViMF3PeVV/FUN73zxCZ/bTxqfNS2rnHn7dCDAi53efYzKa5E3x/agkbQIu0z15kK9c/T3YLrUo1jG6LoNJIaveL3+J2cZKybpOdu6OmCl2+ULHTUzWuxBw9Wtx8u3IARwNXQJCcBWz63gMHF3hopfbashot4yFwi8+U3NWnzyCqjXhEYjfmM/RQKtqhGYfhRl/10eHI5XrYUKMtpvx1zx0/k23OOZnyOjA7cwrgPmCVQRcjwAYfx75yjpFxVa8/h+iVOSVvyoA/YdXgeVhYmD5G6PPXlqpoK4/Bv7+O+ftAxzM/fysLGvIJWL5f9OIKm3zE2t9ytWQ5W47q80RQ9thR8vru9iGaC58mOdtBhfn2F1FinVoK/xlpZDin68Ye4myS2Q04I6Rs4zITjBu7nZJPXKFZyZQGwuQY6k1AocjOl6auzFHU1m5Ynh86193jenTYsKi0MV42y7T5pk1ifqmySGZmEAJP67s3oI3enSu8VgXvksMTr8+01IrncxIeRguUDlosmrSUQRopo32Xcdqw94uDBWrv6xnpPsWDXhWH5/TWW52Mxp9xb0OKWHAF9MZV8rwjrUfvPJmDfAy91y6fx45pqfY/Q6+xqyfZ7jtMOtS0KYR6Sq6ZfAnmX9w6MGD8UliXIwaaNj7DYZcIuOXV0avF2tCkckvHNfUD+Wa7YUGpmKGw/GRfEnxRXzrjbLHhgMh74HS1fGw1mForHaqakPUIl7LEZUFB2Q5Z0yxmnoPEUUg/M6glLqiTufCca8563Wcg5uERA4b6knuv58/Lxod61P+Kn9IG+RIVOKkXukAFIJGhDKa9nZLB4h4J0oFcklBDwoDlTlDxnLw3HFTA6gTUV7Xxoqnn8Bg+gQ8CJOIQZgfjtSY2gBbAYikSbwhtZkO7w25Oe6c6RbngRyxY/8DfAGho4p9A38Rsjh153fPtWFnI7IcmBolrvCoBg3QVE0EZrPnXJflqZKhR68zOh0ZclVRWVSNil47Ze16K0Zr2eMgv/18Mk3RcwPvtS6+D9FUBCShoYpmwTjxaLzGqVLKbcC8mefv6GrIZ0nglaTO4Sw616mgqFgSz06D5Ga2x5SaiK8CqaTVhx3yyHX//5yFtZHJLqFlCRhnPgwzIc+4SEpiAM5RXiFQRwwwUUwuQ6+I4POA7LGCbr/Zm83w7NsV7mAPaq/U4VGzd3TmJ1h9cEIcuUT/NsqRsAyzMLddCqKstPT5JsgCNApe4jjCCER0lTcFYMJdrQkNaZjVk2xJ06qTmrdmzlIVP2UCPfE5nxeB7ATonbqCJFSx3gzxkBfoxOxNlpKnjFlWth6nl+iJehEtZunitc5I+IhCe8fvcXmNInxL2CBl8HyHhwvdWOxoDGS41pmtKFClR9C/OB89dA85IdLx7Ew16nPjJ7PEbDqx41PY4SeG6A5yhjSmdKSErUNloCf+XcTFBZhvDUXfNi1qQJUdVGiqBaja32ckX/vJvgyqNS4LhSH27Q9AOoY3p9MZ4Nn8nd4cmWcpglrjF9gU1Aw3x4Xui67cdsDnkfreUOxfSXb03deJ0ull/c9VkuM+lpzK4wsAYQYazBwAkUjfgs7D9H1vcCXkKj/2ppp+PT5dQGQ/jb8If5MaH8KA2LkeIFESNjEqELFLOjxsQyAomW/osgV4J7hdtvhTzPLzwni6YBOcQwizTho/eNhqI3RlAeyZrqMTiWeql+dvXyZZQSBIB20crTogZlrkMQDHp6lHY04NYAPrbgeI2C0acbiDSFIWBJR5fV8ahysyoUizt9ZxOxTSg7FDEHlrdN89tD6eQeA4hTSgx1jQljqn0J89M5EK9+kKskHVQzIIstyQo6vaz2KW6+PFrRF2qN0/5F5ScSbp9wNB7RvmkdFBpfUCkXavR6/FmWLeWGIb89URIGbRB4FbGviZkFcw+2JzcBbcli+6VMwVXZJG6PJmok5QSPLppfrS2vtPuI6dx/cr7ClTwMNzj8O4u3V/rhuyrcVK2k3AFwTbgJdFSh5l8vgui+s9RrR3zXQRtv+3ufNA8HFXks4XrT2jbpQrzKvLR9iH1FPbkfTdo2PxY5+NzzyE5bN1NV8/Y132CUvCCiBc8FPHj8DUoSFJQfNEn2SNGyu6RQvCDJx8Kv6ZPvODu90nd0i8Lx4rWTqRdBK9vgH1H8IhWE5xwNtJonPmnNO5X+JxndJnOVwIhMTc2Ow0KecfFksVFbaurBiBdrdehDRiaaElMeCY3mutHbpzDMJXiAwjTx42Cm/zr9zYTd+Rcqi6m3aWKBS9EvPxJrpIP/iUQaDfUTAjZUX0BJMRWz+5Pdn8RpFdNRkYvmZXyLHXECiOZPFwo9OoUhiHFj0eRnGJY3BUJ46nDy9dp3Vv3DzNCUSxoD/rukdcKXKduck+Cjk0BV6CGd4nWi7u7Z9dR1YjT7TvZEcgWJAGiJ6brM8RMhLix1IGlBOtzPQusX/ykg11tuvOnQWwR+PQsp6LzBzGk8PEsUql3Y/hyAvbKzs6QMH2mCYaDKjjH2u8sALSmrr3CYyGtl+y6TvPWg6vJrvf+sReeRYNLf5aAYtODkV6Nj7kF6EOu1qM3gMmYs/DlvnRVUxSolJX0p2GnGwXCBxOlAY7uqbwclqDbfhzo/TD4weiBCPfvJelYSoXZXwg4JxiOaWXYIK8/xnfKeAYJG8wVpo3Xv+Rc071HundePYHkfurdogBEElZXBZWHFrP65jS+ciGhaf8kzPt9W8qdaw2OFpwG8Ql2TDQt6261q7Jr8MD4bMHvlJYRn+ZQlt+b3Pp78N4mC41CXK/5oUyKrkgBJUVmiGgNkXtPCnnjt8dFGGhvIetGt9HdtCF6yjrOgCjx2RcL/z9ZM2fRcFP3NJisKTvdU5C6ntJ4xvdgKdRr0ZUPNjOD+FtN5l6gbHoOocxukkgja6JsMKSH9ZzG0eyuFJJUqjRg9HRBhEVvdKna8ADqnHJgPZERRGPySEDcTzZSwbhkR5oLjytqB0AeZ1newOpT5kqKFyh47Neexlr5gA4BioHXCN/JJUpDWIxnLspafPkhUURjX0kKmwqjA8VS9DW5beaPfHB23/CliDcP+knF46Wg7lT0OP+VkGIKQ/zcwtISkuTQeKk/eESjII3raccDyW+gM/YiaqNUO1vT9s+AU2lTCPsK2zx8wLs4Iydoko+wRAIA6SEbhQSOfjgKQjEnAd4R64qM02U+oG+kQjwpIXnn+o3KDrOtp8LQckSr6OvE0rzDuVtdsd65pNEisxwBTdDW5RtV6gSDMDfTB6xzQmPL7vWyh0RACoB95XqeXDCBSzajCitg6smrNF+SQkUVrae9LTRXiRTXz1+/3QRt+kNIMtUkexPMn+A/2O1fSv7v/5D2QcAcUfzPK855ENwzdbKwGYZiGGixBepkHPBGbR9GjbkzJBiImP0IJ1uQUi3GKUOpriaEclhcUCkXBZoqsRje5b4YUfgcnkZr+uqKcDjFtojJdZkdZU0Ptr4V4iNILgaRaPxbYlKnecVz5qNnLP9YR7ct54ksQi5x3Y2ZP6aXRMuIFFoHPe9ca0D0b6Zb6LiYsOCZqKxNFy7UAFERLJ71XuNWDB9kb7dOH2ZjpVm7VRDgqIX0fwZREsB8lrL17KK1XaSggRz4qmxXL6vpLGX+HtXlTORNAavWWb5c7b7TU53VUth+NbTH4xbIXviRUJ7nKVFit9TMKSTZ+ZPAGOPi7m6AWnoretG6GpbX9vk4W8QXUheqTmE6q9nccLXIAwo+3Ymyge467D2haspm5sK/T+Llkiktu1ku3Me+E/aixWytUM84swagzmICaxLjfCQH0DV+GoPK+ccE+KKSz4VuUYHTTUs7GqTlI5M1P97yfDE3pgBchvSPFW2iNTkGvAReUp/3x9HNQlksqPTVFu30PxjLpoIPEn8tDUKGQMAXRKwC/93JLKtUq9Ow1UmAaMslQDenC+i0FyP7aUk52i1wr9gDFlBrffobi60guqkzxWvf+9wkYf8E1eeji6Lxc+eC4hF1K3M6sl0ugyVaWZor6U8UBi5gnOGmWTA+UCo++KSGIhxnB8BGv+mmNKJLT5lVadRN44UdYD34qh1j2L3hyAVMFsn307wIRG3d4GRg/oYGvy+XCs605bWn3xOFGaiFyLm4l9qKYsAcOg4zCMBirW3i1S95y6a8FdVQdagWrph8rHW3/TGJaO4TiREbeNPrce5ld8ppsW5bGPtW5ZdWm6JBbeFcbun3jlpNWxIqLpS4J8/z3Bz+7mX/Y9B+IuLlJyMZAYO+TbpodfkIGIyN/tJrjvliieCcIsBnt46EUZVrzOH0zz/S/xY5QemVzyc4t7nR/ze2Vg+YAjy3aSaDoKdAHUIt7V/8W1oOdHO8mfUaZqa0ksDInGewNFoJj0TyApIzPNaBOKS7kXj4Lo7HdKMkO/61lWmYwDBJjQUgoRiGf40ypuoJU1jEf0FhfPYKRFoIKHQqKBouh1a355tb0yR5+xvphmfo94bGz5woETdZqJiFavec//sJJjb4jwY6Fr/uXzyi/xiUAQP/VgORBICbJLOryVH9z7FBbXyYLBvjbUJejA9B/fAV0mVrIp6kOq6uClDqbwaSgH3o/YeDLRRMxyQXJj3Pu6Ba3mCenmAiXN5OoDWK/uWND5ZgCMJ3zisYJQwtCDS0DF/bui+ZfZt4C0BA5P510X95oZQueNOGKwsZO/CbqoOCFMKR9gKsdE/DC28hJek7QRRzg5o+pre7iEqvDAEyfbrYyTygUZLOcdnlzSunmvmLFH3g5VcJN+6ggiKWd5wgRj9055v9k5cUqt6ekk+4acdBuvSnuPUvpknqogRwehskLyvpWa0jjIlpagsj8EKO9gtHXAKShfRZEHw2hor4tl/l5s31N27T9wA45I7lOLH/E0NyDKTvNx88oMxWrjv7jYFEk3xKxhrD5Erd0gxsOtJ4OoDYIsTBDFzEXQGDPzG5TwyR8xperb/KvuoGkrl0f61IoofzHL3nte23nWdMSR8EEE/8EvdxA+JGLuOF8/CvpOQn1eR4Qj9d+s4aNDVzCltvcA61NGgjRp16ubrPzZAAkVgZwkEer9vcpqkEzWz0f7Ciqw6K5Y6l+nlCgjGS5qV4voyA32E4XqDaAMkEhNDfbcXj+c0ZJbCfKJxjvNrXSBosd9esxRXg4J3GJz0IMSPQV/TCmKnZGCLetsPa6KJaCaZvojHohss21e8GH4I559GIzN9XoWrdK7OKZo2l02jMsz7tYT0IfnufTk8N3BbCcS/d/lr7MGKveynRNlAw/qyE0YY+aBEMjCpr/A6wgUFJ5HbSizpwRiPPv5t6MvEd082oN9JO5e4zt06iC7aPP2NKiO6LUEKlaDHOmWvvIbIRqNLwltrMO+HX//TPSILCACkYb2yDiPfgC6ncB7dxOPyWEJeBjPVp1tuE/cxQar0MAh7C4U6R18ObEtHurhdx+sAmxDXKumg0/qLWNg6f2rqNvQEIrN1orCcN3uDUd+L3AJYBJySc/8l/ewcGZrJ157T+8XshjVil+Os6dbO7EvKgYjgg5irzPTab/8bv3aBi2J4W13Haza6M0GBLOQOaMTlRsC4wrTvqA/YCBRGjRlylz8EJzYbub6YPAcKvbou7Z1Y12TVTTiuNK//gMs5LZ74nOaau4pMY1SWW0CUC1tn5tI0Vnm2B1zcVhNZFfs8X7q/Zeff/8pqH/ue5Pt0KxJFWJOWyk2KHTJQX5I0F5yw/E39yIRgfHNDJyrWPX3DyLQEzCSkTm3ux75Tgk0UYuh0BiJqwn9+iybDXfB0+h/yn9SUmdTea8QZuyJJgS+fJ54ar+37injQg8df2ZSWv5HDaA52/F5D6Z0F0B7m1bRXtMiZKSQcbeE60nHnsJO84dL1jP+ammLqeU+bxuk16mXHZZOWKmjT7M4WCyGsLKctT20JGGxvcwb1mSoPSRd/iXEiWCDarGNptyhOBqwpJLjlsZO4YbT8XY4uJ4+DJWqlVpp2qraQ/WxG1ZnEpzHjLzJ5Swrvp3YyIJ3zwZMXITbRxa6jKk3HuP83WI8awCno/oEM0QNMPE2oaKvPPD0FYCGTr6Alr/7NUqwBYMHca/2cfyKGBCse7YnqCQKyloF4EUVJ3Eb0hRRCIfiXFlGZN6KQowwFkMZWbGLS9noPLSn15LmDQwpKwE70XgEi5UlSyM20m6TLmnjUyaubKizKkjlKH4TNjFr/JzxEOVZZmFOpvfQC1cG8w2bguuPvk6r2oxkKwbj1qfNOF9i7a+fPjclq72UDuM1YJvb0W7qWEw06Dbck93FL2a5cz2KN7aDyMoLeEdTog/Ao19Ir/EH0XIe7J1t+Bxm08vRXNB74VexHuLBLyMWV73fVItU7b+gHK8qelX1x8Alsz+uSq86ObPLZUzSbJ7mGCoJRbW/BgiHtyun6DxnmEjmjXkCQVbLZkJGmVmZeVbwq3XwijlzGQRWPCfB7eGPFdXNNObjut/WQAAFOnSJ5h+ab6tQQEEnK3vaf88euoKpmUntmRFUM04g1ChvCY644bpgB85qEwzsW+SggI4d8hH5ba6Do4qnoMk4iBlkgjbVq5omM1nL/yiTDyxyVLXL/fgJzcfVOzo9NAU6MgFfVNRDO3KB4mrQKMEu3GRhBZKK/AzA4DSGS3ZglOEx8TJzTLrOAW9eb6YqFMvOpSxZ71AKQr3hMQrUL8IeRsy14et15gZ/h8v31zKfya4Zdsgw8k863hQSeXzHO+f0uru34PlwGvF7gpdVB/YZPgz4KFMnG6IjSynUmQimr96c3E+4pgEBFfMjBeY9SUIIwh+gfuW87CZ0ZaJ09ohEKNyQxHPCPIUq2q5IAI1p4Gz3PsNFim0NqZKLoRbApVFKlAENdyWFdbMYVMCOB+YBnPnI9VNBOc/Oc8ZsZEgpQ/ng7g12h5rbC0sa9RdXCBf919W2MiPTdNpVnEhlfry5rlylcfOh49nwRwJOO6//R8+M+hqsFa07JGfCY77GKMZ3PVxIlioJxLUl+2Xwk+tuoJuKmXhSxzZVdwuTEmoU5FE3vp2fmxibavxfg9A+prl84v4p4AFKGtMDSJT7hZy5cjoDwWWMLSFgLJRWRNVFEA+D2gBGG3WC3t3D4Iq61Xyj/gRjyI3DfR9qnY5AKsIwj/JhGTGW/cRLqVusNkSi+2ot7xI52/H4p8W5VYX4LlIjqznCmfNEum43bIS3YBpkzq6oL6ryGcXOWUYn47G9HAN3vV2OXPWJqmcJ/EZtHW6+UTzAVgDcwNYEEuOoLzb09Xdkvn8OgdopKo6I+MLrIceJSxvrJnFpAcwDkrClglQyia9b9AnpU4SzALU99xc0dqLlh2EyncoTlLmqOnV6X19q5GrXYUnRPMDJRl7BtYVXMuhOm0vECj2cheScW9M+nSKomPedFA+gauMldcZRlWaZP1zi3v6ozvStcSuJh5abOTIEB48YqtQ0jMDFYsoaXNTOCILke0LrF3g+Vy2LAJ0pzazHBUBk7BcrqTlp5VK3dRJTFiEdy76PWcACc8XCIOWRKuUlMcJCuR0G9/gySu5WP4JvPtd1g0iO2dhb0/EcV/qmfp9p3nBCnIeD2LbKG+zMgyxTJvMF6r5i6LRbr9+qToQZLf6krZdLz8OX3+h7g3qqAn79GvLuV8zhZc6gb/vCNxBSzvU+6eQSJXo8zxQzqWez10SmnHVfT8WBVz0OCeQovDFN+wzKPdZyUFoh6xTUDk4z9crS1oTOmtNVb9uNuvP5+Yw54VjFEHxv4gmxghrv0vNGTij1e+FPYY0kCdjaIzn3NBPiqK3nI2JVwyhHfPgz1UXThmKEmy1vjNt4TI6+l7q1TRvlNPVyzeFs03idgggSXbv0+zVmS+nDF1/1rc6h53yFL4QTGYnj/z+tpGmjm2H4ib9fvR3/3WnIyQAgFaORic/YZkErNJl70Ovg3qOna0qjxYDRZQPDbRj5LXTU7wZMFTufuO0Ue+a1fOK27Vdvl9IvuW/AUpiyGXwkK5c2UR1GGP6VLcTSe5qWLWE7+Y8zJdP+C2N1d66hPDasa/iYkrrHdePQL+y6Xa5fYzxhGF1XH47ESVyqBsU7wlS4XdXKtEvZAL0T8caQRDU+m8ah1XtyTuDoO2twzqhGzMLTCFcolKP8ut+hUY00VpEUupaHjiNAZNKdVfxwurT1eoTRaZKrK1dNinKFqOTsjd7IaUrUWUfnTNZxTbpfFZIQOUgG6Sf/jhIaewvoZhIDZ7iounuQYOZtjoMFbxiCAHgolyn3B8FVD8euE/VVKRbTBS1YygPjFRVOWmP2a3ykpiwAf5U9HaafsJVhWGevk+7DKB+9fIX40aBUNL99R/vR1hDdi6qd4KHVH87RJuvRPqmIOSvzqo9kD39XRu7BCfeHH8ClqIuJ3XpHmyrD5OB8qssqOQYcqJLtvQCRjnWkXu/Rs2rtasr5SjhfPYKhyE8A2es81IAyLyVZbpjCXOtEZqA5S01y+wh8Y0MKW6OM1YWElx9Iv/MJGslvDdvVZEcJ8q5rHm0cqVeaywU/RlFPbSzTOJ0VGaVRB/Tby8fgAdqMOwjmOjmP5maqWXVaz5v/RNONViJHmCoKcOQngFs7LaOpg7LPXkh4lBRMiEuLKPIjvgbSjfK7sWCkQ3NR/CSclR2mSvYU4L3XYHgnM9isc15+5esvedC3IVuknCK2X6bQ0ghPILJ+nW5TyvXiDYmJZk066Po9gOYUz2VoA6zDq8kSSWbKmNWD/11C9KUbhVI+lxhulFJOQzxqyOBYpr0eORV1ZRF0w+W4LOT+K+SoE5VW5usU/mA7beN1cK64mWJvLawVTyM3PLDbkbXTftmIS0ez/dtWXlkvh/GOSEhCdITSc0F3jHVumLVtGcFRHcw2Zi462Wfms6KOkzS1tIT2qx1UkveBN/GXZmSgqxnvmzgAd4zm42y9MwlvLmrmWK64yd60BUuZ1AuTDZZsUjAIQlwfDgtkhK/GlBzHu8nHrBA3Yv0cagHU4rHj2KS69Y/yuW0ZEkLpSTYd4ABt0kI9hKnV5n3LAFEbr6c2J6Xuq0/cGRsGGpMgsvWwM/NYCRJ6b9sjq1FY/Gwi4KSJITXuHr5Vuk5dxAZn8bfhCjsK1b4VGzmouXdaVy1V5e7IZB1itXkpbH0nCgByHdLNr9OOEPdmdE31aWSjSP/x+/xTcnP0N6xSu6SAs767i5sRsI7F3YwmlenAwf0F/i/mZhzdxXRZqOWjY8yZHaOi73bqLrnUFUE8dxWf9ENbfM0mTaopeZC3QQx5ehHONFEQrjfS0RO12tePPWlo0EO18EoLLinryB2xMfscRgee0yRJ27dn31y3I23mWOSXxT+4OYp4U7mOONEOQqS3CJOJgENBtQGd2nEDTJNXYtboUhvNmrqGfQ3J5BA1zXPI4Ncodnm5qmnFFMf2txlU4IXm7KFBCU3901MKRJHf1U2M8DJuvakHSNZeAn/yrV9VZHKMV17Tcx0hv8JzIpE42hrLCjCWZsJfdYwPaAo36V+uh7vXdJ/Wtc3lbzc8UWq8uYQTUBSUmFW075NZ/sWPmrF+EDqJOdtLskBBENqk2siY9uMziIjwpWZxwhDRM4bn4ItUXJ7MM47iGFJeYYT+ocIxkYHfHHOz3sthoXjfYrlpkzfiiCA2rPa44903NyXicYEU16vtnXXLykgEytBVxuGuave1UZInPXZhye3aTDxVUriXAN1CllLOWivnzMEp7vWHvVuVaVj6k0TCprpPJ9AaYJ1rChJW2n6F3qDHP5Nr98YUisl3kAtimDxn1gk14XSLbZim7Pp19t8BdGhCmXGVosAVECQ2MC1K32vx08a5eSilpini1w2Vgr9/6BYaYDjxYLdGpyHvyiaMAAIWuDV03R+DGIyAd6j3Xi2G3BczF1OvT2ihrm4yFMUVBr/FF4a9JolFUMny20X/kghwb8sBkUXoUpE1+hIXJ6XcQU28QLXqpr6RUNy/Zhs4mojU9Vg/cibl+gao6Y84QX4zrkLjOIoQ6Kl7wDt9hSqNWjueryNCzNPaWbK9yy4JLBqHwEGjBsOzUnwGDAILM/xsSERB2JTYbjcVmu+FQEIHri9fw4eCYBYTnqoEAV5p5uF3mrrn5Kuanw2uqsfPLeB2MjdrCiG3sysA3cV64Ogf69dsZNNWRR0Zs8dFR9WTizoQuuHcmHP9vuKp9Hmb6Nk4Hbh68mCcg1VU4jbDxpHxWBvQS9uQ42zoL4F1M4layme6DmF8Lqs3n8B4Lr7m46mIPiVSWYWrZ9BaRKq9jKP8iaGsVxTatOAAAlePSJa0vKaGGv4PV7SDKFETuQpS5DeMGMoHjb/6Xj55OqDUDLLPk4qWhcO+A+uB/6GuLvR3E14ky35bs1K7m9O0bTlo9OcdRuxIyZkJnKJ+eX26cV7aOUfn63ZQl7ACXvmQrnyh1sHjpL1nSQudEdxFygiPu2tALZDrPiByBwVF56WIkoExc4VX9i1ykErh9/dnY0z6qArk4R4AwJqJdZp56yyvcgYdXZgRRHeURY/yu7ouk2CFxK21BFQLYdqBcKl1VJ3A1EO5+R4EEZUKRNS1T2GZz2jJHm7MvkLc9lznkl74NsliNUjqQSpwQ+Kb/n90cwIUuzv8jcHdwd1yW7li+yfyYM+jpXh2w+4dkNu0N7uezhhjKzWebGUUAHQawSicbEjsz1OAmyvoCmpqEjZW2B8erQNl4PJWqHbUBtsEB1/ur3eDwarwPrh59V4UcwWNYgCDEribuWi9oYtjzK0Xkzex7tN1uZBEIHLlOPiPJ9FsCN1vh9UZ8FGM652nLPmXkRoiwoy6vXlRQbq+HI2/2djHrbjPfb5PqVo1e1jfhb+Scvle3aVQS2oDDBxF64N4RAkl/ct4LucLZwTbLiOzFbmHQiFjhuPUS5L0yQ96YcpGmKX26KC4WQ2lfyu/ltbDPxYxrmD/+3++qejhckKOcQkO3qyIwESo2XqKHGyWTdtrNmXbr+Teb69PYX0ZPzqW66c8ZFrdnPDFSM2njarLEhxbkokAdYXciumhZr3C7JzkODqtK6MZ0XiJYR52OdIzSIihnPoRtX2lYYSgTY0BQit1es/BlejMzOgiCXlHTDeV9VUsrZyh5N1oM7+xxQvJ9i1vpenISjUdsl4Ax/+59LZyzv2BD+a7RB7SznPUFH0o+VrEU1DX0+IOY87mFD7oversKSj/TOSZ7b5gyp5xtIZFosN+ZFxTuiAyOREIoqFKtMzdJwDCceQS153m5BSXgw36eKSRvwDDsHBBE3IpsFacGW+3a9wsgG1DhP1aKIDYyBk+WjrdirgqYDyo5mt3ZoVuUBNGmzESXzRID7xLWxtRJHNfC6qb/wGdyhyISD5YNBK9rfg+CQrih7x+ky2qSyVvmgOsrSwj0vrJ5VvbxdFWQf/K1bCxFCtiZCOvhVb5yzZ5hHJBldKq2hVUySi2PDcr73+tItUecQh4CgWQeyP+Cfb0Bp3uLxjDjaLT9vWBcoytt1Daw/K8Bf3vh4KAS1AK2y5jBxKfwY60iCdPUb2jSlceM8jMurMvvh4F4UHOmc7nKAcqTPe2GT79rOO/EIRW0whOxyY2L7AEQ5i2iEkTSMoNmltXBEZAZAOcjHL7qPvq+nort2ICA7yLbDWQ7DU3ZHww6UBd2U5gJRnj4s5ne/p0FPP0UJq80LwYV4+sd7QieiCjoZ+De6jYGUNEXBEq/9pm0rgjcuVSVKXOCkHuoLMv2h0p8DqVeE/RmpshGtzSfghm2m/umMJyB4FLai4rujj5ptWC8ciXGSssEZDQzy8d+2ek2iG6fsXWEQTg3mNVGcJwmyC0Jb9JtKd7InAzEnd2GhPvdiais+902IN/lXLwYcMgtil4UjGY0W0SAY26rI8Yoie7+enofU1AQxhkYKjdbUr8ttJ/a/gdxQ4+c3ozB0SZBMFRspXIyS1jodO1T4pA9zdIP3GcSwTFvnlPl5pgrJJN78tG4Ti4kMk7Q+/TvqjGgwjtvpEAepq2FbLY7SjB9QT5FBk/F10yWS+0xbc8Rcxw11s8m9Zt5m1/+3/VrcTgns53CXi0mWtxXkXfzhsOS2RdRzL5Xik/0ytDQNQvMFVO7fsgr1GO4uJymxsnZhcQ60r+Gm7zESsVXw8QNIUvUd8yXh/sSvmt7fHKsU3lMONcXZRmwHNF6vs6jpTu63yVeTAY5EJlJp03NrIhctZBmPDPgp5B1sO9ZMmxyM0ur8GHDHZvs9i52aM+kd9ro1YG+7uk4VHlyzGmtyxERxbJqdhykxCAZB9D13DIFK+HbFeg53kLFPdUrpOpPDFSiHctnbwxGxQl5wirtdZLiGnRReyd87YyXPSfzC5fIotjSS6WXFXIpK6CR/v6tKHgFDduhDfQQzPeIcrPxVvLnvheDb5eTaKSqZBwpIBvR45IkHmvvVSb4h07u9V6LYQEGFCVWElWaOOblWuLm3N/w0xN1pTn8d3yEr7zubEGh1mR2NZX9RAawGvXsXLlFNAymyWe0ru5FOdx8KI3oLDy2ETgjrWQ4N3i0vUX06iQYmKqmsaDSo8MnMO62vjVb5kJsnG0yOKl5ge/fKmRyH983bW2uKOLtSqx6iVOi6kDgb1plkwChmqlVGKoQAuWEilbNiGwlmqe89ZWjzRQ8fK/wLdrw5AsIbSWwCc/Vg/dvRT0gymYdIRBrLxCHOyMwA77oLDEl+y8imYB4jhTfJnvIoZYVyf/ZxNdDyyIclTOllJfCFH7tGfn+opgNfOk2RZKf07eRlE6sNcFsoSgtTy3UqKGrbt/1dSNtpis1pOqe/BQQhUCnaBqDdVZ7Un+IGDEl7ZVpGcWwFlMXoOwaldUqVCKUFNk2gaDd//9GmPDoiLKU23EtXaPT0ujDcN5YUQttvoQMkZadxU8nk966qxbxgTkToq+9zXKAzf703P1c2M8dNdvYCs1sDp+VDpaB0bOLBqQJf05NI/uQdHc+ycK2MaNIX3d6I0XxldxbH3bEXYiwPHQtuKHcuQyw+HKKGlptegcgAu8g7KloJdz892cDnEX24SSFmeN7F7EZIxNW/h0nMAb7F3eJsh4zgd8gzi+pjm5Jauymb1/FvB0zzw0x1qlUZyQ5hUz8ial6d9sSSyelQewtjFHZQEtcUJh7HXviqvWXZT0tWLNa6pY+C0Y+y8StLT2Ca3nmzVzjbk4htjsAB7ndX9DVgjVIsrCGmWew4B9k/Sdq8CQsanEZ9ENHCOmgOyYhQEK4OJ1bIAnaP+iiHq2iPJa41+N6o1tbe6ueZd4c8uN09vwFQ7EgYQ1j1CETt0CClZVdeOiWYsdwqt4tOKPae/0FB95j1QDEZ4a153LmMDzVSJPbuPndjtTCD0k1RnZDJ0DoGrYNXZTfawIFLxNWfC74dOemhI5IQRCP0MWndksM8Kv+c4jgNrAZJGHQRMAXr3JekdGaVyhmha/QIUEGRsotkbW0eT4vd9OFxG/TKFjgcrhzgBkk5KzSkoyb8U2aj1FECW5W2IEQhXkO8pvIHHoe0KosJg4ZsbmP/dU6ANhxjLVVRabbgq2BThOk98EPTnFH3sk2Z3nDtuESLceyjHM6sbJB2p/CPvNcz4smd/ZZ2SwitiwDviF5hoqdrmSw5yFq1Ril/RA+iiCN6opHA4bk3tjdDdcqn0f9Qf2qhL7nPROBWW3myMmn1kUJPokZOmUk75jaIsGs/w69xAFBuDRaE7YITipKnvljsDpvh+43fA2vQOksIthT7y+tm6Vc6fTniXwpgFXjkwPeGF4VFB4am57OEGxXo2TebJFum3qDV+PJ0gAzsorcbpoQl+iK8IwWOioJ8a6xLx6220evol8++WA63teX1KhE4frlMJQDCBbiXYJDoSKZaz9oCcOYK3XjKgiJlNwGOjUxosjcT9Cl2l5c3JKHPVC1OYO52Q8QZkL0m8vBIJMhT25HD3NPL9mhmS1VCmll4fROgedvBna81oW44ApnQQQm5yD7CX2alU+ii4B/O0+0TOa43Wb8lnw2UVDo3mdZZE2GY6Js80mNnyCmktaO8FUQl1rSEo3WAEbszGZhrUJF3EmlgqZbVx1rLrk1BNwfJf7uiurs/zACkIVfGn8SkwzK38+K2SW3xL+F3ye+JUC5Nl0WEoNDNGI3vXKiIHWIEDNx3L0yNQBZfTWDDRMeqgNzHysjDEOlHGVDaCgc5qAP/BrOXa8KIYm/D+LJAPgM/56TrqXZFNnwYqgRjlJHpYZCJQmxjrvajiTIeHGTYsuQA09EcM/k18U1eZRt6ER9DV8WNNmRABIV/KIryg+Hw4aq3s6x2FEtjWjtiwnQ6mHgvK2SFkUMfqXJ0IvCMSwdOGRT4cUGiZDXoPflCIae4BomQ1KAcBW9Vj72uxpeuQuOjg93QLzFVwTA6CMOURDIMUFPRwJIG89dnKy3HEPCfzKRTRFQE4WdEh+B4gOd4XnKFku4BW8bDm+eHA3ZWjRAZpTwe/FRB+vHff5Lqa7+WWXAw2b6jKymAjUgveHpTnPKFBcIRwvGEEDHpU7fBJ5dl1cfxhR2/N4VZSHSYl7FHy53VG2Rp8j6Rgdt8YQLbgOJQJgRRbEoLQEbUsRGduyrcQ2VcOpXJZDbiqAEIVFJik3Y0KZ6RwxgEZuk+OGzsI2z1bGZJMCz4KzpnJr0uCLtE/ycVdrvOi0gIMU9fU2CUaDgKBCMqMHD5fSn9G+j8rg4UcxGo3naAXWfPIxoJj6mmRZi8ANYuWPB6OrfY4GKpdL4sDqckD48DFMjaSPAZakxtjUN8FOpNHR1rjN5bk2e0pewkFob4pPzKOE57iJu2lEVzJIWs8cblIuv3KjyBzCFnX9+whW1X0gzflOvtHa84o5vB1BLroIOipt8IdQ6+PdfC7ZUn01VZ59qNtOeO0hNW+jXcnPNWgSfxf57+SsevmfGX7WEQPCZufTCcfXYhpA/XdW+M2tFfxUmd4ubtXpHV46T1Gof84rkFeWPJ7PYrrcMr39/pjXqq1vKA1MMeltYwCELAEQTutsS/jGVmrr5lF5dxcx8snS9Uae5kmkgtR9Qz08z/Mz/GGYa0nQmBZDrfxQpsrcqgOopEGKN/uYP9QnLMIVNCkcYlHHxZMduYwV1eLlcdVqW8rR4Eh85JBwlHu0yyz7ev6i1iwh+7TOCsOfi/vhh2voUTPYGnN/6VRTYkUL1HEiP1hbmcvZDtZ8GCxGVmRijaqZ6Vnscr8nzI2HQsXrn7mIYp58D4Fz22XhP6diN6poVuroZgy14cNzg+H3SRzU9t+cn+SlZfpeLZE139qiHViWe2OYclphnHcAvSRq0PGFQbGdvwE4Zz8ss1FBoh3xgZJBoAgn14RDopxzZFT38XqgKJ9kaUs9t/60WWY39FVwKwnSCX1Y/CWY/xIQJrymEbEWq7LrNLHDWpWOWdEtw+uuKHc7WwbCHy93ibwLmmn7QIS/MKw4cXdod2/EKX7yx/LZA7dhCH0TPd6ei9vDboHtnpqcz+TeqsgoOceK9RwX4ox0LM/XkRqpR9Moljt9J0DtvhbuffDSZ6evmUBImR3hHYkGfJTZYMo32rblBhuOIuXLTkHH51f2nXGrwLtPOgLjy6NV7ItyqtOsDu5XJFHEU8HB49p3SsdhbIOt0QGtCHl0yhrNZFhCToIw/usK+/Lt15IW6tukbg9P36FV55fSMKB+3DMT9/KsG0blWrEVkNk1P0af4WGLjtoIqQ6BRaXoPP3c1auOplfLrZOrSOzMAKO5VvuCIHQtlmIxXb2j0HUqjnmZvkfRcSx72XHg+9zFEo8vgzV0sPVdhWcxawh9SwnaCllLg9obA2QOXM4Xb1Wa79eCNK/OVMGXK46ql4C2HC1VJwBQ8At1G3YXwmwvhApxVdmGLIrOvBfPeZJiR90g6lrhLLtniiMH0Q4N8hsBUuELeO52KcLLXInW6cr0WI1teWI46liKqZndtPOjSF/UxBUsBjQKU/vqt32DRP/CurYmd3Xjd5HqQ6pM321AB+ppz6XhpWTlZe/sq6w3ak+Wf8/u+J0+L9bMq8UT2wDuRsaCH+T52YAdVivfJdJyiqOqmlevZOoj3rjyz8YBwCIhdG0aE5siQMl1+d1E6YuZHqvvcz+FgLLXihyEFmq+FtzIpQ3791I1jC3XXOrjJnyobxMNnow1uyCFCppRadHPYwTOffE+fxHpqbYYnfh3Nf3E1orOXhvCt5Ou+Qn35QgomrvqjkdezVOUkJPEbOAh7tEofLbzBi/JVZwBT87JCNPII2QR2S5DIiq+n9vJzroD5y8Uf5UOkyKgLm6XqTZ0bWynMvRFVehr7SJuZcl1pZQx1/oSJRn3xVdnHxEmmWXspj6XRW0WA8jPUzHYp51ef2pNUIz0De6MTNOPIj20bWCKxdgwZNN6auFSIx+Yj6l10m33Kr25UP/+SeT88hPH4+WGzGM+1xog67U0bn/Zcbx7BUfKJmRmkze41QeUXbgfSitlzlrFgrrppF9YiJOUeofqKiM4lz9scWoVhRrM7olMlux59QjopYvPZv+PokYbC5GhFnHM+pAIbKKmONbm6z1EDIUjrr4GcuDZIdZDxyTou1c6LlTtlXP7XIDjaRCVhGBPWuF3qeqU927YiM7waZxgB2KLuIofry3Lf3FOqY3GOvv1muw5ujKXhNTwErTwrEePGrVSRVy6wIeLNWa4FgFmATPOzZXbmQxkxenwWvQUMdoK4xG7oMIxMRm+Pva3tLi6JHbP+vCIc0u5DBdUc+yaMQOfQsASjGWNSKn8QjsEfAJa61gNdfgeP0dhlY8ihCecbqRlB6Wd1N2BquyFaZpbzjRFj10+ez5OaXk1mvp2iDVAvLNu12QHE2M7MY7RgnrfZ0wowzbpCX0FCCLnWtzQmhDUiGBPi/9S6JXqqBXDSrl5co1i6+hwyLG2XGk2+NGglwKKDVAKI5lwa/m+G+VsbVvusgLqLF3TFKClSFuizjO7Hk6foeP3Ww+jGela6TvSqb18UTgRg7FKxzMSK5S8BWT62DUO88JRnWdalOxNNp+Sns/aOxeii0MLn2upCL3f94KYWxhS4wU1VOHjZ1yYUUJZZ+sPHE2REdhNlY/vW5JpSwoDXGEkCQ7IuPPWtjctC4Gm7XFYyR0MU2rgcGq5BO+CIwAD8vt5g1pxj8bEDxA2qRsSegNntaISCV+ZeDCFm8zDEiN6iWwxMX45NYmgUp0Ba3q8YCO4UtKQqtXuM1RuV2o8r8/JJApg5qfNqJVJL4dG53zkQk1RD7IF26oi8wpFEqS5maNTHT7kAcGhRro8iNSrzcTc+ONJ8o2IHXf7wewBN/I2VfYnNlo+HHx0r96snqqw24m4Hzy2z/HFpi6ZmbMlGCTEdHDUIoOZckjlrG24KZs4M5PUZOAW6G4wSO1hMZDmlHun4mGg2zd7yp0ZwSHVJez/uHe2KZyN7PbRgQvB9IEiT5DROCbd6bPn5+Hc/QbN5Dqh8+awXi7neSzm1B5oBAlS4981E+lmcDMQdZB3htQAL7EQjED82vXmQ1hBKPaAgg8+V569vVBtzM722tQVmqdD25lUxlUJhUMBXliX1CYYFBSeIPxQoNoYHDj5mzPSPqZXUH9HjJko9BdBQ/roWCHCKGoZIQCJULYbd3kWwx5bvQAWcit7Jdsc04UAWHp8RMblwnYxYUgB0R1U9+Sv7cfGcNpyoI4pa9+R15HN+QImUEd/eQaoRHtzQFh+BPysP/pMCwixM855sTLwa1dqOrBf8Ee6zQvXKQeU3qb61Rlm4OPPeNLcIlj782AMsCWEgt8BDH/JAUL3CU5adhihv6/mZ4TQdP5flEB0zKQIbwksKyY7HRdyNj8SCqCM9xfMK6nf40m/ONG1/USetijNTRk+SwBoIxIxe8/zqb5iKSE6DzB+z+1mAL37Ud3Z8JmiBSLzWikRnxiLbwcddKr4MjnPuohIFiZWHEgoSoxfwceo8iYBLlBvIFy/KvVLxPzRm4y/3tufDely+XYAGHLtyG7L9t7VPNbSzDoSwXxAWrQnSofIDtMo+x12yuthbNbGdyn5WN/e0/Gw8zHrq2KN8rH5TNkSUa/JxICOuWpugsna70QqxAuLIWDTYslQuz+EbNCZ02O0ajShp8erjUdqJDD0P+KMYr0gEj4kh0JcKmsNU3+3Dixm8ms7p9RkyR5i2ekWF5kRyIo6BfseyQyGze/nS/fKy4joAi12cjGWsQmmdeN8xaNWW3cy9oRtGu5jFjWjCHD5FGiOEoDPjoOFJ909kDsbRpMJV+wpjA9+MdlkFqYNNbN3jwJJNgWeGXnwUcvnnujN00Hper0LcAtr6NBzVQXAf2HhxV4LNiZEREoXlX60UUSE/hhMTsz58aoxV3R5mCybGKA3VG24ECtkvD2rCrRutGPuejA7ldawFiqUuytqGQz5Lc7uHWyl3gIEiaRK4wFUELEgeMdpqfYnFWfPCFzvDqOyTFU8cED52i6fRisiEaKZo1WUcHX9WFAKtUz6K73zc9mTl4EsNTYVxnIuTi2ff17DnbDweGRm9kidSs2AP2FYd200bi+lDnNoS/ZS35JQzGkjQZ6nN6eP8xybM/bkCxqwxMd12NDUJJsn10MnE/PEv6psSWWFI4T+8Gx6B8xPPpiLt+gA32ZMET63mqoazCXkNSBPU33Wr+5cvos7ceAYnNvp34Gf/VFxPmOjJsagsRu+Bzt9VZaIopvV1K+knE192dYLK+lBlRbNexb+oEHG3XD0wRTFqHEs8QwzxOTsiIlU9MTNuz08e5X4s9LJEs0wYfM4+XX0hRNDJqAyxVWAcYbPVOf9ojnNlh0dv7sFjj2OCOkwYNASBrkjCDOTMsTNLToUQOIZ6TY54CQmAGj8hQCSvw39ZpGiAMF7YCeLBdNFsUAWXNgjHxl5yOAFtjkc9Rso9zul8UyoJJlBD8CXC9hBb82+DNfESu0b61DfV7HWgmlklNC/yKaVa7m125H0VkJq/XLshSxZyNTak9nq+XODYg7uMmYctamXC119mYCsybwCb4COsafuYfw9GlNaeBGbFtNvRH2DTsDn4E6PJ3cTZ2qRtqSAzyVFE4lAoVypclWc4v1mf7aQ+5BbTNCzkDfJSo4CUzp5AySrn0jTuu1Vzms0UtBwRtz6QBhPywssvwL8/uM8FdfArZIpSuLklCUS2WwBW2PFTlGVaJkePL3UZy62hIWWCVN+Z8QLZC6tOvurmzMb7x5JdN5K/EKcb3NQPcgjNv6rMDHr67ugihZaijiDVih6KO98Eu7zuwV0J26XRspnjY8pcwcwEn7Fn8fg5wyGBeLw2X0nfFt4ZLABwwTXJJPtYGKVlXVDm27eNcOPUW9J4WYLFKIaknFW/qXGgCocaFDYg28ZMnOh5nmDf7HJ349d2LK3ivxtZid+yZA1s2OkSxP1TRQNxJnmxMozAC03necnM9flBMmpYku3V/+OYj+pJrunozAVd5UT+Rms/kxvq7AGEudgj58wXJY7kmNSP/Jv4yL0H2jKhnwCr1y/XzwBDKqT3J5xQfCo5LxfnyLFQ1CC7AHsihSbgFSjSyZqO/O6Fw9D/MfJRKC1tfHSkAmxmLlWjews6w+6QVuk67NuXAe/CwKxthCIDXjDQcK0uXm/k/+uFdGXpBZEy1RKUnXr9T0nP4HpO86jyO2WPqaj8GuEN9Z4yKsuC7147EaQygDj4gD6wrSTI37SnxmbllhkDFA0kkqgNjzEgr1P6zQ2NmqjWggi108gMlL6w6RQ4373tYDl4tFSkVvUf06K02qsJqAUjW8XAgQh4h1fDRmyM0ZvNPi5efJwAmKN7ANVLZPqrEnV6Y+/1Qy21eCQaBWVKeWHTIAlCmSqQAoIyqmiJ9l4vasOUb54XS6/K3tRAZtP+bjXPhD8rGoULQhgfmTMQcFh/tH7QveGjVZqlOlZ8CPXpGTcg0uSlXsI4JLKDfMVyNukRBeyuztwPFqTxxMk2r34rasGYFPPiCAj8eYyPslKuxHNo/WpCH5NsHj4wqX8z0/nujVC0ccNhCYVr5o5Cy63f/ILVeApoE+/CFStwljMagejR0O3mYcONKmFD5TAf7f2xnYrNuvOFV/lJxNLcO+sdynappzULAtHtCoWHgpfurVookf2YoWjkBf4m5f3xWQSOhAwK48i38CIBjc7ASBLUefhos1/cgBGSJD3Vc8rr540RqpQbubVe400htIgOaefTpvd8bX75sR8aZ5uo6qnMhtU0mwz6KvKXofeg4WjXrtSvEWXU5rcWnJVKlLEV9AwcsM2kx6xLQwyEEPzz3egzNflm6Qv87fr9jYSeUnOp5lZKUWrSv1YftVquzdT3EPR+eOl+47Jz7yomdtQwH38tcMuoxoQ3p7+z3K/eZxzTnPQES6ZK7GodLA2C2mwQBUA90fCYGNOBch1xwakhq7Afh2HTVG7QZ+ZrVZQQmswPMblqetZ0O9JMXDtzht6e5NA/uPHEzMk3TxiAwR1OJATDhbSVR7DZr8aflb8nsV68TSf7NkGeEFSbfA0vPTJwg0OiJuAh1wmnR3e5dMFSrnmz76uiVQOWxM/54Cri7MakUYFLH9BsEQ2eBR67nHEnF2ojYCrnEW0dw6tGJC6CDKkm66d69r9h8KAosrSnq9a4RTyUoXu8WK4HaM54zNfbiP191AxH5nSJLCpASiZDg+A2hhfzUleSluSWw6zfODV87e0NV0xqqSDS4LVoUR4mlDKmd0ddDNxy6";
-
-        // Tự động giải mã nếu đã nhập pass trước đó (chuyển trang mượt mà)
-        window.onload = function() {
-            const savedPass = sessionStorage.getItem('doc_password');
-            if (savedPass) {
-                document.getElementById('pass').value = savedPass;
-                decrypt(true);
-            }
-        };
-
-        function handleEnter(e) {
-            if (e.key === 'Enter') decrypt();
-        }
-
-        function decrypt(silent = false) {
-            const pass = document.getElementById('pass').value;
-            const errorDiv = document.getElementById('error');
-            try {
-                const bytes = CryptoJS.AES.decrypt(ciphertext, pass);
-                const originalText = bytes.toString(CryptoJS.enc.Utf8);
-                
-                if (!originalText) {
-                    throw new Error("Wrong pass");
+        document.addEventListener("DOMContentLoaded", function() {
+            const mdContent = document.getElementById("md-content").textContent;
+            marked.setOptions({ gfm: true, breaks: true });
+            document.getElementById("content").innerHTML = marked.parse(mdContent);
+            
+            // KÃ­ch hoáº¡t Syntax Highlighting CHá»ˆ cho cÃ¡c block cÃ³ khai bÃ¡o ngÃ´n ngá»¯ (trÃ¡nh tÃ´ mÃ u lung tung cho plain text)
+            document.querySelectorAll('pre code').forEach((block) => {
+                if (block.className.match(/language-(?!mermaid)/)) {
+                    hljs.highlightElement(block);
                 }
-                
-                // LÆ°u pass vÃ o session Ä‘á»ƒ Ä‘i sang trang khÃ¡c khÃ´ng pháº£i nháº­p láº¡i
-                sessionStorage.setItem('doc_password', pass);
-                
-                document.open();
-                document.write(originalText);
-                document.close();
-            } catch (e) {
-                if (!silent) errorDiv.style.display = 'block';
-                else sessionStorage.removeItem('doc_password');
-            }
-        }
+            });
+            
+            // Render Mermaid diagrams
+            const mermaidBlocks = document.querySelectorAll("code.language-mermaid");
+            mermaidBlocks.forEach(block => {
+                const pre = block.parentElement;
+                const div = document.createElement('div');
+                div.className = 'mermaid';
+                div.textContent = block.textContent;
+                pre.replaceWith(div);
+            });
+            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            mermaid.initialize({ startOnLoad: false, theme: isDarkMode ? 'dark' : 'default' });
+            mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+
+            // Wrap tables in responsive div
+            const tables = document.querySelectorAll('#content table');
+            tables.forEach(table => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-responsive-wrapper';
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            });
+
+            // Generate TOC
+            const tocContent = document.getElementById("toc-content");
+            const headings = document.querySelectorAll("#content h1, #content h2, #content h3, #content h4");
+            const ul = document.createElement("ul");
+            headings.forEach(heading => {
+                if (!heading.id) heading.id = heading.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                const level = parseInt(heading.tagName.replace('H', ''), 10);
+                const li = document.createElement("li");
+                li.style.marginLeft = (level - 1) * 15 + "px";
+                const a = document.createElement("a");
+                a.href = "#" + heading.id;
+                a.textContent = heading.textContent;
+                li.appendChild(a);
+                ul.appendChild(li);
+            });
+            tocContent.appendChild(ul);
+        });
     </script>
 </body>
 </html>
