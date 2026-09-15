@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>81759 - TRẦN THỊ KHÁNH LY | Engineering Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0088cc;
+            --primary-dark: #006699;
+            --primary-light: #e6f4fa;
+            --accent-green: #2da44e;
+            --accent-purple: #8250df;
+            --bg: #f6f8fa;
+            --surface: #ffffff;
+            --text-main: #1f2328;
+            --text-muted: #656d76;
+            --border: #d0d7de;
+            --border-light: #eaeef2;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 8px 24px rgba(0, 136, 204, 0.12);
+            --radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0d1117;
+                --surface: #161b22;
+                --text-main: #f0f6fc;
+                --text-muted: #8b949e;
+                --border: #30363d;
+                --border-light: #21262d;
+                --primary-light: #12283a;
+                --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+                --shadow-hover: 0 8px 24px rgba(0, 136, 204, 0.25);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        header {
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .header-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #0088cc 0%, #00b4d8 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0, 136, 204, 0.3);
+        }
+
+        .brand-text h1 {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text-main);
+        }
+
+        .brand-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-lock {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-lock:hover {
+            color: #cf222e;
+            border-color: #cf222e;
+            background: rgba(207, 34, 46, 0.05);
+        }
+
+        /* Main Container */
+        main {
+            flex: 1;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 36px 24px 60px;
+        }
+
+        /* Hero Banner */
+        .hero {
+            margin-bottom: 36px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            background: linear-gradient(120deg, var(--text-main) 60%, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 24px;
+        }
+
+        /* Search & Filter bar */
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-main);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        /* Section Layout */
+        .section-group {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .badge-count {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Grid Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .doc-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .doc-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, #00d2ff 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .doc-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .doc-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .card-icon.purple {
+            background: rgba(130, 80, 223, 0.1);
+        }
+
+        .card-icon.green {
+            background: rgba(45, 164, 78, 0.1);
+        }
+
+        .card-version {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: var(--primary-light);
+            color: var(--primary);
+            letter-spacing: 0.03em;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-light);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .arrow-icon {
+            transition: transform 0.2s ease;
+        }
+
+        .doc-card:hover .arrow-icon {
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-logo">L</div>
+                <div class="brand-text">
+                    <h1>81759 - TRẦN THỊ KHÁNH LY</h1>
+                    <p>Cổng Tài Liệu Bàn Giao Kỹ Thuật (Dev & QA)</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-lock" onclick="lockPortal()" title="Khóa phiên làm việc">
+                    <span>🔒</span> Khóa lại
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Body -->
+    <main>
+        <!-- Hero -->
+        <div class="hero">
+            <h2>Hệ Thống Phân Tích & Đặc Tả Kỹ Thuật</h2>
+            <p>Trung tâm lưu trữ và phân phối tài liệu SRS, CR, Sơ đồ Sequence và Nguyên mẫu Giao diện tương tác cho các dự án.</p>
+            
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchBox" class="search-input" placeholder="Tìm kiếm tài liệu, API, module..." oninput="filterCards()">
+            </div>
+        </div>
+
+        <!-- PHÂN HỆ 1: SALE SERVICES & PRODUCT -->
+        <section class="section-group">
+            <div class="section-header">
+                <div class="section-title">
+                    <span>🛡️ Dịch Vụ & Sản Phẩm (Sale Services - Bolttech)</span>
+                    <span class="badge-count">2 Tài liệu</span>
+                </div>
+            </div>
+
+            <div class="card-grid">
+                <!-- Card: BHRV Phase 2 -->
+                <a href="./bhrv_bolttech_phase2_v1.html" class="doc-card" data-tags="bhrv bolttech insurance bảo hiểm rơi vỡ warehouse delivery kho api contract">
+                    <div class="card-top">
+                        <div class="card-icon">🛡️</div>
+                        <span class="card-version">Phase 2 • v1 (Aug-2026)</span>
+                    </div>
+                    <h3 class="card-title">Tích Hợp Bán BHRV Bolttech - Phase 2</h3>
+                    <p class="card-desc">Bổ sung luồng Giao hàng từ Kho (Warehouse Delivery). Cho phép tạo đơn bảo hiểm với thông tin kích hoạt tạm (Dummy IMEI/Date) tại ngày 1 và gọi API UpdateContract kích hoạt khi xuất kho ngày 2-7.</p>
+                    <div class="card-tags">
+                        <span class="tag">Mermaid Sequence</span>
+                        <span class="tag">Accounts Receivable</span>
+                        <span class="tag">UpdateContract API</span>
+                        <span class="tag">User Stories & AC</span>
+                    </div>
+                    <div class="card-footer">
+                        <span>Mở tài liệu chi tiết</span>
+                        <span class="arrow-icon">→</span>
+                    </div>
+                </a>
+
+                <!-- Card: POS UI Prototype -->
+                <a href="./bhrv_pos_ui_prototype.html" class="doc-card" data-tags="prototype pos app ui ux bhrv bolttech falling bảo hiểm rơi vỡ demo tương tác bán hàng erablue">
+                    <div class="card-top">
+                        <div class="card-icon purple">🎨</div>
+                        <span class="card-version">Interactive Demo</span>
+                    </div>
+                    <h3 class="card-title">Nguyên Mẫu Giao Diện POS BHRV (UI/UX Prototype)</h3>
+                    <p class="card-desc">Mô phỏng trải nghiệm ứng dụng POS bán bảo hiểm rơi vỡ EraBlue: Luồng bán hàng có sẵn (Phase 1), đơn xuất kho giao sau (Phase 2), cấu hình gói, thu tiền và đồng bộ API Bolttech.</p>
+                    <div class="card-tags">
+                        <span class="tag">UI/UX Demo</span>
+                        <span class="tag">POS App EraBlue</span>
+                        <span class="tag">Phase 1 & 2</span>
+                        <span class="tag">Fast Input & Sticky CTA</span>
+                    </div>
+                    <div class="card-footer">
+                        <span>Trải nghiệm Prototype</span>
+                        <span class="arrow-icon">→</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- PHÂN HỆ 2: SELLER CENTER -->
+        <section class="section-group">
+            <div class="section-header">
+                <div class="section-title">
+                    <span>🛒 Quản Lý Nhà Bán (Seller Center)</span>
+                    <span class="badge-count">2 Tài liệu</span>
+                </div>
+            </div>
+
+            <div class="card-grid">
+                <!-- Card: SRS Notification Bell -->
+                <a href="./srs_notification_bell_v21.html" class="doc-card" data-tags="sellercenter thông báo bell notification srs v21 database erd api scrum">
+                    <div class="card-top">
+                        <div class="card-icon green">🔔</div>
+                        <span class="card-version">Sprint • v21</span>
+                    </div>
+                    <h3 class="card-title">Hệ Thống Chuông Thông Báo (Bell Notification)</h3>
+                    <p class="card-desc">Đặc tả chi tiết tính năng Thông báo Seller Center: cơ chế trigger realtime, cấu trúc Database (ERD), danh sách API quản lý thông báo và User Stories chi tiết.</p>
+                    <div class="card-tags">
+                        <span class="tag">SRS Kỹ Thuật</span>
+                        <span class="tag">Database ERD</span>
+                        <span class="tag">Restful API</span>
+                    </div>
+                    <div class="card-footer">
+                        <span>Mở tài liệu chi tiết</span>
+                        <span class="arrow-icon">→</span>
+                    </div>
+                </a>
+
+                <!-- Card: UI Prototype -->
+                <a href="./notification_ui_prototype.html" class="doc-card" data-tags="prototype ui ux sellercenter notification chuông demo tương tác figma">
+                    <div class="card-top">
+                        <div class="card-icon purple">🎨</div>
+                        <span class="card-version">Interactive Demo</span>
+                    </div>
+                    <h3 class="card-title">Nguyên Mẫu Giao Diện (UI/UX Prototype)</h3>
+                    <p class="card-desc">Mô phỏng tương tác thực tế của widget chuông thông báo, menu dropdown, bộ lọc theo phân loại và luồng xem chi tiết thông báo trên giao diện web.</p>
+                    <div class="card-tags">
+                        <span class="tag">UI/UX Demo</span>
+                        <span class="tag">Figma-to-Code</span>
+                        <span class="tag">Responsive</span>
+                    </div>
+                    <div class="card-footer">
+                        <span>Trải nghiệm Prototype</span>
+                        <span class="arrow-icon">→</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 • 81759 - TRẦN THỊ KHÁNH LY • Tài liệu nội bộ lưu hành trong nhóm Phát Triển & Kiểm Thử (Dev & QA)</p>
+    </footer>
+
+    <script>
+        function filterCards() {
+            const query = document.getElementById('searchBox').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.doc-card');
+            
+            cards.forEach(card => {
+                const text = (card.innerText + " " + card.getAttribute('data-tags')).toLowerCase();
+                if (text.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function lockPortal() {
+            sessionStorage.removeItem('doc_password');
+            location.reload();
+        }
+    </script>
+</body>
+</html>
