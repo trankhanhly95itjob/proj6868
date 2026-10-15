@@ -1,0 +1,1360 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T&#xE0;i li&#x1EC7;u</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    <style>
+        :root {
+            --bg-page: #eef1f6;
+            --bg-card: #ffffff;
+            --bg-sidebar: #fbfbfd;
+            --text-color: #1f2430;
+            --text-muted: #6b7280;
+            --border-color: #e3e6ec;
+            --link-color: #2563eb;
+            --accent: #4f46e5;
+            --accent-soft: #eef2ff;
+            --code-inline-color: #be123c;
+            --code-inline-bg: #f1f3f8;
+            --blockquote-bg: #eff6ff;
+            --blockquote-border: #3b82f6;
+            --table-header-bg: #f5f6fa;
+            --table-stripe: #fafbfd;
+            --shadow: 0 1px 2px rgba(16,24,40,0.04), 0 8px 24px rgba(16,24,40,0.06);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-page: #0b0e14;
+                --bg-card: #11151d;
+                --bg-sidebar: #0d1017;
+                --text-color: #d6dbe4;
+                --text-muted: #8891a0;
+                --border-color: #232834;
+                --link-color: #6fa8ff;
+                --accent: #8b93ff;
+                --accent-soft: #1a1f31;
+                --code-inline-color: #ff8fa3;
+                --code-inline-bg: #1c2030;
+                --blockquote-bg: #131a29;
+                --blockquote-border: #3b82f6;
+                --table-header-bg: #161b26;
+                --table-stripe: #131722;
+                --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+            }
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0; background: var(--bg-page); color: var(--text-color); line-height: 1.65;
+        }
+
+        #sidebar {
+            position: fixed; top: 0; left: 0; width: 280px; height: 100vh; overflow-y: auto;
+            background: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+            padding: 22px 16px 40px; z-index: 900; transform: translateX(0);
+            transition: transform 0.25s ease;
+        }
+        body.sidebar-hidden #sidebar { transform: translateX(-100%); }
+        .sidebar-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color); }
+        .doc-icon { font-size: 20px; }
+        .doc-title { font-weight: 600; font-size: 14px; color: var(--text-color); line-height: 1.35; flex: 1; }
+        .collapse-btn {
+            background: none; border: none; color: var(--text-muted); font-size: 15px;
+            cursor: pointer; padding: 4px 8px; border-radius: 6px; line-height: 1;
+        }
+        .collapse-btn:hover { background: var(--accent-soft); color: var(--accent); }
+        .toc-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin: 4px 2px 10px; font-weight: 600; }
+
+        #toc-content ul { list-style: none; margin: 0; padding-left: 0; }
+        #toc-content li { margin: 2px 0; }
+        #toc-content a {
+            display: block; padding: 6px 10px; border-radius: 6px; font-size: 13.5px; color: var(--text-muted);
+            text-decoration: none; border-left: 2px solid transparent; transition: all .15s ease; line-height: 1.4;
+        }
+        #toc-content a:hover { background: var(--accent-soft); color: var(--accent); }
+        #toc-content a.active { background: var(--accent-soft); color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+        #page { margin-left: 280px; min-height: 100vh; padding: 40px 40px 80px; transition: margin-left 0.25s ease; }
+        body.sidebar-hidden #page { margin-left: 0; }
+        .content-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; box-shadow: var(--shadow); padding: 48px 56px; }
+
+        .back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 24px; color: var(--link-color); text-decoration: none; font-weight: 600; font-size: 14px; }
+        .back-link:hover { text-decoration: underline; }
+
+        .sidebar-btn {
+            display: none; position: fixed; top: 14px; left: 14px; z-index: 1100;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px;
+            width: 40px; height: 40px; font-size: 18px; cursor: pointer; box-shadow: var(--shadow);
+            align-items: center; justify-content: center;
+        }
+        body.sidebar-hidden .sidebar-btn { display: flex; }
+        #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 800; }
+
+        @media (max-width: 900px) {
+            #page { margin-left: 0; }
+            body:not(.sidebar-hidden) #overlay { display: block; }
+            .content-card { padding: 26px 18px; }
+        }
+
+        /* Headings */
+        .markdown-body h1 { font-size: 2em; padding-bottom: .3em; border-bottom: 2px solid var(--accent); margin-bottom: .6em; }
+        .markdown-body h2 { padding-bottom: .3em; border-bottom: 1px solid var(--border-color); margin-top: 2em; }
+        .markdown-body h3 { margin-top: 1.8em; }
+        .markdown-body h4, .markdown-body h5, .markdown-body h6 { font-size: 1.15em !important; margin-top: 1.5em; margin-bottom: .5em; }
+
+        /* Blockquote */
+        .markdown-body blockquote {
+            background-color: var(--blockquote-bg) !important;
+            border-left: 4px solid var(--blockquote-border) !important;
+            padding: 14px 18px !important;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-color) !important;
+            margin: 0 0 20px !important;
+        }
+        .markdown-body blockquote p { margin: 4px 0; }
+
+        /* Inline code */
+        .markdown-body code:not(pre code) {
+            background-color: var(--code-inline-bg) !important;
+            color: var(--code-inline-color) !important;
+            padding: 2px 6px !important;
+            border-radius: 4px;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+        }
+
+        /* Code blocks */
+        .markdown-body pre {
+            background-color: #282c34 !important;
+            color: #abb2bf !important;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 16px 18px !important;
+        }
+        .markdown-body pre code {
+            font-size: 14px !important;
+            font-family: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+        }
+        .hljs-comment { color: #6A9955 !important; }
+
+        /* Tables */
+        .table-responsive-wrapper { width: 100%; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border-color); border-radius: 10px; }
+        .markdown-body table { display: table !important; width: 100% !important; table-layout: auto !important; border-collapse: collapse; margin-bottom: 0 !important; }
+        .markdown-body th { background-color: var(--table-header-bg) !important; font-weight: 600; text-align: left; position: sticky; top: 0; }
+        .markdown-body th, .markdown-body td { min-width: 150px !important; word-wrap: break-word; padding: 12px 14px !important; border-color: var(--border-color) !important; }
+        .markdown-body tr:nth-child(even) td { background-color: var(--table-stripe) !important; }
+
+        /* Mermaid */
+        .mermaid { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: flex; justify-content: center; box-shadow: var(--shadow); margin-bottom: 20px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <button id="sidebar-btn" class="sidebar-btn" aria-label="Menu">&#9776;</button>
+    <div id="overlay"></div>
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <div class="doc-icon">&#128196;</div>
+            <div class="doc-title" id="doc-title-label">T&#xE0;i li&#x1EC7;u</div>
+            <button id="sidebar-collapse-btn" class="collapse-btn" aria-label="&#x1EA8;n m&#x1EE5;c l&#x1EE5;c">&#171;</button>
+        </div>
+        <div class="toc-label">M&#x1EE5;c l&#x1EE5;c</div>
+        <nav id="toc-content"></nav>
+    </div>
+    <div id="page">
+        <div class="content-card">
+            <a href="./index.html" class="back-link">&#8592; Tr&#x1EDF; v&#x1EC1; Trang ch&#x1EE7;</a>
+            <div id="content" class="markdown-body"></div>
+        </div>
+    </div>
+    <script type="text/markdown" id="md-content">
+# TÀI LIỆU ĐẶC TẢ YÊU CẦU PHẦN MỀM - CHUÔNG THÔNG BÁO - NOTIFICATION BELL_2026-08-21
+
+## MODULE: CHUÔNG THÔNG BÁO (NOTIFICATION BELL) - SELLER CENTER
+
+## 1. THÔNG TIN TÀI LIỆU & NGUỒN LIÊN QUAN
+
+> Tài liệu người dùng/Requirement: https://docs.google.com/spreadsheets/d/1wK7yXJ3Iz5dAurI1axc2UHDJhWHAZOTCqiC4xxUlbKQ/edit?gid=798020716#gid=798020716
+
+> TO DO LIST: https://docs.google.com/spreadsheets/d/1wK7yXJ3Iz5dAurI1axc2UHDJhWHAZOTCqiC4xxUlbKQ/edit?gid=363707409#gid=363707409&range=B215
+
+> Tài liệu ERD SQL: https://drive.google.com/file/d/1VJTgPbdkGhaCt5X5zt4394WkD55NoHDJ/view?usp=sharing
+
+> Tài liệu này được tạo bởi Skill *Create User Stories*, kế thừa ngữ cảnh dự án từ `1. ABOUT_PROJECT_SELLER CENTER.md` và kết quả User Story chi tiết tại file `US_ChuongThongBao_MWG_Format.csv` (cùng thư mục).
+
+---
+
+## 2. TỔNG QUAN NHU CẦU NGHIỆP VỤ
+
+###### **Bảng tổng hợp:Nghiệp vụ cần Notify → Dữ liệu thu thập → Xử lý → Template → Nội dung hiển thị:**
+
+| STT              | Nghiệp vụ cần Notify                                                                                                                                                               | Dữ liệu cần thu thập                                                                                                          | Dữ liệu cần xử lý như thế nào                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Notify theo Template                     | Nội dung Notify hiển thị cho người dùng                                                                                                                                            | Ví dụ                                                                                                                                                                                                        |
+| :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Event1** | SO bị đánh dấu**Không đủ tồn kho** khi NCC kiểm hàng                                                                                                                  | Table focus:`seller.sm_saleorder_sostatus` <br />(join với `sm_account_seller`, `sm_businessseller` để lấy Tên NCC)    | Insert`SOStatus = 8` (Không đủ tồn kho).                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `NOT_ENOUGH_STOCK`                     | **[Ngoại lệ][{Tên rút gọn NCC}]**<br />{Mã SO} không đủ tồn kho                                                                                                       | **[Ngoại lệ][Dầu khí]**<br />31579SO260700297399 không đủ tồn kho                                                                                                                                |
+| **Event2** | SO**đã bàn giao nhưng vẫn bị khách hủy** (sai quy trình)                                                                                                               | Table focus:`seller.sm_saleorder_sostatus`                                                                                      | Insert`SOStatus = 9` (Khách hủy đơn) <br />=> next validate: <br />1. Có tồn tại `SOStatus = 4` (Đã bàn giao).                                                                                                                                                                                                                                                                                                                                                                                                | `CANCEL_SO_HANDOVER`                   | **[Sai][{Tên rút gọn NCC}]**<br />{Mã SO} đã bàn giao, nhưng đã bị hủy                                                                                                | **[Sai][Dầu khí]**<br />31579SO260700297399 đã bàn giao, nhưng đã bị hủy                                                                                                                      |
+| **Event3** | **Vận đơn đối tác (GHTK) bị hủy** trong khi SO chưa hủy                                                                                                               | Event webhook từ Logistic (`IsDelete = 1`). <br />Table focus: `seller.sm_saleorder_sostatus`                                | Vận đơn đối tác bị hủy + SO-đã-đóng-gói-chưa-hủy.<br />Event`IsDelete = 1` từ logistic, gọi sang hệ SellerCenter: <br />1. Check Mã SO/Mã vận đơn TK có trạng thái `SOStatus = 3` (Đã đóng gói).<br />2. AND không có trạng thái `SOStatus = 9` (Khách hủy đơn).                                                                                                                                                                                                               | `CANCEL_BILL_TRANS`                   | **[Ngoại lệ][{Tên rút gọn NCC}]**<br />Vận đơn của {Mã SO} đã bị hủy                                                                                              | **[Ngoại lệ][Dầu khí]**<br />Vận đơn của 31579SO260700297399 đã bị hủy                                                                                                                      |
+| **Job4**   | Có 3 steps trong Job4 dưới đây:<br /><br />**SO đã bàn giao nhưng:**                                                                                                   | Table focus:`seller.sm_saleorder_sostatus`                                                                                      | 7h sáng hàng ngày, quét data các đơn hàng thỏa đk:<br />**1. Đã bàn giao vào ngày hôm trước:**<br />+ Có`SOStatus = 4` (Đã bàn giao), <br />+ Ngày tạo trạng thái = `SYSDATE - 7`. <br />**2. Chưa hủy:**<br />+ Không tồn tại `SOStatus = 9` (Khách hủy đơn).                                                                                                                                                                                                         |                                          |                                                                                                                                                                                          |                                                                                                                                                                                                                |
+| Step1 in Job4    | SO đã bàn giao nhưng:<br />**không có dữ liệu** đẩy về để gom PO (lỗi luồng InitData CRM/SOM → Procurement)                                                    | Table focus:`purchasing.pom_orderbysaleorderdetail`, `purchasing.pom_orderbysaleorder`                                        | - Với từng SO seller, kiểm tra list SO đó ở hệ Procument:<br />**Case Job4.1:** <br />SO **không tồn tại trong bảng dữ liệu** InitDataCreatePO/Chờ gom PO.                                                                                                                                                                                                                                                                                                                                        | `NO_DATA_INIT_CREATE_PO`               | **[Sai][Chưa tạo PO][{Tên rút gọn NCC}]**<br />{Mã SO} không có dữ liệu gom tạo đơn PO từ CRM/SOM đẩy về                                                       | **[Sai][Chưa tạo PO][Dầu khí]**<br />31579SO260700297399 không có dữ liệu gom tạo đơn PO từ CRM/SOM đẩy về                                                                                |
+| Step2 in Job4    | SO đã bàn giao,<br />**có ĐỦ dữ liệu InitDataCreatePO**,<br />**chưa gom tạo PO thành công**, do sai/thiếu khai báo ở Procument                            | Table focus:`seller.sm_saleorderdetail_info`, `purchasing.pom_orderbysaleorderdetail`                                         | **Case Job4.2:** <br />- SO **Có tồn tại dữ liệu trong bảng dữ liệu** InitDataCreatePO/Chờ gom PO, <br />- AND, **KHỚP Dữ liệu detail sản phẩm**: Double check sự đầy đủ của dữ liệu detail sản phẩm (Data completeness). So sánh data detail [ProductID+Quantity] ở hệ Procument và data detail ở hệ Seller-data-soạn-hàng. <br />- AND, **chưa được gom tạo PO (`orderid = null`)**, do vi phạm điều kiện tạo PO (thiếu/sai khai báo ở Procument). | `SAME_PRODUCT_SELLER_PROC_NO_PO`       | **[Sai][Chưa tạo PO][{Tên rút gọn NCC}]** <br />{Mã SO} đã có dữ liệu CRM/SOM đẩy về, nhưng chưa tạo PO thành công (thiếu/sai khai báo ở Procument).      | **[Sai][Chưa tạo PO][Dầu khí]**<br />31579SO260700297399 đã có dữ liệu CRM/SOM đẩy về, nhưng chưa tạo PO thành công (thiếu/sai khai báo ở Procument)                                 |
+| Step3 in Job4    | SO đã bàn giao,<br />**THIẾU dữ liệu sản phẩm** trong InitDataCreatePO,<br />**chưa gom tạo PO thành công**, do sai/thiếu khai báo thuộc tính sản phẩm. | Table focus:`seller.sm_saleorderdetail_info`, `purchasing.pom_orderbysaleorderdetail`                                         | **Case Job4.3:** <br />- SO **Có tồn tại dữ liệu trong bảng dữ liệu** InitDataCreatePO/Chờ gom PO, <br />- AND, **KHÔNG KHỚP Dữ liệu detail sản phẩm** (Data completeness). So sánh data detail [ProductID+Quantity] ở hệ Procument và data detail ở hệ Seller-data-soạn-hàng. <br />- AND, **chưa được gom tạo PO (`orderid = null`)**, do vi phạm điều kiện tạo PO (thiếu/sai khai báo thuộc tính sản phẩm).                                             | `NOT_SAME_PRODUCT_SELLER_PROC_NO_PO`   | **[Sai][Chưa tạo PO][{Tên rút gọn NCC}]** <br />{Mã SO} bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [{SP-SL}]; Proc: [{SP-SL}]         | **[Sai][Chưa tạo PO][Dầu khí]** <br />31579SO260700297399 bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [SP:0163346000778-SL:1]; Proc:  [BLANK].                    |
+| Step4 in Job4    | SO đã bàn giao,<br />**THIẾU dữ liệu sản phẩm** trong InitDataCreatePO,<br />**ĐÃ gom tạo PO thành công**, do sai/thiếu khai báo thuộc tính sản phẩm.  | Table focus:`seller.sm_saleorderdetail_info`, `purchasing.pom_orderbysaleorderdetail`                                         | **Case Job4.4:** <br />- SO **Có tồn tại dữ liệu trong bảng dữ liệu** InitDataCreatePO/Chờ gom PO, <br />- AND, **KHÔNG KHỚP Dữ liệu detail sản phẩm** (Data completeness). So sánh data detail [ProductID+Quantity] ở hệ Procument và data detail ở hệ Seller-data-soạn-hàng. <br />- AND, **ĐÃ được gom tạo PO** (`orderid != null`)                                                                                                                               | `NOT_SAME_PRODUCT_SELLER_PROC_HAVE_PO` | **[Sai][Đã tạo PO][{Tên rút gọn NCC}]** <br />{Mã PO}-{Mã SO} bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [{SP-SL}]; Proc: [{SP-SL}] | **[Sai][Đã tạo PO][Dầu khí]** <br />31579PO260700297388-31579SO260700297399 bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [SP:0163346000778-SL:1]; Proc:  [BLANK]. |
+| **Job5**   | SO**đã nhập hóa đơn đầu vào (IV) nhưng ERP chưa ghi nhận xuất hàng (OV)**                                                                                         | Table focus:`purchasing.pom_order_saleorder`, `purchasing.pom_order_inputvoucher`, `purchasing.pom_saleorder_outputvoucher` | 7h sáng hàng ngày, quét data các đơn hàng SO NCC đã nhập hóa đơn mua PO, đã nhập hàng, nhưng chưa được xuất hàng:<br />1.  **Có tồn tại trong bảng SO-PO-IV **, <br />nhưng gọi ERP-Sale check thì thấy  **chưa xuất hàng (`IsOutProduct = false`) **                                                                                                                                                                                                                                 | `HAD_IV_NONE_OV`                       | **[Chưa xuất hàng được][{Tên rút gọn NCC}]**<br /> {Mã SO} chưa được xuất hàng. {Mã PO} đã được nhập hóa đơn vào lúc {Ngày nhập}                     | **[Chưa xuất hàng được][{Tên rút gọn NCC}]**<br />31579SO260700297399 chưa được xuất hàng. <br />31579PO260700297388 đã được nhập hóa đơn vào lúc 02/11/2026 14:07:23          |
+| **Job6**   | SO**đã đóng gói nhưng chưa bàn giao** trên hệ thống (hàng có thể đã giao cho GHTK ngoài thực tế nhưng Seller không bàn giao, hoặc bàn giao thiếu trên hệ thống → SO treo ở "Đã đóng gói", không lên được PO) | Table focus:`seller.sm_saleorder_sostatus` <br />(join với `sm_account_seller`, `sm_businessseller` để lấy Tên NCC) | 7h sáng hàng ngày (cùng thời điểm Job4–5), quét data các SO thỏa đk:<br />1. Có`SOStatus = 3` (Đã đóng gói) trong **7 ngày gần nhất** (từ hôm qua trở về trước).<br />2. **VÀ** không tồn tại`SOStatus = 4` (Đã bàn giao).<br />3. **VÀ** không tồn tại`SOStatus = 9` (Khách hủy đơn). | `PACKED_NOT_HANDOVER` | **[Mất hàng][{Tên rút gọn NCC}]**<br />{Mã SO} chưa có dữ liệu bàn giao trên hệ thống. Hàng hóa có thể bị mất, khó kiểm soát. | **[Mất hàng][Dầu khí]**<br />31579SO260700297399 chưa có dữ liệu bàn giao trên hệ thống. Hàng hóa có thể bị mất, khó kiểm soát. |
+
+---
+
+## 3. PHÂN TÍCH WORKFLOW KỸ THUẬT (TECHNICAL WORKFLOW ANALYSIS)
+
+### 3.1. SƠ ĐỒ WORKFLOW KỸ THUẬT
+
+```mermaid
+flowchart TD
+    subgraph B1 [Bước 1: Nhận diện và Thu thập]
+        E1[Event-driven:<br>Insert SOStatus DB<br>Webhook Logistics GHTK]
+        C1[Cronjob 7h sáng:<br>Quét SO 7 ngày gần nhất<br>Cross-check Seller vs Procurement vs ERP]
+    end
+
+    subgraph B2 [Bước 2: Xử lý Logic]
+        S1{Notification Service}
+        E1 --> S1
+        C1 --> S1
+        S1 -->|Query Data Liên đới| S2[Validate và Mapping:<br>BusinessSeller, Mã SO, Tên NCC theo NotificationKey]
+    end
+
+    subgraph B3 [Bước 3: Lưu trữ]
+        S2 -->|Render Text Template| D1[(Notification DB)]
+        D1 -.->|Insert record mới| D2[Trạng thái: IsRead = false]
+    end
+
+    subgraph B4 [Bước 4: Truy xuất API và Tương tác UI]
+        U1[Người dùng Load/F5 Trang] --> API[FE gọi GET /api/notifications]
+        API --> D1
+        D1 -->|Danh sách và Unread Count| UI[Hiển thị Icon Chuông và Badge]
+        UI -->|Click icon chuông| A1[Hiển thị Dropdown danh sách]
+        A1 -->|Click 1 thông báo| A2[FE gọi PUT /api/notifications/id/read]
+        A2 -->|Update DB: IsRead = true| D1
+        A2 -->|Cập nhật giao diện| A3[Giảm số đếm trên Badge UI]
+    end
+```
+
+---
+
+### 3.2. CHI TIẾT CÁC BƯỚC XỬ LÝ
+
+Từ quá trình hệ thống **nhận diện dữ liệu cần notify** đến khi **người dùng đọc được thông báo** trên giao diện, workflow được chia thành 4 bước chính.
+
+#### Bước 1: Nhận diện & Thu thập dữ liệu (Triggering & Event Listening)
+
+Hệ thống nhận diện nhu cầu thông báo qua **2 luồng song song**:
+
+**a) Luồng Event-driven (Thực thời/Gần thực thời)** — lắng nghe thay đổi ngay khi có tác động vào DB hoặc có webhook từ hệ ngoài:
+
+- **Insert vào `seller.sm_saleorder_sostatus`** với `SOStatusID = 8` (Không đủ tồn kho) → cảnh báo ngoại lệ tồn kho.
+- **Insert `SOStatusID = 9`** (Khách hủy đơn) kèm điều kiện SO đã từng tồn tại record `SOStatusID = 4` (Đã bàn giao) trước đó → cảnh báo sai quy trình (đơn đã giao mà vẫn bị hủy).
+- **Webhook/Event từ Hệ thống Logistic (MWG)**: khi đối tác vận chuyển (GHTK) báo hủy vận đơn (`IsDelete = 1`), kèm điều kiện SO đang ở `SOStatus = 3` (Đã đóng gói) và **chưa** có `SOStatus = 9`.
+
+**b) Luồng Job/Cron (Quét định kỳ)** — tiến trình ngầm chạy theo lịch **7h sáng hàng ngày**, quét chéo dữ liệu giữa SellerCenter ↔ Procurement ↔ ERP:
+
+- Lấy danh sách SO đã bàn giao (`SOStatus = 4`) trong cửa sổ **7 ngày gần nhất** (`ngày bàn giao >= SYSDATE - 7`) và chưa hủy (không có `SOStatus = 9`).
+  - *Lý do dùng cửa sổ 7 ngày (không chỉ "ngày hôm trước"):* nếu SO vẫn còn vi phạm điều kiện, hệ thống sẽ **tiếp tục notify lại mỗi ngày** cho đến khi được xử lý xong — không phải cảnh báo 1 lần duy nhất.
+  - Với từng SO trong danh sách, so khớp với bảng chờ gom PO (`purchasing.pom_orderbysaleorder` / `pom_orderbysaleorderdetail`) để **phân loại 4 trường hợp** (tương ứng Step1–Step4 trong Job4):
+    - **(Step1 → `NO_DATA_INIT_CREATE_PO`)**: SO **không tồn tại** trong bảng InitDataCreatePO — lỗi luồng dữ liệu từ CRM/SOM xuống Procurement.
+    - **(Step2 → `SAME_PRODUCT_SELLER_PROC_NO_PO`)**: SO có tồn tại data InitDataCreatePO, **khớp** dữ liệu chi tiết sản phẩm, nhưng **`orderid = null`** — chưa được gom tạo PO do vi phạm điều kiện (thiếu/sai khai báo ở Procurement).
+    - **(Step3 → `NOT_SAME_PRODUCT_SELLER_PROC_NO_PO`)**: SO có tồn tại data InitDataCreatePO, **không khớp** dữ liệu chi tiết sản phẩm, và **`orderid = null`** — lệch dữ liệu, chưa tạo PO.
+    - **(Step4 → `NOT_SAME_PRODUCT_SELLER_PROC_HAVE_PO`)**: SO có tồn tại data InitDataCreatePO, **không khớp** dữ liệu chi tiết sản phẩm, nhưng **`orderid != null`** — lệch dữ liệu, PO đã được tạo (rủi ro tài chính cao hơn).
+  - **Double-check data completeness**: so sánh cặp `[Mã SP + Số lượng]` giữa chi tiết SO tại Seller (lấy làm chuẩn) và chi tiết InitDataCreatePO tại Procurement — áp dụng cho cả Step3 (chưa tạo PO) và Step4 (đã tạo PO), trả về các dòng lệch kèm thông tin `orderid` để phân biệt loại cảnh báo.
+  - So khớp các SO đã có phiếu nhập hóa đơn (IV) tại Procurement với cờ `IsOutProduct` bên ERP — nếu `IsOutProduct = false` thì đơn đã nhập hóa đơn nhưng **chưa xuất hàng**.
+  - **(Job6 → `PACKED_NOT_HANDOVER`)**: lấy danh sách SO có `SOStatus = 3` (Đã đóng gói) trong **7 ngày gần nhất** (từ hôm qua trở về trước) nhưng **chưa** có `SOStatus = 4` (Đã bàn giao) và **chưa** có `SOStatus = 9` (Khách hủy đơn). Khác Job4–5 (xuất phát từ SO đã bàn giao), Job6 xuất phát từ SO **đang treo ở trạng thái Đã đóng gói**, chỉ đọc schema `seller`, không cần cross-check Procurement/ERP. Nghiệp vụ: nhiều Seller đã giao hàng cho GHTK ngoài thực tế nhưng không bàn giao (hoặc bàn giao thiếu) trên hệ thống → SO bị treo, không lên được PO, hàng khó kiểm soát. Nhắc lại **hàng ngày** cho đến khi SO được bàn giao/hủy hoặc quá cửa sổ 7 ngày (tối đa 7 lần notify liên tục).
+
+> Ghi chú: job "Gom SO tạo PO" (chạy 3 mốc 12h/16h/23h — theo US-07 tại `2. User_Stories_SellerCenter_MWG_Format.xlsx`) và job "Quét cảnh báo Notification" (chạy 7h sáng) là **hai job khác nhau**: job đầu tạo PO, job sau chỉ đọc lại kết quả để phát hiện các trường hợp gom PO bị lỗi/thiếu.
+
+> Ghi chú chung: ngoài các field riêng theo từng nghiệp vụ ở trên, mọi case đều cần thu thập thêm `BusinessSellerID` và `SellerStore` (nếu có) để phục vụ phân quyền hiển thị ở Bước 4 (đặc biệt cho View Seller ở Phase 2).
+
+#### Bước 2: Xử lý Logic & Đánh giá điều kiện (Condition Evaluation)
+
+#### 2.0. Luồng xử lý tổng quát (áp dụng cho mọi NotificationKey)
+
+Notification Service nhận input từ Bước 1 và thực hiện tuần tự các bước sau:
+
+```JavaScript
+[INPUT từ Bước 1]
+      ↓
+  [1] VALIDATE điều kiện nghiệp vụ theo NotificationKey
+      → PASS: tiếp tục bước [2]
+      → FAIL: bỏ qua, không tạo thông báo
+      ↓
+  [2] ENRICH DATA: query thêm thông tin liên đới
+      (Tên NCC rút gọn ← sm_businessseller.businesssellername)
+      (BusinessSellerID ← sm_account_seller → sm_businessseller)
+      → Nếu không tìm thấy NCC: ghi log WARNING, vẫn tạo thông báo với placeholder "[N/A]"
+      ↓
+  [3] DEDUP CHECK: kiểm tra thông báo trùng lặp
+      → Chi tiết dedup rule theo từng Key ở mục 2.2
+      ↓
+  [4] MAP TEMPLATE: render nội dung text theo NotificationKey
+      ↓
+  [OUTPUT → Bước 3: Insert vào bảng Notifications]
+```
+
+> **Enrich query chung** — dùng để lấy `businesssellername` từ `saleorderid`:
+>
+> ```sql
+> -- Lấy tên NCC rút gọn từ saleorderid (qua username người tạo SO)
+> SELECT bs.businesssellerid, bs.businesssellername
+> FROM seller.sm_account_seller acc
+> JOIN seller.sm_businessseller bs ON bs.businesssellerid = acc.businesssellerid
+> WHERE acc.username = :createduser  -- createduser lấy từ record SOStatus
+>   AND acc.isdeleted = false
+>   AND bs.isdeleted = false
+> LIMIT 1;
+> ```
+>
+> ```
+> *Lưu ý 1:* `createduser` ở `sm_saleorder_sostatus` là username người thao tác — dùng để tra ngược ra `businesssellerid`. Nếu không tra được (VD: user Admin MWG tạo), fallback lấy `businesssellerid` từ bất kỳ account nào đã thao tác trên SO đó trước đó.
+>
+> *Lưu ý 2 (Logic xử lý `{businesssellername rút gọn}`):* Trong các thông báo mẫu (VD: `[Sai][Dầu khí]`), tiền tố là tên rút gọn của Nhà bán. Logic xử lý như sau:
+> - Nếu bảng `sm_businessseller` đã có sẵn cột tên viết tắt (VD: `shortname`), hệ thống sẽ map thẳng dữ liệu từ cột này.
+> - Nếu chỉ có cột `businesssellername` chứa tên pháp nhân đầy đủ (VD: "Công ty Cổ phần Dầu khí ABC"), Backend Notification Service sẽ phải implement một hàm xử lý chuỗi (String Manipulation) để xóa bỏ các tiền tố pháp lý thông dụng (`Công ty CP`, `Công ty TNHH`, `TNHH MTV`, `CTCP`...) trước khi đưa vào hàm Replace Template, đảm bảo thông báo hiển thị ngắn gọn nhất trên UI.
+> ```
+
+---
+
+#### 2.1. Bảng điều kiện Validate & Enrich theo từng NotificationKey
+
+---
+
+##### **[Event1] `NOT_ENOUGH_STOCK` — SO không đủ tồn kho**
+
+| Thuộc tính                          | Chi tiết                                                                                                                                                                                                                   |
+| :------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trigger**                     | DB trigger: sau khi INSERT record vào`seller.sm_saleorder_sostatus` với `saleorderstatusid = 8`                                                                                                                       |
+| **Input**                       | `saleorderid`, `saleorderstatusid = 8`, `createddate`, `createduser`                                                                                                                                                |
+| **Điều kiện PASS**           | `saleorderstatusid = 8` — không cần điều kiện phụ                                                                                                                                                                  |
+| **Điều kiện FAIL / bỏ qua** | Record bị`isdeleted = true`                                                                                                                                                                                              |
+| **Enrich query**                | Query`businesssellername` theo `createduser` (xem query chung ở mục 2.0)                                                                                                                                              |
+| **Dedup rule**                  | Mỗi`saleorderid` chỉ gửi 1 lần cho Key này. Kiểm tra: `SELECT 1 FROM Notifications WHERE notificationkey = 'NOT_ENOUGH_STOCK' AND refid = :saleorderid AND isdeleted = false` → nếu có kết quả thì bỏ qua. |
+| **Template output**             | `[Ngoại lệ][{businesssellername rút gọn}]` `{saleorderid}` không đủ tồn kho                                                                                                                                     |
+
+**[SQL mô tả logic]**
+
+```sql
+-- Query validate Event1
+SELECT s.saleorderid, s.saleorderstatusid, s.createddate, s.createduser
+FROM seller.sm_saleorder_sostatus s
+WHERE s.saleordersostatusid = :new_record_id   -- ID vừa insert (từ trigger)
+  AND s.saleorderstatusid = 8
+  AND s.isdeleted = false;
+```
+
+**[SQL ví dụ]** *(Từ requirement)*
+
+```sql
+---Event1--Insert SOStatus = 8-Không đủ tồn kho
+select 
+   b.businesssellerid, c.businesssellername, a.*
+from seller.sm_saleorder_sostatus a 
+    left join seller.sm_account_seller b on a.createduser=b.username
+    left join seller.sm_businessseller c on c.businesssellerid=b.businesssellerid
+where
+    a.saleorderstatusid=8
+    and a.createddate >= '15-Jul-2026'
+    and a.createddate <  '24-Jul-2026'
+order by a.createddate desc;
+
+---count số lượng SO theo từng trạng thái  --để xem số lượng notification sẽ được notify
+select 
+    date(a.createddate),a.saleorderstatusid, count(DISTINCT a.saleorderid)
+from seller.sm_saleorder_sostatus a 
+    join masterdata.sm_saleorderstatus b on a.saleorderstatusid = b.saleorderstatusid
+where 
+        a.saleorderstatusid = 8
+        and a.createddate >= '01-Jul-2026'
+group by date(a.createddate), a.saleorderstatusid
+order by date(a.createddate) desc
+```
+
+---
+
+##### **[Event2] `CANCEL_SO_HANDOVER` — SO đã bàn giao nhưng bị khách hủy**
+
+| Thuộc tính                          | Chi tiết                                                                                                                                                 |
+| :------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trigger**                     | DB trigger: sau khi INSERT record vào`seller.sm_saleorder_sostatus` với `saleorderstatusid = 9`                                                     |
+| **Input**                       | `saleorderid`, `saleorderstatusid = 9`, `createddate`, `createduser`                                                                              |
+| **Điều kiện PASS**           | `saleorderstatusid = 9` **VÀ** tồn tại ít nhất 1 record cùng `saleorderid` có `saleorderstatusid = 4` (Đã bàn giao) trong lịch sử |
+| **Điều kiện FAIL / bỏ qua** | Không tìm thấy record`saleorderstatusid = 4` → đây là hủy bình thường, không cảnh báo                                                     |
+| **Enrich query**                | Query`businesssellername` theo `createduser` (xem query chung ở mục 2.0)                                                                            |
+| **Dedup rule**                  | Mỗi`saleorderid` chỉ gửi 1 lần cho Key này.                                                                                                        |
+| **Template output**             | `[Sai][{businesssellername rút gọn}]` `{saleorderid}` đã bàn giao, nhưng đã bị hủy                                                          |
+
+**[SQL mô tả logic]**
+
+```sql
+-- [Bước 1 - Trigger] Bắt record status = 9 vừa insert để lấy saleorderid làm input
+SELECT s.saleorderid, s.saleorderstatusid, s.createddate, s.createduser
+FROM seller.sm_saleorder_sostatus s
+WHERE s.saleordersostatusid = :new_record_id   -- ID vừa insert (từ DB trigger)
+  AND s.saleorderstatusid = 9
+  AND s.isdeleted = false;
+-- Lấy được saleorderid → chuyển sang bước validate bên dưới
+```
+
+```sql
+-- [Bước 2 - Validate] Kiểm tra SO đã từng ở trạng thái "Đã bàn giao" (status = 4)
+SELECT COUNT(1) AS had_handover
+FROM seller.sm_saleorder_sostatus
+WHERE saleorderid = :saleorderid    -- saleorderid lấy từ Bước 1
+  AND saleorderstatusid = 4
+  AND isdeleted = false;
+-- Kết quả > 0 → PASS → phát cảnh báo CANCEL_SO_HANDOVER
+-- Kết quả = 0 → FAIL → bỏ qua (hủy bình thường, không cần cảnh báo)
+```
+
+**[SQL ví dụ]** *(Từ requirement)*
+
+```sql
+---Event2---Insert SOStatus = 9-hủy + 4-Đã bàn giao
+select 
+   b.businesssellerid, c.businesssellername, a.*
+from seller.sm_saleorder_sostatus a 
+    left join seller.sm_account_seller b on a.createduser=b.username    
+    left join seller.sm_businessseller c on c.businesssellerid=b.businesssellerid   
+where 
+    a.saleorderid in (
+        SELECT d.saleorderid
+        FROM seller.sm_saleorder_sostatus d
+        WHERE d.saleorderstatusid IN (2,4, 9)
+            and d.createddate >= '01-Jul-2026'
+            and d.createddate <  '01-Aug-2026'
+        GROUP BY d.saleorderid
+        HAVING COUNT(DISTINCT d.saleorderstatusid) = 3
+        )
+    and a.saleorderstatusid IN (2)
+order by  a.createddate desc
+```
+
+---
+
+##### **[Event3] `CANCEL_BILL_TRANS` — Vận đơn GHTK bị hủy, SO chưa hủy**
+
+| Thuộc tính                          | Chi tiết                                                                                                                                         |
+| :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Trigger**                     | Webhook từ hệ thống Logistic (GHTK) gửi event`IsDelete = 1` kèm mã vận đơn                                                             |
+| **Input**                       | `trackingcode` (mã vận đơn GHTK), tra ngược ra `saleorderid`                                                                            |
+| **Điều kiện PASS**           | SO liên kết có`saleorderstatusid = 3` (Đã đóng gói) **VÀ** KHÔNG tồn tại record `saleorderstatusid = 9` (Khách hủy đơn) |
+| **Điều kiện FAIL / bỏ qua** | SO đã hủy (`saleorderstatusid = 9` tồn tại) → hủy vận đơn là đúng quy trình, không cảnh báo                                    |
+| **Enrich query**                | Query`businesssellername` theo `createduser` của record status=3                                                                             |
+| **Dedup rule**                  | Mỗi`saleorderid` chỉ gửi 1 lần cho Key này.                                                                                                |
+| **Template output**             | `[Ngoại lệ][{businesssellername rút gọn}]` Vận đơn của `{saleorderid}` đã bị hủy                                                  |
+
+**[SQL mô tả logic]**
+
+```sql
+-- Query validate Event3: kiểm tra SO đang đóng gói và chưa hủy
+SELECT
+    MAX(CASE WHEN saleorderstatusid = 3 THEN 1 ELSE 0 END) AS is_packed,
+    MAX(CASE WHEN saleorderstatusid = 9 THEN 1 ELSE 0 END) AS is_cancelled
+FROM seller.sm_saleorder_sostatus
+WHERE saleorderid = :saleorderid
+  AND isdeleted = false;
+-- PASS khi: is_packed = 1 AND is_cancelled = 0
+```
+
+*(Chưa có SQL ví dụ cho mục này trong file Requirement gốc)*
+
+---
+
+##### **[Job4 + Job5 — Tổng quan] Cronjob 7h sáng — Query lọc chung đầu vào**
+
+Cronjob 7h sáng của cả **Job4 (4 Steps)** và **Job5** đều dùng chung **1 query đầu vào** từ schema `seller` — thực hiện theo **2 bước tuần tự**:
+
+```
+[Bước 0 — schema seller]
+  Lấy danh sách SO: SOStatus=4, createddate >= NOW()-7 ngày,
+  loại trừ SO có SOStatus=9 (đã hủy)
+      ↓ danh sách saleorderid đưa vào cả Job4 và Job5
+[Bước 1 — schema purchasing]
+  Job4 / Step1: check saleorderid NOT EXISTS trong pom_orderbysaleorder
+               → Key: NO_DATA_INIT_CREATE_PO
+  Job4 / Step2: check MAX(orderid) IS NULL  (có InitCreatePO, data khớp, chưa tạo PO)
+               → Key: SAME_PRODUCT_SELLER_PROC_NO_PO
+  Job4 / Step3: check MAX(orderid) IS NULL  + data lệch giữa Seller & Procurement
+               → Key: NOT_SAME_PRODUCT_SELLER_PROC_NO_PO
+  Job4 / Step4: check MAX(orderid) IS NOT NULL + data lệch giữa Seller & Procurement
+               → Key: NOT_SAME_PRODUCT_SELLER_PROC_HAVE_PO
+  Job5:         check SO có IV nhưng chưa có OV (check tiếp ở bảng purchasing + ERP)
+               → Key: HAD_IV_NONE_OV
+```
+
+> **Lưu ý:** Một SO có thể rơi vào **nhiều Step cùng lúc** nếu thỏa mãn điều kiện (VD: vừa thiếu data Procurement ở Step1, vừa chưa xuất OV ở Job5).
+
+| Thuộc tính                      | Chi tiết                                                                                                                        |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| **Trigger**                 | Cronjob 7h sáng hàng ngày                                                                                                     |
+| **Phạm vi quét**          | SO có`SOStatus = 4` (Đã bàn giao), ngày bàn giao trong **7 ngày gần nhất** (`createddate >= NOW() - 7 ngày`) |
+| **Điều kiện loại trừ** | SO đã có`SOStatus = 9` (Khách hủy đơn) → bỏ qua toàn bộ                                                             |
+| **Output**                  | Danh sách`saleorderid` đủ điều kiện → nạp vào bộ nhớ tạm, lần lượt phân loại qua Job4 Step1→Step4 và Job5   |
+| **Dedup rule chung**        | Không dedup theo ngày — nếu SO vẫn vi phạm thì notify lại mỗi ngày cho đến khi được xử lý                       |
+
+**[SQL mô tả logic — Bước 0]**
+
+```sql
+-- Bước 0: Lấy danh sách SO đủ điều kiện từ schema seller
+-- Áp dụng chung cho toàn bộ Job4 (Step1→Step4) và Job5
+SELECT DISTINCT a.saleorderid, a.createddate AS handover_date, a.createduser
+FROM seller.sm_saleorder_sostatus a
+WHERE a.saleorderstatusid = 4                        -- Đã bàn giao
+  AND a.isdeleted = false
+  AND a.createddate >= NOW() - INTERVAL '7 days'     -- Cửa sổ 7 ngày gần nhất
+  AND a.saleorderid NOT IN (
+      SELECT saleorderid
+      FROM seller.sm_saleorder_sostatus
+      WHERE saleorderstatusid = 9                    -- Loại trừ SO đã hủy
+        AND isdeleted = false
+  )
+ORDER BY a.createddate DESC;
+-- Kết quả: danh sách saleorderid → đưa vào Job4 Step1→Step4 và Job5 bên dưới
+```
+
+**[SQL ví dụ]** *(Từ requirement)*
+
+```sql
+--Job4---không có kết quả PO---List SOStatus = 4-Đã bàn giao + nhưng không có 9-hủy
+select *
+from seller.sm_saleorder_sostatus a
+where a.saleorderstatusid=4
+    and a.createddate >= '27-Jul-2026'
+    and a.createddate <  '28-Jul-2026'
+    and a.saleorderid not in (
+        select a.saleorderid
+        from seller.sm_saleorder_sostatus a
+        where a.saleorderstatusid=9
+            and a.createddate >= '27-Jul-2026'  --cùng range time với status4 ở trên
+            and a.createddate <  '28-Jul-2026'
+    )
+order by  a.createddate desc;
+---> Bước 2. đem list SO ở đây check ở dv procument.
+```
+
+---
+
+##### **[Job4 — Step1] `NO_DATA_INIT_CREATE_PO` — SO bàn giao, không có data InitCreatePO**
+
+| Thuộc tính                | Chi tiết                                                                                                                                                                                   |
+| :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Trigger**           | Cronjob 7h sáng, sau khi lấy danh sách SO đủ điều kiện từ bước lọc chung (xem bên dưới)                                                                                      |
+| **Điều kiện PASS** | SO**không tồn tại** trong `purchasing.pom_orderbysaleorder` (`saleorderid` không có row nào, hoặc `isdeleted = true` toàn bộ)                                          |
+| **Enrich query**      | Query`businesssellername` theo `createduser` của record status=4                                                                                                                       |
+| **Dedup rule**        | Cơ chế quét 7 ngày: mỗi ngày đều gửi lại nếu SO vẫn chưa được xử lý.**Không dedup theo ngày** — mục đích là nhắc lại hàng ngày để thúc đẩy xử lý. |
+| **Template output**   | `[Sai][Chưa tạo PO][{businesssellername rút gọn}]` `{saleorderid}` không có dữ liệu gom tạo đơn PO từ CRM/SOM đẩy về                                                     |
+
+**[SQL mô tả logic]**
+
+```sql
+-- [Bước 0 - Lấy danh sách SO đủ điều kiện từ schema seller]
+-- SO đã bàn giao (SOStatus = 4) trong 7 ngày gần nhất và chưa hủy
+SELECT DISTINCT a.saleorderid, a.createddate AS handover_date, a.createduser
+FROM seller.sm_saleorder_sostatus a
+WHERE a.saleorderstatusid = 4
+  AND a.isdeleted = false
+  AND a.createddate >= NOW() - INTERVAL '7 days'       -- Cửa sổ 7 ngày
+  AND a.saleorderid NOT IN (
+      SELECT saleorderid
+      FROM seller.sm_saleorder_sostatus
+      WHERE saleorderstatusid = 9                       -- Loại trừ SO đã hủy
+        AND isdeleted = false
+  );
+-- Kết quả: danh sách saleorderid đưa vào Bước 1 bên dưới
+
+-- [Bước 1 - Kiểm tra tại schema purchasing]
+-- Query validate Job4 Step1: Kiểm tra SO không tồn tại trong InitCreatePO
+SELECT 1 
+FROM purchasing.pom_orderbysaleorder
+WHERE saleorderid = :saleorderid    -- từng saleorderid từ Bước 0
+  AND isdeleted = false;
+-- Kết quả = 0 (không tồn tại) → PASS → phát cảnh báo NO_DATA_INIT_CREATE_PO
+```
+
+**[SQL ví dụ]** *(Từ requirement)*
+
+```sql
+--Job4---không có kết quả PO---List SOStatus = 4-Đã bàn giao + nhưng không có 9-hủy
+select *
+from seller.sm_saleorder_sostatus a
+where a.saleorderstatusid=4
+    and a.createddate >= '27-Jul-2026'
+    and a.createddate <  '28-Jul-2026'
+    and a.saleorderid not in (
+        select a.saleorderid
+        from seller.sm_saleorder_sostatus a
+        where a.saleorderstatusid=9
+            and a.createddate >= '27-Jul-2026'  --cùng range time với status4 ở trên
+            and a.createddate <  '28-Jul-2026'
+    )
+order by  a.createddate desc;
+---> Bước 2. đem list SO ở đây check ở dv procument.
+
+--4--Set Is NULL cột orderid --->>>> SẢN PHẨM TRONG ĐƠN HÀNG CHỜ GOM ĐƠN TẠO PO---xem theo SO
+-----cột orderid trong bảng detail có dùng
+select po1.saleorderid,po1.createddate, po.orderid,  po.updateddate,
+ po.*  
+from purchasing.pom_orderbysaleorderdetail po 
+    join purchasing.pom_orderbysaleorder po1 on po1.orderbysaleorderid=po.orderbysaleorderid 
+where 
+    po1.saleorderid in  ('31579SO260700297399','00014SO26061453048','31579SO26070029739')
+    and po1.isdeleted = false;
+
+---SO không tồn tại trong bảng này  => chưa được xử lý gom tạo PO. 31579SO260700297399
+```
+
+---
+
+##### **[Job4 — Step2] `SAME_PRODUCT_SELLER_PROC_NO_PO` — Có data InitCreatePO, khớp detail, nhưng chưa tạo PO**
+
+| Thuộc tính                             | Chi tiết                                                                                                                                                                                                                           |
+| :--------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trigger**                        | Cronjob 7h sáng                                                                                                                                                                                                                    |
+| **Điều kiện PASS**              | SO**tồn tại** trong `pom_orderbysaleorder` **VÀ** dữ liệu detail sản phẩm **khớp** với `sm_saleorderdetail_info` **VÀ** tất cả detail **chưa gom PO** (`MAX(orderid) IS NULL`)     |
+| **Logic kiểm tra "khớp detail"** | So sánh tập hợp`(productid, quantity)` của SO tại `seller.sm_saleorderdetail_info` với tập hợp tương ứng tại `purchasing.pom_orderbysaleorderdetail` — hai tập phải bằng nhau (không có dòng thừa/thiếu) |
+| **Enrich query**                   | Query`businesssellername` theo `createduser` của record status=4                                                                                                                                                               |
+| **Dedup rule**                     | Không dedup — nhắc lại hàng ngày.                                                                                                                                                                                             |
+| **Template output**                | `[Sai][Chưa tạo PO][{businesssellername rút gọn}]` `{saleorderid}` đã có dữ liệu CRM/SOM đẩy về, nhưng chưa tạo PO thành công (thiếu/sai khai báo ở Procurement)                                            |
+
+**[SQL mô tả logic]**
+
+```sql
+-- [Bước 0 - Lấy danh sách SO đủ điều kiện từ schema seller]
+-- SO đã bàn giao (SOStatus = 4) trong 7 ngày gần nhất và chưa hủy
+SELECT DISTINCT a.saleorderid, a.createddate AS handover_date, a.createduser
+FROM seller.sm_saleorder_sostatus a
+WHERE a.saleorderstatusid = 4
+  AND a.isdeleted = false
+  AND a.createddate >= NOW() - INTERVAL '7 days'
+  AND a.saleorderid NOT IN (
+      SELECT saleorderid
+      FROM seller.sm_saleorder_sostatus
+      WHERE saleorderstatusid = 9
+        AND isdeleted = false
+  );
+-- Kết quả: danh sách saleorderid đưa vào Bước 1 bên dưới
+
+-- [Bước 1 - Kiểm tra tại schema purchasing]
+-- Query validate Job4 Step2: Kiểm tra SO có InitCreatePO nhưng chưa tạo PO
+SELECT MAX(d.orderid) AS max_orderid
+FROM purchasing.pom_orderbysaleorder m
+LEFT JOIN purchasing.pom_orderbysaleorderdetail d 
+  ON m.orderbysaleorderid = d.orderbysaleorderid AND d.isdeleted = false
+WHERE m.saleorderid = :saleorderid    -- từng saleorderid từ Bước 0
+  AND m.isdeleted = false;
+-- Kết quả max_orderid IS NULL VÀ Data completeness khớp (check qua query 2.3) → PASS → phát cảnh báo SAME_PRODUCT_SELLER_PROC_NO_PO
+```
+
+**[SQL ví dụ]** *(Từ requirement)*
+
+```sql
+--4--Set Is NULL cột orderid --->>>> SẢN PHẨM TRONG ĐƠN HÀNG CHỜ GOM ĐƠN TẠO PO---xem theo SO
+-----cột orderid trong bảng detail có dùng
+select po1.saleorderid,po1.createddate, po.orderid,  po.updateddate,
+ po.*  
+from purchasing.pom_orderbysaleorderdetail po 
+    join purchasing.pom_orderbysaleorder po1 on po1.orderbysaleorderid=po.orderbysaleorderid 
+where 
+    po1.saleorderid in  ('31579SO260700297399','00014SO26061453048','31579SO26070029739')
+    and po1.isdeleted = false;
+
+---SO có tồn tại, nhưng:
+---po.orderid = null => chưa được xử lý gom tạo PO. 00014SO26061453048
+```
+
+---
+
+##### **[Job4 — Step3] `NOT_SAME_PRODUCT_SELLER_PROC_NO_PO` — Lệch detail, chưa tạo PO**
+
+| Thuộc tính                | Chi tiết                                                                                                                                                                                                                |
+| :-------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trigger**           | Cronjob 7h sáng                                                                                                                                                                                                         |
+| **Điều kiện PASS** | SO tồn tại trong`pom_orderbysaleorder` **VÀ** dữ liệu detail **KHÔNG khớp** (có dòng lệch) **VÀ** tất cả detail **chưa gom PO** (`MAX(orderid) IS NULL`)                       |
+| **Enrich query**      | Query`businesssellername`; lấy thêm danh sách `(productid, quantity)` lệch từ cả 2 phía để đưa vào nội dung thông báo                                                                                 |
+| **Dedup rule**        | Không dedup — nhắc lại hàng ngày.                                                                                                                                                                                  |
+| **Template output**   | `[Sai][Chưa tạo PO][{businesssellername rút gọn}]` `{saleorderid}` bị lệch dữ liệu trên SellerCenter và Procurement InitDataCreatePO. Seller: `[SP:xxx-SL:n]`; Proc: `[SP:xxx-SL:n]` hoặc `[BLANK]` |
+
+**[SQL mô tả logic]**
+
+```sql
+-- [Bước 0 - Lấy danh sách SO đủ điều kiện từ schema seller]
+SELECT DISTINCT a.saleorderid, a.createddate AS handover_date, a.createduser
+FROM seller.sm_saleorder_sostatus a
+WHERE a.saleorderstatusid = 4
+  AND a.isdeleted = false
+  AND a.createddate >= NOW() - INTERVAL '7 days'
+  AND a.saleorderid NOT IN (
+      SELECT saleorderid
+      FROM seller.sm_saleorder_sostatus
+      WHERE saleorderstatusid = 9
+        AND isdeleted = false
+  );
+-- Kết quả: danh sách saleorderid đưa vào Bước 1 bên dưới
+
+-- [Bước 1 - Kiểm tra tại schema purchasing]
+-- Query validate Job4 Step3: Kiểm tra SO bị lệch detail VÀ chưa tạo PO
+SELECT MAX(d.orderid) AS max_orderid
+FROM purchasing.pom_orderbysaleorder m
+LEFT JOIN purchasing.pom_orderbysaleorderdetail d 
+  ON m.orderbysaleorderid = d.orderbysaleorderid AND d.isdeleted = false
+WHERE m.saleorderid = :saleorderid    -- từng saleorderid từ Bước 0
+  AND m.isdeleted = false;
+-- Kết quả max_orderid IS NULL VÀ Data completeness lệch (check qua query 2.3) → PASS → phát cảnh báo NOT_SAME_PRODUCT_SELLER_PROC_NO_PO
+```
+
+**[SQL ví dụ]** *(Từ requirement)*
+
+```sql
+2 vế so sánh ở 2 hệ:
+1. Hệ Procument:
+---4. Double check sự đầy đủ của dữ liệu detail sản phẩm (Data completeness)
+--4--Set Is NULL cột orderid --->>>> SẢN PHẨM TRONG ĐƠN HÀNG CHỜ GOM ĐƠN TẠO PO---xem theo SO
+-----cột orderid trong bảng detail có dùng
+select po1.saleorderid,po1.createddate, po.orderid,  po.updateddate,
+ po.*  
+from purchasing.pom_orderbysaleorderdetail po 
+    join purchasing.pom_orderbysaleorder po1 on po1.orderbysaleorderid=po.orderbysaleorderid 
+where 
+    po1.saleorderid in  ('00014SO26061453048','00006SO26072828464','00006SO26074029613')
+    and po1.isdeleted = false;
+
+2. Hệ Seller:
+--Job4--Buowcs4--Check data compless
+select *
+from seller.sm_saleorderdetail_info 
+where saleorderid in ('00014SO26061453048','00006SO26072828464','00006SO26074029613');
+
+Kết quả: Ly dùng excel để so sánh.
+---3 đơn bị lệch info sản phẩm: ('00014SO26061453048','00006SO26072828464','00006SO26074029613')
+---00006SO26072828464: 2 sp, insert 1, thiếu 1 
+---00014SO26061453048: trong SO là sp 0163346000778, nhưng trong procument là sp khác 0163345001027   =====?
+---00006SO26074029613: bán 2 sp: 4844159000183, 4844140000193; nhưng trong procument chỉ 1, thiếu 1: 4844159000183  =====?
+```
+
+---
+
+##### **[Job4 — Step4] `NOT_SAME_PRODUCT_SELLER_PROC_HAVE_PO` — Lệch detail, đã tạo PO**
+
+| Thuộc tính                | Chi tiết                                                                                                                                                                                             |
+| :-------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trigger**           | Cronjob 7h sáng                                                                                                                                                                                      |
+| **Điều kiện PASS** | SO tồn tại trong`pom_orderbysaleorder` **VÀ** dữ liệu detail **KHÔNG khớp** (có dòng lệch) **VÀ** tất cả detail **đã gom PO** (`MAX(orderid) IS NOT NULL`) |
+| **Enrich query**      | Query`businesssellername`; lấy `orderid` (Mã PO) từ `pom_orderbysaleorderdetail`; lấy danh sách detail lệch từ cả 2 phía                                                               |
+| **Dedup rule**        | Không dedup — nhắc lại hàng ngày. Mức độ ưu tiên cao hơn Step3 vì PO đã được tạo.                                                                                                  |
+| **Template output**   | `[Sai][Đã tạo PO][{businesssellername rút gọn}]` `{orderid}-{saleorderid}` bị lệch dữ liệu. Seller: `[SP:xxx-SL:n]`; Proc: `[SP:xxx-SL:n]`                                           |
+
+**[SQL mô tả logic]**
+
+```sql
+-- [Bước 0 - Lấy danh sách SO đủ điều kiện từ schema seller]
+SELECT DISTINCT a.saleorderid, a.createddate AS handover_date, a.createduser
+FROM seller.sm_saleorder_sostatus a
+WHERE a.saleorderstatusid = 4
+  AND a.isdeleted = false
+  AND a.createddate >= NOW() - INTERVAL '7 days'
+  AND a.saleorderid NOT IN (
+      SELECT saleorderid
+      FROM seller.sm_saleorder_sostatus
+      WHERE saleorderstatusid = 9
+        AND isdeleted = false
+  );
+-- Kết quả: danh sách saleorderid đưa vào Bước 1 bên dưới
+
+-- [Bước 1 - Kiểm tra tại schema purchasing]
+-- Query validate Job4 Step4: Kiểm tra SO bị lệch detail VÀ đã tạo PO
+SELECT MAX(d.orderid) AS max_orderid
+FROM purchasing.pom_orderbysaleorder m
+LEFT JOIN purchasing.pom_orderbysaleorderdetail d 
+  ON m.orderbysaleorderid = d.orderbysaleorderid AND d.isdeleted = false
+WHERE m.saleorderid = :saleorderid    -- từng saleorderid từ Bước 0
+  AND m.isdeleted = false;
+-- Kết quả max_orderid IS NOT NULL VÀ Data completeness lệch (check qua query 2.3) → PASS → phát cảnh báo NOT_SAME_PRODUCT_SELLER_PROC_HAVE_PO
+```
+
+**[SQL ví dụ]** *(Từ requirement)*
+
+```sql
+---po.orderid # null => đã được xử lý gom tạo PO. 31579SO26070029739
+(Tham khảo SQL ví dụ ở Step3 để so sánh detail giữa hệ Seller và Procurement)
+```
+
+---
+
+##### **[Job5] `HAD_IV_NONE_OV` — Đã nhập hóa đơn IV, ERP chưa xuất hàng OV**
+
+| Thuộc tính                | Chi tiết                                                                                                                                                                                                          |
+| :-------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trigger**           | Cronjob 7h sáng                                                                                                                                                                                                   |
+| **Điều kiện PASS** | SO tồn tại trong`pom_order_saleorder` (đã có PO) **VÀ** tồn tại trong `pom_order_inputvoucher` (đã có IV) **VÀ** KHÔNG tồn tại trong `pom_saleorder_outputvoucher` (chưa có OV) |
+| **Enrich query**      | Query`businesssellername`; lấy `inputvoucherid` và `createddate` của IV từ `pom_order_inputvoucher` để hiển thị trong thông báo                                                                  |
+| **Dedup rule**        | Không dedup — nhắc lại hàng ngày cho đến khi OV được tạo.                                                                                                                                              |
+| **Template output**   | `[Chưa xuất hàng được][{Tên rút gọn NCC}]` `{saleorderid}` chưa được xuất hàng. `{orderid}` đã được nhập hóa đơn vào lúc `{createddate của IV}`                                 |
+
+**[SQL mô tả logic]**
+
+```sql
+-- Query validate Job5: SO có IV nhưng chưa có OV
+SELECT
+    pos.saleorderid,
+    pos.orderid,
+    iv.inputvoucherid,
+    iv.createddate AS iv_createddate
+FROM purchasing.pom_order_saleorder pos
+JOIN purchasing.pom_order_inputvoucher iv
+    ON iv.orderid = pos.orderid
+    AND iv.isdeleted = false
+WHERE pos.saleorderid = :saleorderid
+  AND NOT EXISTS (
+      SELECT 1 FROM purchasing.pom_saleorder_outputvoucher ov
+      WHERE ov.saleorderid = pos.saleorderid
+        AND ov.isdeleted = false
+  );
+-- Có kết quả → PASS → phát cảnh báo HAD_IV_NONE_OV
+```
+
+**[SQL ví dụ]** *(Từ requirement)*
+
+```sql
+---Job5---1. SO Có tồn tại trong bảng SO-PO-IV, nhưng không tồn tại trong bảng SO-OV.
+select 
+    poiv.orderid, poiv.inputvoucherid ,poiv.createddate createddate_IV_NhapHoaDon,   sopo.saleorderid, soov.outputvoucherid
+from purchasing.pom_order_saleorder sopo 
+    join purchasing.pom_order_inputvoucher poiv on poiv.orderid=sopo.orderid  
+    left join purchasing.pom_saleorder_outputvoucher soov on soov.saleorderid=sopo.saleorderid
+where soov.saleorderid is null      --không tồn tại: có thể là chưa xuất; nếu xuất rồi thì không phải xuất từ sellercenter.
+order by poiv.createddate desc, sopo.orderid
+---> đem các sopo.saleorderid này đi gọi ERP check isoutput=false nữa mới notify
+```
+
+---
+
+##### **[Job6] `PACKED_NOT_HANDOVER` — SO đã đóng gói nhưng chưa bàn giao**
+
+> **Lưu ý:** Job6 chạy cùng thời điểm 7h sáng với Job4–5 nhưng **không dùng chung query Bước 0** của Job4–5 (Job4–5 lấy SO `SOStatus = 4`; Job6 lấy SO `SOStatus = 3` và loại trừ SO đã có `SOStatus = 4`). Hai nhóm này không giao nhau nên một SO không thể đồng thời rơi vào Job6 và Job4–5.
+
+| Thuộc tính                          | Chi tiết                                                                                                                                                                                                                                       |
+| :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bối cảnh nghiệp vụ**          | Nhiều Seller bàn giao hàng cho Đối tác vận chuyển (GHTK) ở thực tế nhưng không bàn giao trên hệ thống, hoặc bàn giao trên hệ thống ít hơn thực tế. Hệ quả: SO bị treo ở trạng thái "Đã đóng gói" và không lên được PO.                 |
+| **Trigger**                     | Cronjob 7h sáng hàng ngày (cùng thời điểm Job4–5)                                                                                                                                                                                         |
+| **Phạm vi quét**              | SO có `SOStatus = 3` (Đã đóng gói), ngày đóng gói trong **7 ngày gần nhất** (`CURRENT_DATE - 7 ngày` đến trước `CURRENT_DATE`, tức SO đóng gói từ hôm qua trở về trước)                                                         |
+| **Điều kiện PASS**           | SO có `SOStatus = 3` **VÀ** KHÔNG tồn tại `SOStatus = 4` (Đã bàn giao) **VÀ** KHÔNG tồn tại `SOStatus = 9` (Khách hủy đơn)                                                                                                 |
+| **Điều kiện FAIL / bỏ qua** | SO đã có `SOStatus = 4` (đã bàn giao trên hệ thống) hoặc `SOStatus = 9` (đã hủy) → không cảnh báo                                                                                                                                      |
+| **Enrich query**                | Query `businesssellername` theo `createduser` của record `SOStatus = 3` (xem query chung ở mục 2.0)                                                                                                                                       |
+| **Dedup rule**                  | Không dedup — nhắc lại hàng ngày cho đến khi SO được bàn giao/hủy. Do cửa sổ quét là 7 ngày kể từ ngày đóng gói, nếu Seller không xử lý thì notify liên tục tối đa 7 ngày rồi ngưng.                                              |
+| **Template output**             | `[Mất hàng][{businesssellername rút gọn}]` `{saleorderid}` chưa có dữ liệu bàn giao trên hệ thống. Hàng hóa có thể bị mất, khó kiểm soát.                                                                                            |
+| **Người xem**                  | View Admin MWG (nhân viên nội bộ ĐMX), lấy toàn bộ danh sách như các Job4–5. Không thay đổi cơ chế phân quyền/API ở Bước 4.                                                                                                      |
+
+**[SQL mô tả logic]**
+
+```sql
+-- Query validate Job6: SO đã đóng gói trong 7 ngày gần nhất, chưa bàn giao, chưa hủy
+SELECT DISTINCT a.saleorderid, a.createddate AS packed_date, a.createduser
+FROM seller.sm_saleorder_sostatus a
+WHERE a.saleorderstatusid = 3                              -- Đã đóng gói
+  AND a.isdeleted = false
+  AND a.createddate >= CURRENT_DATE - INTERVAL '7 days'    -- Cửa sổ 7 ngày
+  AND a.createddate <  CURRENT_DATE                        -- Đóng gói từ hôm qua trở về trước
+  AND NOT EXISTS (
+      SELECT 1
+      FROM seller.sm_saleorder_sostatus b
+      WHERE b.saleorderid = a.saleorderid
+        AND b.saleorderstatusid IN (4, 9)                  -- Đã bàn giao / Khách hủy đơn
+        AND b.isdeleted = false
+  )
+ORDER BY a.createddate DESC;
+-- Có kết quả → PASS → phát cảnh báo PACKED_NOT_HANDOVER
+```
+
+*(Chưa có SQL ví dụ cho mục này trong file Requirement gốc)*
+
+---
+
+#### 2.3. Query kiểm tra lệch dữ liệu detail (Double-check — dùng cho Step3 & Step4)
+
+```sql
+-- [A] Lấy detail sản phẩm theo SO từ SellerCenter (chuẩn)
+SELECT productid, SUM(quantity) AS qty_seller
+FROM seller.sm_saleorderdetail_info
+WHERE saleorderid = :saleorderid
+  AND isdeleted = false
+GROUP BY productid;
+
+-- [B] Lấy detail sản phẩm InitDataCreatePO từ Procurement
+SELECT d.productid, SUM(d.quantity) AS qty_proc, d.orderid
+FROM purchasing.pom_orderbysaleorder m
+JOIN purchasing.pom_orderbysaleorderdetail d
+    ON d.orderbysaleorderid = m.orderbysaleorderid
+    AND d.isdeleted = false
+WHERE m.saleorderid = :saleorderid
+  AND m.isdeleted = false
+GROUP BY d.productid, d.orderid;
+
+-- [C] So sánh A vs B:
+-- Dòng có trong A nhưng không có/lệch quantity ở B → lệch phía Seller
+-- Dòng có trong B nhưng không có/lệch quantity ở A → lệch phía Procurement
+-- orderid IS NULL → Step3 (NOT_SAME_..._NO_PO)
+-- orderid IS NOT NULL → Step4 (NOT_SAME_..._HAVE_PO)
+```
+
+---
+
+#### 2.4. Xử lý dữ liệu bất thường (Error Handling)
+
+| Tình huống                                         | Hành vi                                                                                                                                                               |
+| :--------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Không tra được`businesssellername`             | Dùng placeholder`[NCC không xác định]`, vẫn tạo thông báo, ghi log WARNING                                                                                  |
+| Query Enrich timeout / lỗi kết nối                | Retry tối đa 3 lần (interval 1s). Nếu vẫn lỗi: ghi log ERROR, bỏ qua thông báo lần này, đẩy SO vào hàng đợi xử lý lại ở lần chạy Job tiếp theo |
+| `saleorderid` không tìm thấy trong bảng status | Ghi log WARNING, bỏ qua — có thể do race condition giữa trigger và query                                                                                         |
+| Bảng Notifications insert thất bại                | Ghi log ERROR, retry 1 lần. Nếu vẫn lỗi: alert nội bộ cho team DevOps                                                                                            |
+
+#### Bước 3: Lưu trữ & Hàng đợi Thông báo (Notification Storage)
+
+Nghiệp vụ "Lưu trữ thông báo" được bóc tách thành **2 transaction độc lập**: Transaction từ hệ thống sinh ra thông báo, và Transaction từ người dùng tương tác (đọc) thông báo.
+
+Để đáp ứng việc nhiều Admin (hoặc Seller ở Phase 2) cùng có thể đọc và quản lý trạng thái Unread độc lập mà không ảnh hưởng nhau, ERD của Notification được thiết kế thành **3 bảng (chia làm 2 schema)**:
+
+**1. Schema: `masterdata` (Dữ liệu nền cấu hình Template)**
+
+**Table: `NotificationTemplate`**
+Lưu trữ cấu hình template tĩnh cho các loại cảnh báo.
+
+| Column Name           | PK/FK        | Mô tả                                                        |
+| :-------------------- | :----------- | :------------------------------------------------------------- |
+| `TemplateID`        | **PK** | ID tự tăng                                                   |
+| `NotificationKey`   |              | VD:`NOT_ENOUGH_STOCK`, `NO_DATA_INIT_CREATE_PO`            |
+| `Title`             |              | Tiêu đề mẫu                                                |
+| `ContentTemplate`   |              | Nội dung mẫu                                                 |
+| `SeverityLevelType` |              | Mức độ cảnh báo (Enum:`INFO`, `WARNING`, `SUCCESS`) |
+
+**2. Schema: `seller` (Dữ liệu vận hành Transaction)**
+
+**Table: `SystemNotification`**
+Transaction 1 — Khi Job/Event (ở Bước 2) xử lý xong, hệ thống đổ dữ liệu vào đây. 1 dòng = 1 thông báo được phát ra.
+
+| Column Name              | PK/FK        | Mô tả                                                                             |
+| :----------------------- | :----------- | :---------------------------------------------------------------------------------- |
+| `SystemNotificationID` | **PK** | ID tự tăng                                                                        |
+| `TemplateID`           | **FK** | FK tới`masterdata.NotificationTemplate`                                          |
+| `ReferenceID`          |              | Mã chứng từ tham chiếu (Mã SO, Mã PO...) giúp hệ thống dễ dàng scale-up. |
+| `BusinessSellerID`     |              | Mã nhà bán (hệ SellerCenter) để phục vụ việc lọc và phân quyền.        |
+| `SupplierID`           |              | Mã NCC tương ứng (hệ ERP) để phục vụ việc lọc và phân quyền.          |
+| `RenderedTitle`        |              | Nội dung tiêu đề đã được replace bằng dữ liệu thật.                    |
+| `RenderedContent`      |              | Nội dung text đã được replace bằng dữ liệu thật.                          |
+
+**Table: `SystemNotificationReadLog`**
+Transaction 2 — Lưu vết hành vi người dùng.
+
+| Column Name              | PK/FK        | Mô tả                                                             |
+| :----------------------- | :----------- | :------------------------------------------------------------------ |
+| `ReadLogID`            | **PK** | ID tự tăng                                                        |
+| `SystemNotificationID` | **FK** | FK tới`SystemNotification`                                       |
+| `Username`             |              | Tài khoản (LDAP của Admin / Account của Seller) đã click xem. |
+| `ReadDate`             |              | Thời điểm xem.                                                   |
+
+> *Cơ chế lấy Unread Count:* API lấy danh sách thông báo sẽ query `SystemNotification` kết hợp `LEFT JOIN` sang `SystemNotificationReadLog` (với điều kiện `Username` = currentUser). Nếu không có record tương ứng ở ReadLog tức là thông báo đó mang trạng thái `IsRead = false` với user đó.
+
+#### Bước 4: Truy xuất API & Tương tác Giao diện (Distribution & User Interaction)
+
+##### 4.1. Tổng quan
+
+- **Kiến trúc truy xuất:** cơ chế **Pull** (REST API Fetching). Phase này **không** dùng Push Realtime (WebSocket/SSE) — brief ghi rõ: *"Chưa cần push alert notify realtime, bằng web socket gì hết."*
+- **Hành vi load data:** mỗi khi user load trang hoặc F5 lại Seller Center, FE gọi `GET /api/notifications` để lấy danh sách thông báo mới nhất kèm Total Unread Count.
+- **Phân quyền hiển thị:**
+  - View Admin MWG: lấy toàn bộ danh sách.
+  - View Seller (Phase 2 — chưa làm ở phase 1): lọc theo `BusinessSellerID`, không thấy thông báo của nhà bán khác.
+- **Tương tác UI:**
+  - Icon chuông ở góc màn hình, kèm Badge đỏ hiển thị số lượng chưa đọc. **Lưu ý:** Số đếm (Count) trên Badge này chỉ tính tổng các thông báo chưa đọc **trong ngày hôm nay** (để tránh hiển thị số quá lớn như 99+ làm rối mắt user).
+  - Click icon chuông → Dropdown mở ra hiển thị preview danh sách thông báo. Danh sách này tuân thủ quy tắc:
+    - **Sắp xếp:** Theo ngày tạo (`createddate`) giảm dần (DESC) — thông báo mới nhất sẽ được hiển thị lên đầu.
+    - **Lazy load:** Load theo từng batch, mỗi batch **10 items**. Không phân biệt trạng thái chưa đọc hay đã đọc (hiển thị mix cả hai).
+  - Click vào 1 dòng thông báo → FE gọi `PUT /api/notifications/{id}/read` → cập nhật `IsRead = true` → Badge giảm số ngay lập tức trên UI.
+  - Khi F5 lại trang, số lượng & danh sách luôn lấy đúng theo trạng thái hiện tại từ API (không lệ thuộc cache client).
+- **Quy định dọn dẹp dữ liệu (Data Retention):**
+  - Toàn bộ dữ liệu trong hệ thống thông báo (`SystemNotification` và `SystemNotificationReadLog`) chỉ được lưu giữ trong vòng **6 tháng**.
+  - Sẽ có một Job chạy ngầm định kỳ để **DELETE** các dòng dữ liệu cũ hơn 6 tháng, giúp giảm tải dung lượng lưu trữ cho Database.
+
+##### 4.2. Thiết kế đặc tả API
+
+> **Ghi chú tham khảo:** Cấu trúc response được thiết kế dựa trên gợi ý từ hệ thống `mwg-trello-app-api` (module Hồ sơ QC) nhưng các field được chuẩn hóa theo đúng Data Model của hệ thống Seller Center.
+
+###### 4.2.1. Lấy danh sách thông báo (GET `/api/notifications`)
+
+- **Mục đích:** Kéo danh sách thông báo (phân trang lazy load) và tổng số lượng chưa đọc trong ngày để hiển thị trên icon Bell.
+- **Method:** `GET`
+- **Query Parameters:**
+  - `page` (int) - Trang hiện tại (mặc định: 1)
+  - `size` (int) - Số lượng item mỗi batch (mặc định: 10)
+- **Logic xử lý Phân trang (Pagination / Lazy load):**
+  - **Lần đầu mở chuông:** FE gọi API với `page=1&size=10`. Backend sử dụng `LIMIT 10 OFFSET 0` (tùy theo DB engine) để lấy 10 thông báo mới nhất sắp xếp theo ngày tạo giảm dần.
+  - **Cuộn chuột xuống đáy danh sách (Lazy load):** FE gọi API tăng biến `page` lên 1 (VD: `page=2&size=10`). Backend sử dụng `LIMIT 10 OFFSET 10` để lấy 10 thông báo kế tiếp.
+  - **Điều kiện dừng tải:** Dựa vào tham số `totalRecords` trả về trong Response. Nếu số trang (`page`) x `size` >= `totalRecords`, FE ngừng gọi API lazy load vì đã hết dữ liệu.
+- **Response Model (JSON):**
+  ```json
+  {
+    "code": 200,
+    "message": "Success",
+    "data": {
+      "unreadCountToday": 5,          // Số lượng thông báo chưa đọc sinh ra trong ngày hôm nay
+      "totalRecords": 150,            // Tổng số lượng thông báo trong DB của user
+      "items": [
+        {
+          "systemNotificationId": 12345,
+          "templateKey": "CANCEL_SO_HANDOVER",
+          "referenceId": "31579SO260700297399",
+          "renderedTitle": "[Sai][Dầu khí]",
+          "renderedContent": "31579SO260700297399 đã bàn giao, nhưng đã bị hủy",
+          "severityLevelType": "WARNING",       // FE đọc trường này để chọn màu sắc & icon (INFO, WARNING, SUCCESS)
+          "isRead": false,            // Tính toán từ LEFT JOIN với SystemNotificationReadLog
+          "createdDate": "2026-08-25T10:15:30Z"
+        }
+      ]
+    }
+  }
+  ```
+
+###### 4.2.2. Đánh dấu đã đọc một thông báo (PUT `/api/notifications/{id}/read`)
+
+- **Mục đích:** FE gọi khi User click vào một dòng thông báo cụ thể. Backend sẽ thực hiện Insert 1 dòng vào bảng `SystemNotificationReadLog`.
+- **Method:** `PUT`
+- **Path Parameter:**
+  - `id` (bigint) - Là `systemNotificationId`
+- **Response Model (JSON):**
+  ```json
+  {
+    "code": 200,
+    "message": "Success",
+    "data": true
+  }
+  ```
+
+###### 4.2.3. Đánh dấu đã đọc tất cả (PUT `/api/notifications/read-all`)
+
+- **Mục đích:** Mark all as read. Về mặt kỹ thuật, Backend sẽ sử dụng **SQL Bulk Insert** (`INSERT INTO ... SELECT`) để quét các thông báo chưa có trong bảng `ReadLog` và Insert đồng loạt trong 1 truy vấn duy nhất. Đảm bảo hiệu suất không làm nghẽn DB.
+- **Logic xử lý Bulk Insert:** Thay vì load danh sách ID về code Backend rồi mới insert, Backend sẽ chỉ bắn đúng **1 câu lệnh SQL duy nhất** xuống PostgreSQL để Database tự xử lý:
+  ```sql
+  INSERT INTO seller.SystemNotificationReadLog (SystemNotificationID, Username, ReadDate)
+  SELECT n.SystemNotificationID, :username, NOW()
+  FROM seller.SystemNotification n
+  -- Tìm các thông báo mà user chưa đọc
+  WHERE NOT EXISTS (
+      SELECT 1 
+      FROM seller.SystemNotificationReadLog r 
+      WHERE r.SystemNotificationID = n.SystemNotificationID 
+        AND r.Username = :username
+  )
+  -- Dành cho Phase 2 (View Seller): Chỉ lấy thông báo của đúng BusinessSellerID
+  -- AND (n.BusinessSellerID = :businesssellerid OR n.BusinessSellerID IS NULL)
+  ```
+- **Method:** `PUT`
+- **Payload:** Không yêu cầu (Backend tự trích xuất Username từ Context/Token đang đăng nhập).
+- **Response Model (JSON):**
+  ```json
+  {
+    "code": 200,
+    "message": "Success",
+    "data": true
+  }
+  ```
+
+## 4. BẢNG THAM CHIẾU TRẠNG THÁI ĐƠN HÀNG SO LIÊN QUAN
+
+| Mã trạng thái | Tên trạng thái                                              | Ghi chú                                                                                 |
+| :--------------- | :------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| State1           | Chờ xác nhận                                                | Xử lý tự động dòng default của 1 SO                                               |
+| State2           | Đã xác nhận                                                |                                                                                          |
+| State3           | Đã hoàn tất đóng gói                                    | Điều kiện để phát sinh cảnh báo hủy bill GHTK (US-03) và cảnh báo đóng gói chưa bàn giao (US-09)                           |
+| State4           | Đã bàn giao                                                 | Mốc điều kiện chính cho các cảnh báo sai quy trình (US-02, US-04, US-05, US-06) |
+| State5           | Đã giao hàng thành công                                   | Logistic cập nhật, không có nút bấm                                                |
+| State6           | Đã nhận hàng trả về                                      |                                                                                          |
+| State7           | Đã từ chối nhận hàng trả về                            |                                                                                          |
+| State8           | Không đủ điều kiện giao/Không đủ tồn kho             | Trigger cảnh báo US-01                                                                 |
+| State9           | Khách đã hủy đơn                                         | Team ERP cập nhật, không có nút bấm — Trigger cảnh báo US-02                    |
+| State10          | Đã tồn kho MWG                                              | Team ERP cập nhật khi nhập trả, không có nút bấm                                 |
+| State11          | Đã bàn giao thực tế - Gặp sự cố. Chờ AdminMWG xử lý |                                                                                          |
+
+---
+
+## 5. DANH SÁCH USER STORIES
+
+> Phiên bản đầy đủ theo format chuẩn MWG (GROUP FEATURE / SUB GROUP FEATURE / ACTOR / ACTION / SYSTEM / PROCESS IN SYSTEM / RESULT-VALUE / API LINK / NOTE) được lưu tại file **`US_ChuongThongBao_MWG_Format.csv`** trong cùng thư mục. Bên dưới là bản tóm tắt dạng Agile để tiện review nhanh.
+
+#### Epic: Cảnh báo & Thông báo trên Seller Center (Phase 1 - Admin MWG)
+
+**US-01: Nhận thông báo SO không đủ tồn kho**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** nhận được thông báo khi một Đơn hàng (SO) được cập nhật trạng thái "Không đủ tồn kho"
+- **So that** tôi có thể kịp thời liên hệ với Khách hàng để kiểm tra và xử lý sự cố tồn kho.
+- **Notification Key:** `NOT_ENOUGH_STOCK`. **Trigger:** Event Insert SOStatus = 8.
+
+**US-02: Nhận cảnh báo SO đã bàn giao nhưng bị khách hủy**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** nhận thông báo khi có một SO bị khách hủy (SOStatus = 9) nhưng trước đó đơn đã ở trạng thái Đã bàn giao (SOStatus = 4)
+- **So that** tôi có thể phối hợp kiểm tra lại tình trạng hàng hóa với Đơn vị vận chuyển (ĐVVC).
+- **Notification Key:** `CANCEL_SO_HANDOVER`.
+
+**US-03: Thông báo vận đơn đối tác GHTK bị hủy**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** nhận thông báo ngay khi hệ thống Logistic báo hủy vận đơn (IsDelete=1) cho SO đang ở trạng thái Đã đóng gói và chưa hủy
+- **So that** tôi có thể kiểm tra hủy bill GHTK tương ứng.
+- **Notification Key:** `CANCEL_BILL_TRANS`.
+
+**US-04: Nhận thông báo lỗi đồng bộ dữ liệu chờ gom PO**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** nhận thông báo qua Job 7h sáng cho các SO đã bàn giao (trong 7 ngày gần nhất, chưa hủy) nhưng không có/không hợp lệ dữ liệu InitDataCreatePO
+- **So that** tôi nhận biết ngay lỗi mất luồng dữ liệu từ CRM/SOM xuống Procurement, hoặc lỗi khai báo thiếu thuộc tính sản phẩm.
+- **Notification Key:** `NO_DATA_INIT_CREATE_PO` (không tồn tại data) / `SAME_PRODUCT_SELLER_PROC_NO_PO` (tồn tại nhưng `orderid = null`).
+
+**US-05a: Cảnh báo lệch dữ liệu chi tiết — chưa tạo PO (Data Completeness / No PO)**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** nhận cảnh báo nếu chi tiết hàng hóa (Mã SP + Số lượng) của một SO tại SellerCenter không khớp với Procurement và SO **chưa được gom tạo PO** (`orderid = null`)
+- **So that** tôi phát hiện sớm sự sai lệch do lỗi đồng bộ trước khi PO được tạo, kịp thời yêu cầu chỉnh sửa khai báo thuộc tính sản phẩm.
+- **Notification Key:** `NOT_SAME_PRODUCT_SELLER_PROC_NO_PO`. **Trigger:** Step3 in Job4 (Cronjob 7h sáng).
+- **Template:** `[Sai][Chưa tạo PO][{Tên rút gọn NCC}]` — `{Mã SO}` bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [{SP-SL}]; Proc: [{SP-SL}].
+
+**US-05b: Cảnh báo lệch dữ liệu chi tiết — đã tạo PO (Data Completeness / Have PO)**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** nhận cảnh báo nếu chi tiết hàng hóa (Mã SP + Số lượng) của một SO tại SellerCenter không khớp với Procurement nhưng SO **đã được gom tạo PO** (`orderid != null`)
+- **So that** tôi phát hiện sự sai lệch ngay cả khi PO đã được tạo, để xác minh và xử lý kịp thời tránh gây sai lệch tài chính/kho hàng.
+- **Notification Key:** `NOT_SAME_PRODUCT_SELLER_PROC_HAVE_PO`. **Trigger:** Step4 in Job4 (Cronjob 7h sáng).
+- **Template:** `[Sai][Đã tạo PO][{Tên rút gọn NCC}]` — `{Mã PO}-{Mã SO}` bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [{SP-SL}]; Proc: [{SP-SL}].
+
+**US-06: Nhận thông báo SO có hóa đơn PO nhưng trễ xuất hàng OV**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** nhận cảnh báo qua Job 7h sáng đối với các SO đã nhập hóa đơn đầu vào (PO) nhưng ERP chưa ghi nhận xuất hàng (`IsOutProduct = false`)
+- **So that** tôi thúc đẩy việc xuất hóa đơn và kích hoạt bảo hành.
+- **Notification Key:** `HAD_IV_NONE_OV`.
+
+**US-07: Xem danh sách và số lượng thông báo chưa đọc**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** xem số lượng thông báo mới trên icon chuông và xem trước danh sách khi click vào
+- **So that** tôi nắm được nhanh các issue cần xử lý mà không cần vào từng module riêng lẻ.
+- **API:** `GET /api/notifications`.
+
+**US-08: Đánh dấu đã đọc thông báo**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** click vào 1 dòng thông báo để xem chi tiết và đánh dấu đã đọc
+- **So that** tôi kiểm soát được những issue nào đã được ghi nhận xử lý.
+- **API:** `PUT /api/notifications/{id}/read`.
+
+**US-09: Nhận cảnh báo SO đã đóng gói nhưng chưa bàn giao**
+
+- **As a** Nhân viên quản trị (Admin MWG)
+- **I want to** nhận thông báo qua Job 7h sáng cho các SO đã đóng gói (SOStatus = 3) trong 7 ngày gần nhất nhưng chưa có trạng thái Đã bàn giao (SOStatus = 4) và chưa bị hủy (SOStatus = 9)
+- **So that** tôi phát hiện sớm các đơn Seller đã giao hàng cho GHTK ngoài thực tế nhưng không bàn giao (hoặc bàn giao thiếu) trên hệ thống, tránh SO bị treo không lên được PO và hàng hóa bị thất thoát, khó kiểm soát.
+- **Notification Key:** `PACKED_NOT_HANDOVER`. **Trigger:** Job6 (Cronjob 7h sáng).
+- **Template:** `[Mất hàng][{Tên rút gọn NCC}]` — `{Mã SO}` chưa có dữ liệu bàn giao trên hệ thống. Hàng hóa có thể bị mất, khó kiểm soát.
+
+| # | Given | When | Then |
+| :-: | :-- | :-- | :-- |
+| 1 | SO có `SOStatus = 3` trong 7 ngày gần nhất (đóng gói từ hôm qua trở về trước), không có `SOStatus = 4`, không có `SOStatus = 9` | Cronjob 7h sáng chạy | Hệ thống tạo 1 thông báo `PACKED_NOT_HANDOVER` cho SO đó, hiển thị trên chuông của View Admin MWG |
+| 2 | SO đã có `SOStatus = 4` (Đã bàn giao) | Cronjob 7h sáng chạy | Không tạo thông báo |
+| 3 | SO đã có `SOStatus = 9` (Khách hủy đơn) | Cronjob 7h sáng chạy | Không tạo thông báo |
+| 4 | SO đã được notify hôm qua và vẫn chưa bàn giao, vẫn trong cửa sổ 7 ngày | Cronjob 7h sáng hôm nay chạy | Tạo thêm 1 thông báo nhắc lại mới (không dedup theo ngày) |
+| 5 | SO đã notify nhiều ngày liên tiếp, sau đó được bàn giao (`SOStatus = 4`) | Cronjob chạy ngày kế tiếp | Ngưng notify SO đó |
+| 6 | SO có `SOStatus = 3` quá 7 ngày, vẫn chưa bàn giao | Cronjob 7h sáng chạy | Không tạo thông báo (đã ra khỏi cửa sổ quét 7 ngày, tối đa 7 lần notify) |
+| 7 | Không tra được `businesssellername` | Cronjob tạo thông báo | Dùng placeholder `[NCC không xác định]`, vẫn tạo thông báo, ghi log WARNING (theo mục 2.4) |
+
+---
+
+## 6. GHI CHÚ MỞ / RỦI RO CẦN BA-PO XÁC NHẬN THÊM
+
+1. **Quyết định kiến trúc cho API Mark All As Read:**
+
+   - Với kiến trúc tách 2 bảng (`SystemNotification` và `SystemNotificationReadLog`), việc người dùng nhấn "Mark all as read" sẽ tạo ra bài toán: Làm sao để đánh dấu tất cả mà không làm nghẽn DB? Có 2 cách xử lý tối ưu nhất cho Backend đã được đưa ra thảo luận:
+
+   **Cách 1: Dùng SQL Bulk Insert (Đơn giản, được chọn)**
+
+   - Thay vì load danh sách ID về code Backend rồi mới insert, Backend sẽ chỉ bắn đúng **1 câu lệnh SQL duy nhất** xuống PostgreSQL để Database tự xử lý:
+     ```sql
+     INSERT INTO seller.SystemNotificationReadLog (SystemNotificationID, Username, ReadDate)
+     SELECT n.SystemNotificationID, :username, NOW()
+     FROM seller.SystemNotification n
+     -- Tìm các thông báo mà user chưa đọc
+     WHERE NOT EXISTS (
+         SELECT 1 
+         FROM seller.SystemNotificationReadLog r 
+         WHERE r.SystemNotificationID = n.SystemNotificationID 
+           AND r.Username = :username
+     )
+     -- Dành cho Phase 2 (View Seller): Chỉ lấy thông báo của đúng BusinessSellerID
+     -- AND (n.BusinessSellerID = :businesssellerid OR n.BusinessSellerID IS NULL)
+     ```
+   - **Ưu điểm:** Tận dụng sức mạnh tối đa của engine PostgreSQL. Việc quét và insert vài nghìn dòng cùng lúc bằng lệnh `INSERT INTO ... SELECT` rất nhanh (chỉ mất vài mili-giây). Code Backend cực kỳ nhàn, giữ nguyên được cấu trúc ERD.
+
+   **Cách 2: Kỹ thuật "Cột mốc thời gian" (High-performance Watermark)**
+
+   - Nếu số lượng thông báo cực kỳ khủng khiếp (hàng triệu thông báo), việc Insert hàng triệu dòng ReadLog sẽ làm đầy DB. Ta dùng mẹo:
+     - Tạo thêm 1 field lưu lại thời điểm click "Read All" của user (VD: bảng `UserConfig` có cột `LastReadAllDate`).
+     - Khi gọi API `PUT /read-all`, BE chỉ update: `UPDATE UserConfig SET LastReadAllDate = NOW() WHERE Username = :username`.
+     - Khi query danh sách & đếm Unread, logic sẽ sửa thành: *Thông báo chưa đọc là thông báo chưa có trong ReadLog **VÀ** được sinh ra sau `LastReadAllDate`.*
+   - **Ưu điểm:** O(1) complexity, tốc độ vô địch dù có 1 tỷ thông báo.
+   - **Nhược điểm:** Phải thêm 1 cột lưu cấu hình user, và câu lệnh `SELECT` lúc get danh sách sẽ phức tạp hơn.
+
+   **Quyết định từ PO:** **CHỌN CÁCH 1**.
+
+   - **Lý do:** Phù hợp với size dữ liệu hiện tại của hệ thống Seller Center nội bộ (lượng Admin hữu hạn), giữ nguyên ERD 3 bảng sạch sẽ, dễ maintain.
+   - Để chống phình to DB do Bulk Insert, quy tắc **Data Retention 6 tháng** (Job tự động xóa data quá 6 tháng ở cả 2 bảng) được áp dụng.
+2. **Trùng lặp thông báo (Duplicate/Throttle):** Đã chốt yêu cầu từ PO: "Spam là 1 tính năng". Hệ thống cố tình sinh lặp lại thông báo mỗi ngày để ép User phải xử lý lỗi quy trình. Do đó, KHÔNG gom nhóm ở UI (hiển thị đủ danh sách).
+3. **Phase 2 (View Seller):** hiện tại spec chỉ rõ ưu tiên Admin MWG ở Phase 1; phần lọc theo `BusinessSellerID` cho Seller "chưa cần làm bây giờ" theo brief — cần chốt thời điểm triển khai Phase 2.
+4. **Sizing dữ liệu / phân trang API:** `GET /api/notifications` cần xác nhận rõ tham số phân trang, sắp xếp (mới nhất lên đầu) và giới hạn số dòng preview trong dropdown.
+5. **US-05b (NOT_SAME_PRODUCT_SELLER_PROC_HAVE_PO):** PO đã được tạo nhưng phát hiện lệch dữ liệu — cần BA/PO xác nhận luồng xử lý: chỉ cảnh báo để review thủ công, hay có trigger tự động điều chỉnh PO? Ngoài ra, cần xác định mức độ ưu tiên (severity) so với case chưa tạo PO (US-05a) vì rủi ro tài chính cao hơn.
+
+---
+
+## 7. DỮ LIỆU GIẢ LẬP (MOCK DATA)
+
+Dưới đây là dữ liệu giả lập minh họa cách lưu trữ cấu hình và thông báo thực tế xuống Database theo thiết kế cấu trúc 3 bảng:
+
+### 7.1. Bảng cấu hình Template: `masterdata.NotificationTemplate`
+
+*(Mức độ cảnh báo: INFO, WARNING, SUCCESS)*
+
+| TemplateID  | NotificationKey                          | Title                                                 | ContentTemplate                                                                                                                 | SeverityLevelType |
+| :---------- | :--------------------------------------- | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ | :---------------- |
+| TemplateID1 | `NOT_ENOUGH_STOCK`                     | `[Ngoại lệ][{Tên rút gọn NCC}]`                | `{Mã SO} không đủ tồn kho`                                                                                               | INFO              |
+| TemplateID2 | `CANCEL_SO_HANDOVER`                   | `[Sai][{Tên rút gọn NCC}]`                       | `{Mã SO} đã bàn giao, nhưng đã bị hủy`                                                                               | WARNING           |
+| TemplateID3 | `CANCEL_BILL_TRANS`                    | `[Ngoại lệ][{Tên rút gọn NCC}]`                | `Vận đơn của {Mã SO} đã bị hủy`                                                                                      | WARNING           |
+| TemplateID4 | `NO_DATA_INIT_CREATE_PO`               | `[Sai][Chưa tạo PO][{Tên rút gọn NCC}]`        | `{Mã SO} không có dữ liệu gom tạo đơn PO từ CRM/SOM đẩy về`                                                       | WARNING           |
+| TemplateID5 | `SAME_PRODUCT_SELLER_PROC_NO_PO`       | `[Sai][Chưa tạo PO][{Tên rút gọn NCC}]`        | `{Mã SO} đã có dữ liệu CRM/SOM đẩy về, nhưng chưa tạo PO thành công (thiếu/sai khai báo ở Procument).`       | WARNING           |
+| TemplateID6 | `NOT_SAME_PRODUCT_SELLER_PROC_NO_PO`   | `[Sai][Chưa tạo PO][{Tên rút gọn NCC}]`        | `{Mã SO} bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [{SP-SL}]; Proc: [{SP-SL}]`          | WARNING           |
+| TemplateID7 | `NOT_SAME_PRODUCT_SELLER_PROC_HAVE_PO` | `[Sai][Đã tạo PO][{Tên rút gọn NCC}]`         | `{Mã PO}-{Mã SO} bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [{SP-SL}]; Proc: [{SP-SL}]` | WARNING           |
+| TemplateID8 | `HAD_IV_NONE_OV`                       | `[Chưa xuất hàng được][{Tên rút gọn NCC}]` | `{Mã SO} chưa được xuất hàng. {Mã PO} đã được nhập hóa đơn vào lúc {Ngày nhập}`                          | INFO              |
+| TemplateID9 | `PACKED_NOT_HANDOVER`                  | `[Mất hàng][{Tên rút gọn NCC}]`                   | `{Mã SO} chưa có dữ liệu bàn giao trên hệ thống. Hàng hóa có thể bị mất, khó kiểm soát.`                            | WARNING           |
+
+### 7.2. Bảng lưu trữ thông báo thực tế: `seller.SystemNotification`
+
+*(Là nội dung thông báo đã render sau khi event/job thực thi. Lưu ý các record remind sinh ra vào ngày tiếp theo).*
+
+| SystemNotificationID   | TemplateID  | ReferenceID         | BusinessSellerID  | SupplierID           | RenderedTitle                              | RenderedContent                                                                                                                                | CreatedDate         | Ghi chú                                                              |
+| :--------------------- | :---------- | :------------------ | :---------------- | :------------------- | :----------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :------------------ | :-------------------------------------------------------------------- |
+| SystemNotificationID2  | TemplateID2 | 31579SO260700297399 | 74-Nhà Dầu khí | 10787-Nhà Dầu khí | `[Sai][Dầu khí]`                       | `31579SO260700297399 đã bàn giao, nhưng đã bị hủy`                                                                                   | 26/08/2026 11:18:58 |                                                                       |
+| SystemNotificationID4  | TemplateID4 | 31579SO260700297400 | 74-Nhà Dầu khí | 10787-Nhà Dầu khí | `[Sai][Chưa tạo PO][Dầu khí]`        | `31579SO260700297400 không có dữ liệu gom tạo đơn PO từ CRM/SOM đẩy về`                                                           | 26/08/2026 7:00:00  |                                                                       |
+| SystemNotificationID6  | TemplateID6 | 31579SO260700297401 | 74-Nhà Dầu khí | 10787-Nhà Dầu khí | `[Sai][Chưa tạo PO][Dầu khí]`        | `31579SO260700297401 bị lệch dữ liệu trên SellerCenter và Procument InitDataCreatePO. Seller: [SP:0163346000778-SL:1]; Proc: [BLANK].` | 26/08/2026 7:00:00  |                                                                       |
+| SystemNotificationID8  | TemplateID8 | 31579SO260700297402 | 74-Nhà Dầu khí | 10787-Nhà Dầu khí | `[Chưa xuất hàng được][Dầu khí]` | `31579SO260700297402 chưa được xuất hàng. 31579PO260700297388 đã được nhập hóa đơn vào lúc 02/11/2026 14:07:23`             | 26/08/2026 7:00:00  |                                                                       |
+| SystemNotificationID9  | TemplateID4 | 31579SO260700297400 | 74-Nhà Dầu khí | 10787-Nhà Dầu khí | `[Sai][Chưa tạo PO][Dầu khí]`        | `31579SO260700297400 không có dữ liệu gom tạo đơn PO từ CRM/SOM đẩy về`                                                           | 27/08/2026 7:00:00  | Đây là notification remind lần 2 của SO400 vào ngày tiếp theo |
+| SystemNotificationID10 | TemplateID8 | 31579SO260700297402 | 74-Nhà Dầu khí | 10787-Nhà Dầu khí | `[Chưa xuất hàng được][Dầu khí]` | `31579SO260700297402 chưa được xuất hàng. 31579PO260700297388 đã được nhập hóa đơn vào lúc 02/11/2026 14:07:23`             | 27/08/2026 7:00:00  | Đây là notification remind lần 2 của SO402 vào ngày tiếp theo |
+
+### 7.3. Bảng lưu vết hành vi click xem thông báo: `seller.SystemNotificationReadLog`
+
+*(Log lại thời điểm người dùng click vào dòng thông báo)*
+
+| ReadLogID  | SystemNotificationID  | Username | ReadDate            | createduser |
+| :--------- | :-------------------- | :------- | :------------------ | :---------- |
+| ReadLogID1 | SystemNotificationID2 | 81759    | 2026-08-27 10:15:00 | 81759       |
+| ReadLogID2 | SystemNotificationID4 | 81759    | 2026-08-27 10:20:35 | 81759       |
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const mdContent = document.getElementById("md-content").textContent;
+            marked.setOptions({ gfm: true, breaks: true });
+            document.getElementById("content").innerHTML = marked.parse(mdContent);
+
+            document.querySelectorAll('pre code').forEach(function(block) {
+                if (block.className.match(/language-(?!mermaid)/)) {
+                    hljs.highlightElement(block);
+                }
+            });
+
+            const mermaidBlocks = document.querySelectorAll("code.language-mermaid");
+            mermaidBlocks.forEach(function(block) {
+                const pre = block.parentElement;
+                const div = document.createElement('div');
+                div.className = 'mermaid';
+                div.textContent = block.textContent;
+                pre.replaceWith(div);
+            });
+            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            mermaid.initialize({ startOnLoad: false, theme: isDarkMode ? 'dark' : 'default' });
+            mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+
+            document.querySelectorAll('#content table').forEach(function(table) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-responsive-wrapper';
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            });
+
+            const firstH1 = document.querySelector('#content h1');
+            if (firstH1) {
+                document.title = firstH1.textContent.trim();
+                const label = document.getElementById('doc-title-label');
+                if (label) label.textContent = firstH1.textContent.trim();
+            }
+
+            const tocContent = document.getElementById("toc-content");
+            const headings = document.querySelectorAll("#content h1, #content h2, #content h3, #content h4");
+            const ul = document.createElement("ul");
+            const linkMap = new Map();
+            headings.forEach(function(heading) {
+                if (!heading.id) heading.id = heading.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                const level = parseInt(heading.tagName.replace('H', ''), 10);
+                const li = document.createElement("li");
+                li.style.marginLeft = ((level - 1) * 12) + "px";
+                const a = document.createElement("a");
+                a.href = "#" + heading.id;
+                a.textContent = heading.textContent;
+                li.appendChild(a);
+                ul.appendChild(li);
+                linkMap.set(heading.id, a);
+            });
+            tocContent.appendChild(ul);
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    const link = linkMap.get(entry.target.id);
+                    if (!link) return;
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('#toc-content a.active').forEach(function(a) { a.classList.remove('active'); });
+                        link.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-10% 0px -70% 0px' });
+            headings.forEach(function(h) { observer.observe(h); });
+
+            const STORAGE_KEY = 'doc-sidebar-hidden';
+            function setSidebarHidden(hidden) {
+                document.body.classList.toggle('sidebar-hidden', hidden);
+                try { localStorage.setItem(STORAGE_KEY, hidden ? '1' : '0'); } catch (e) {}
+            }
+
+            let initialHidden = window.innerWidth < 900;
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved !== null) initialHidden = saved === '1';
+            } catch (e) {}
+            setSidebarHidden(initialHidden);
+
+            const openBtn = document.getElementById('sidebar-btn');
+            const collapseBtn = document.getElementById('sidebar-collapse-btn');
+            const overlay = document.getElementById('overlay');
+            if (openBtn) openBtn.addEventListener('click', function() { setSidebarHidden(false); });
+            if (collapseBtn) collapseBtn.addEventListener('click', function() { setSidebarHidden(true); });
+            if (overlay) overlay.addEventListener('click', function() { setSidebarHidden(true); });
+        });
+    </script>
+</body>
+</html>
